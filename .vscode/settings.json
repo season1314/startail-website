@@ -1,0 +1,8 @@
+{
+    "editor.renderWhitespace": "none",
+"problems.showCurrentInStatus": false,
+"editor.showUnused": false,
+"editor.codeLens": false,
+"editor.guides.indentation": false
+
+}

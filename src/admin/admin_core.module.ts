@@ -1,0 +1,44 @@
+import { Module, DynamicModule, Global } from '@nestjs/common';
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
+import { DashboardModule } from './dashboard/dashboard.module'
+import { RouterModule } from '@nestjs/core';
+import { ConfigModule } from './config/config.module'
+
+@Global()
+@Module({})
+export class AdminCoreModule {
+  static forRoot(): DynamicModule {
+    return {
+      module: AdminCoreModule,
+      imports: [
+        AuthModule,
+        AdminModule,
+        DashboardModule,
+        ConfigModule,
+        RouterModule.register([
+          {
+            path: 'admin',
+            module: AuthModule,
+          },
+          {
+            path: 'admin/admin',
+            module: AdminModule,
+          },
+          {
+            path: 'admin',
+            module: DashboardModule,
+          },
+          {
+            path: 'admin/config',
+            module: ConfigModule
+          }
+        ])
+      ],
+      exports: [
+        AuthModule,
+        AdminModule
+      ],
+    };
+  }
+}

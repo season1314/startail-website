@@ -1,0 +1,47 @@
+<div id='loading' class="subpage" style="background:rgba(0, 0, 0, 0.4),z-index:99999100">
+    <div class="page-view">
+        <div class="loading-circle"></div>
+    </div>
+</div>
+<style>
+    .loading-circle {
+        border: 5px solid #f3f3f3;
+        /* Light gray background */
+        border-top: 5px solid #3498db;
+        /* Blue color for the spinning part */
+        border-radius: 50%;
+        width: 40px;
+        /* Set the width */
+        height: 40px;
+        /* Set the height */
+        animation: spin 0.5s linear infinite;
+        /* Spinning animation */
+        margin: 50px auto;
+        /* Center the spinner */
+    }
+
+    /* Keyframes for the spinning animation */
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<script>
+    const loading = () => {
+        return {
+            show: (type = 0) => {
+                if (type == 1) $('#loading').css('background-color', 'rgba(0, 0, 0, 0)');
+                $('#loading').show()
+            },
+            hide: () => {
+                $('#loading').hide()
+                $('#loading').css('background-color', 'rgba(0, 0, 0, 0.4)');
+            }
+        }
+    }
+</script>

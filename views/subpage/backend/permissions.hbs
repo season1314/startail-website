@@ -1,0 +1,208 @@
+<div id='subpage' class="subpage">
+    <div class="page-view">
+        <div class='card'>
+            <div class='card-header d-flex justify-content-between align-items-center'>
+                <div class='header-left'>
+                    <strong id="subpage-title"></strong>
+                </div>
+                <div class='header-right'>
+                    <button type='button' class='btn btn-danger btn-sm' id='subpage-closeBtn'>&times;</button>
+                </div>
+            </div>
+            <!-- create -->
+            <div id="subpage-create">
+                <div class='card-body card-block'
+                    style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+                    <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>name<span
+                                        style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'><input type='text' id='create-name'
+                                    placeholder='permission name' class='form-control' name="create-name"
+                                    autocomplete="create-name" /><small class="help-block form-text color-red"
+                                    style="height:12px"></small></div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>url<span
+                                        style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'><input type='text' id='create-url' name="create-url"
+                                    placeholder='url eg. /index/index ' class='form-control'
+                                    autocomplete="create-url" /><small class="help-block form-text color-red"
+                                    style="height:12px"></small></div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>method<span
+                                        style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'>
+                                <div class="form-check-inline form-check" id='create-method'>
+                                    <label for="inline-radio1" class="form-check-label">
+                                        <input type="radio" id="inline-radio1" name="inline-radios" value="GET"
+                                            class="form-check-input">GET
+                                    </label>
+                                    <label for="inline-radio2" class="form-check-label" style="margin-left:10px">
+                                        <input type="radio" id="inline-radio2" name="inline-radios" value="POST"
+                                            class="form-check-input">POST
+                                    </label>
+                                    <label for="inline-radio3" class="form-check-label " style="margin-left:10px">
+                                        <input type="radio" id="inline-radio3" name="inline-radios" value="PUT"
+                                            class="form-check-input">PUT
+                                    </label>
+                                    <label for="inline-radio4" class="form-check-label " style="margin-left:10px">
+                                        <input type="radio" id="inline-radio4" name="inline-radios" value="DELETE"
+                                            class="form-check-input">DELETE
+                                    </label>
+                                </div>
+                                <small class="help-block form-text color-red" style="height:12px"></small>
+                            </div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>des<span
+                                        style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'><input type='text' id='create-des' name="create-des"
+                                    placeholder='des eg. administrator create permission' class='form-control'
+                                    autocomplete="create-des" /><small class="help-block form-text color-red"
+                                    style="height:12px"></small></div>
+                        </div>
+                    </form>
+                </div>
+                <div class='card-footer' id='subpage-create'>
+                    <button type='submit' class='btn btn-primary btn-sm' id='subpage-create-submit'>
+                        <i class='fa fa-dot-circle-o'></i>
+                        Submit
+                    </button>
+                    <button type='reset' class='btn btn-danger btn-sm'>
+                        <i class='fa fa-ban'></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <!-- create end -->
+
+            <!-- edit -->
+            <div id="subpage-edit">
+                <div class='card-body card-block'
+                    style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+                    <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label class=" form-control-label">id</label></div>
+                            <div class="col-12 col-md-9">
+                                <p class="form-control-static" id="edit-id"></p>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label class=" form-control-label">url</label></div>
+                            <div class="col-12 col-md-9">
+                                <p class="form-control-static" id="edit-url"></p>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label class=" form-control-label">method</label></div>
+                            <div class="col-12 col-md-9">
+                                <p class="form-control-static" id="edit-method"></p>
+                            </div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>name</label>
+                            </div>
+                            <div class='col-12 col-md-9'><input type='text' id='edit-name' name='edit-name'
+                                    placeholder='name' class='form-control' autocomplete="edit-name" /><small
+                                    class="help-block form-text color-red" style="height:12px"></small></div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>des</label>
+                            </div>
+                            <div class='col-12 col-md-9'><input type='text' id='edit-des' name='edit-des'
+                                    placeholder='des' class='form-control' /><small
+                                    class="help-block form-text color-red" style="height:12px"></small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class='card-footer' id='subpage-create'>
+                    <button type='submit' class='btn btn-primary btn-sm' id='subpage-edit-submit'>
+                        <i class='fa fa-dot-circle-o'></i>
+                        Submit
+                    </button>
+                    <button type='reset' class='btn btn-danger btn-sm'>
+                        <i class='fa fa-ban'></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <!-- edit end -->
+
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    var _date;
+    $(document).ready(function () {
+        $('input').focus(function () {
+            const $small = $(this).next('small');
+            $small.text('');
+        });
+    });
+
+    const subpageOpen = () => {
+        return {
+            create: () => {
+                $('#subpage-title').text('Create New');
+                $('#subpage-create').show();
+                $('#subpage-edit').hide();
+                $('#subpage').show();
+            },
+            edit: (data) => {
+                _data = data
+                Object.entries(_data).forEach(([key, value]) => {
+                    if (key == '_id') $('#edit-id').data('id', value).text(value);
+                    const dom = $('#edit-' + key)
+                    if (!dom) return
+                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+                })
+                $('#subpage-title').text('Edit Info');
+                $('#subpage-create').hide();
+                $('#subpage-edit').show();
+                $('#subpage').show();
+            },
+        }
+    }
+
+
+    const subpageError = (messages, type) => {
+        Object.entries(messages).forEach(([key, value]) => {
+            const dom = $('#' + type + '-' + key)
+            if (dom) dom.next('small').text(value[0])
+        });
+    }
+
+
+    const subpageReset = () => {
+        return {
+            create: () => {
+                $('#subpage')
+                    .find('input:not([type="radio"])')
+                    .val('')
+                    .find('input[type="radio"]')
+                    .prop('checked', false)
+                    .end()
+                    .find('small')
+                    .text('')
+                    .end()
+            },
+            edit: (data) => {
+                Object.entries(_data).forEach(([key, value]) => {
+                    if (key == '_id') $('#edit-id').data('id', value).val(value);
+                    const dom = $('#edit-' + key)
+                    if (!dom) return
+                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+                })
+            }
+        };
+    }
+</script>

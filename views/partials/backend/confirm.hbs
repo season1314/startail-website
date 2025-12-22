@@ -1,0 +1,37 @@
+<div id='confirm-box' class="subpage">
+    <div class="page-view">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirm-title"></h5>
+                </div>
+                <div class="modal-body">
+                    <p id="confirm-context"> </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel-btn">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirm-btn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+</style>
+<script>
+    const openConfirm = ({title = "", context = "", onConfirm = () => {}, onCancel = () => {}}) => {
+        $('#confirm-title').text(title)
+        $('#confirm-context').text(context)
+        $('#confirm-box').show();
+
+        $('#confirm-btn').off('click').on('click', function () {
+            onConfirm();
+            $('#confirm-box').hide();
+        });
+
+        $('#cancel-btn').off('click').on('click', function () {
+            onCancel();
+            $('#confirm-box').hide();
+        });
+    }
+</script>

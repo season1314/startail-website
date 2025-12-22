@@ -1,0 +1,64 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+</head>
+
+<body>
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+
+
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+        </div><!-- .content -->
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- Footer -->
+        {{> backend/footer}}
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="/backend/js/init/datatables-init.js"></script>
+
+    <!--Local Stuff-->
+    <script type="text/javascript">
+
+
+    </script>
+</body>
+
+</html>

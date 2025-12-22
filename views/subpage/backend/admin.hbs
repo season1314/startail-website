@@ -1,0 +1,238 @@
+<div id='subpage' class="subpage">
+  <div class="page-view">
+    <div class='card'>
+      <div class='card-header d-flex justify-content-between align-items-center'>
+        <div class='header-left'>
+          <strong id="subpage-title"></strong>
+        </div>
+        <div class='header-right'>
+          <button type='button' class='btn btn-danger btn-sm' id='subpage-closeBtn'>&times;</button>
+        </div>
+      </div>
+      <!-- create -->
+      <div id="subpage-create">
+        <div class='card-body card-block' style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+          <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>username<span
+                    style="color:red">*</span></label>
+              </div>
+              <div class='col-12 col-md-9'><input type='text' id='create-username' placeholder='username'
+                  class='form-control' name="create-username" autocomplete="create-username" /><small
+                  class="help-block form-text color-red" style="height:12px"></small></div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>password<span
+                    style="color:red">*</span></label>
+              </div>
+              <div class='col-12 col-md-9'><input type='password' id='create-password' name="create-password"
+                  placeholder='password' class='form-control' autocomplete="create-password" /><small
+                  class="help-block form-text color-red" style="height:12px"></small></div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>confirm password<span
+                    style="color:red">*</span></label>
+              </div>
+              <div class='col-12 col-md-9'><input type='password' id='create-confirmPassword' name='text-input'
+                  placeholder='confirm password' class='form-control' /><small class="help-block form-text color-red"
+                  style="height:12px"></small></div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>email<span
+                    style="color:red">*</span></label>
+              </div>
+              <div class='col-12 col-md-9'><input type='text' id='create-email' name='create-email' placeholder='email'
+                  class='form-control' autocomplete="create-email" /><small class="help-block form-text color-red"
+                  style="height:12px"></small></div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>nickname</label>
+              </div>
+              <div class='col-12 col-md-9'><input type='text' id='create-nickname' name='text-input'
+                  placeholder='nickname' class='form-control' /><small class="help-block form-text color-red"
+                  style="height:12px"></small>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class='card-footer' id='subpage-create'>
+          <button type='submit' class='btn btn-primary btn-sm' id='subpage-create-submit'>
+            <i class='fa fa-dot-circle-o'></i>
+            Submit
+          </button>
+          <button type='reset' class='btn btn-danger btn-sm'>
+            <i class='fa fa-ban'></i>
+            Reset
+          </button>
+        </div>
+      </div>
+      <!-- create end -->
+
+      <!-- edit -->
+      <div id="subpage-edit">
+        <div class='card-body card-block' style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+          <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+            <div class="row form-group">
+              <div class="col col-md-3"><label class=" form-control-label">username</label></div>
+              <div class="col-12 col-md-9">
+                <p class="form-control-static" id="edit-username"></p>
+              </div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>email</label></div>
+              <div class='col-12 col-md-9'><input type='text' id='edit-email' name='edit-email' placeholder='email'
+                  class='form-control' autocomplete="edit-email" /><small class="help-block form-text color-red"
+                  style="height:12px"></small></div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>nickname</label>
+              </div>
+              <div class='col-12 col-md-9'><input type='text' id='edit-nickname' name='text-input'
+                  placeholder='nickname' class='form-control' /><small class="help-block form-text color-red"
+                  style="height:12px"></small>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class='card-footer' id='subpage-create'>
+          <button type='submit' class='btn btn-primary btn-sm' id='subpage-edit-submit'>
+            <i class='fa fa-dot-circle-o'></i>
+            Submit
+          </button>
+          <button type='reset' class='btn btn-danger btn-sm'>
+            <i class='fa fa-ban'></i>
+            Reset
+          </button>
+        </div>
+      </div>
+      <!-- edit end -->
+
+      <!-- password -->
+      <div id="subpage-password">
+        <div class='card-body card-block' style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+          <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+            <div class="row form-group">
+              <div class="col col-md-3"><label class=" form-control-label">username</label></div>
+              <div class="col-12 col-md-9">
+                <p class="form-control-static" id="password-username"></p>
+              </div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>new password<span
+                    style="color:red">*</span></label>
+              </div>
+              <div class='col-12 col-md-9'><input type='password' id='password-password' name="password-password"
+                  placeholder='new password' class='form-control' autocomplete="password-password" /><small
+                  class="help-block form-text color-red" style="height:12px"></small>
+              </div>
+            </div>
+            <div class='row form-group'>
+              <div class='col col-md-3'><label for='text-input' class='form-control-label'>confirm password<span
+                    style="color:red">*</span></label>
+              </div>
+              <div class='col-12 col-md-9'><input type='password' id='password-confirmPassword' name='text-input'
+                  placeholder='confirm password' class='form-control' /><small class="help-block form-text color-red"
+                  style="height:12px"></small></div>
+            </div>
+          </form>
+        </div>
+        <div class='card-footer' id='subpage-password'>
+          <button type='submit' class='btn btn-primary btn-sm' id='subpage-password-submit'>
+            <i class='fa fa-dot-circle-o'></i>
+            Submit
+          </button>
+          <button type='reset' class='btn btn-danger btn-sm'>
+            <i class='fa fa-ban'></i>
+            Reset
+          </button>
+        </div>
+      </div>
+      <!-- password end -->
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  var _date;
+  $(document).ready(function () {
+    $('input').focus(function () {
+      const $small = $(this).next('small');
+      $small.text('');
+    });
+  });
+
+  const subpageOpen = () => {
+    return {
+      create: () => {
+        $('#subpage-title').text('Create New');
+        $('#subpage-create').show();
+        $('#subpage-edit').hide();
+        $('#subpage-password').hide();
+        $('#subpage-permissions').hide()
+        $('#subpage').show();
+      },
+      edit: (data) => {
+        _data = data
+        Object.entries(_data).forEach(([key, value]) => {
+          if (key == '_id') $('#edit-username').data('id', value);
+          const dom = $('#edit-' + key)
+          if (!dom) return
+          dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+        })
+        $('#subpage-title').text('Edit Info');
+        $('#subpage-create').hide();
+        $('#subpage-password').hide();
+        $('#subpage-edit').show();
+        $('#subpage-permissions').hide()
+        $('#subpage').show();
+      },
+
+      password: (data) => {
+        _data = data
+        Object.entries(_data).forEach(([key, value]) => {
+          if (key == '_id') $('#password-username').data('id', value);
+          const dom = $('#password-' + key)
+          if (!dom) return
+          dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+        })
+        $('#subpage-title').text('Rest Password');
+        $('#subpage-create').hide();
+        $('#subpage-edit').hide();
+        $('#subpage-password').show();
+        $('#subpage-permissions').hide()
+        $('#subpage').show();
+      }
+    }
+  }
+
+
+  const subpageError = (messages, type) => {
+    Object.entries(messages).forEach(([key, value]) => {
+      const dom = $('#' + type + '-' + key)
+      if (dom) dom.next('small').text(value[0])
+    });
+  }
+
+
+  const subpageReset = () => {
+    return {
+      create: () => {
+        $('#subpage')
+          .find('input')
+          .val('')
+          .end()
+          .find('small')
+          .text('')
+          .end()
+      },
+      edit: (data) => {
+        Object.entries(_data).forEach(([key, value]) => {
+          const dom = $('#edit-' + key)
+          if (!dom) return
+          dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+        })
+      }
+    };
+  }
+</script>

@@ -1,0 +1,34 @@
+<div class="info" id="infobar">
+    <div id="infobar-box" class="alert alert-danger text-center" role="alert" style="width:80%;">
+        <span id="infobar-messageText"></span>
+    </div>
+</div>
+
+<style>
+    .info {
+        position: fixed;
+        top: -40px;
+        width: 100%;
+        z-index: 99999999;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+        transition: top 0.3s ease, opacity 0.3s ease;
+    }
+
+    .info.show {
+        top: 10px;
+        opacity: 1;
+    }
+</style>
+<script>
+    function showInfo(option, content = '', duration = 2000) {
+        $('#infobar-messageText').text(content)
+        $('#infobar-box').removeClass('alert-success alert-danger alert-warning alert-info').addClass('alert-' + option);
+        $('#infobar').addClass('show');
+        setTimeout(() => {
+            $('#infobar').removeClass('show');
+            $('#infobar-messageText').text("")
+        }, duration);
+    }
+</script>

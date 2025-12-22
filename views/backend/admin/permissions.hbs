@@ -1,0 +1,129 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+</head>
+
+<body>
+    {{> backend/infobar}}
+    {{> backend/confirm}}
+    {{> backend/loading}}
+
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+
+
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Permissions</strong>
+                            </div>
+                            <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
+                                style="padding: 0 35px;height:80px">
+                                <!-- 左边搜索框 -->
+                                <div class="d-flex align-items-center">
+                                    <input type="text" id="search-input" class="form-control form-control-sm me-2"
+                                        placeholder="Username /Email / Name" style="width:180px">
+                                    <button id="btn-search" class="btn btn-primary btn-sm"
+                                        style="margin-left:10px;">Search</button>
+                                    <button id="btn-reset" class="btn btn-secondary btn-sm"
+                                        style="margin-left:10px;">Reset</button>
+                                </div>
+                                <button id="btn-add" class="btn btn-success btn-sm">save</button>
+                            </div>
+
+                            <div class="card-body" style="padding-top: 0">
+                                <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
+                                    1111111111
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- Footer -->
+        {{> backend/footer}}
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="/backend/js/init/datatables-init.js"></script>
+
+    <!--Local Stuff-->
+    <script type="text/javascript">
+        window.addEventListener('DOMContentLoaded', async () => {
+            //Init data
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            fetchList(id)
+        });
+
+
+        //FetchData
+        async function fetchList(id) {
+            const getData = await fetchData('/admin/admin/permissions/list', 'GET', { id });
+
+        }
+
+    </script>
+</body>
+<style>
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+    }
+
+    #bootstrap-data-table {
+        table-layout: auto;
+        width: 100%;
+    }
+
+    #bootstrap-data-table th,
+    #bootstrap-data-table td {
+        white-space: nowrap;
+    }
+</style>
+
+</html>
