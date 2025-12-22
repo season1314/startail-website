@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, MinLength, IsOptional, IsString, ValidateIf } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength, IsOptional, IsString, ValidateIf, IsArray } from 'class-validator';
 
 export class CreateAdminDto {
   @IsNotEmpty()
@@ -66,3 +66,11 @@ export class ResetPasswordDto {
   confirmPassword: string;
 }
 
+export class updateAdminPermission {
+  @IsNotEmpty()
+  id: string
+
+  @IsArray()
+  @IsString({ each: true })
+  permissions: string[]
+}

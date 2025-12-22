@@ -196,16 +196,30 @@ export class AdminService {
     }
   }
 
+  /**
+   * Get permissionList base admin id and keyword
+   * @param id 
+   * @param keyword 
+   * @returns 
+   */
 
-  async permissionList(id: string): Promise<response> {
+  async permissionList(id: string, keyword: string): Promise<response> {
     try {
       const existingUser = await this.adminModel.findOne({ _id: id })
       if (!existingUser) {
         return { code: 1, messages: 'Administrator is not exists' };
       }
-
-      const permissions = await this.permissionsModel.find().sort({ url: 1 }).exec();
-      var list
+      let query = {};
+      if (keyword && keyword.trim() !== '') {
+        query = {
+          $or: [
+            { name: { $regex: keyword, $options: 'i' } },
+            { des: { $regex: keyword, $options: 'i' } }
+          ]
+        };
+      }
+      const permissions = await this.permissionsModel.find(query).sort({ url: 1 }).exec();
+      let list
       if (existingUser.permissions.includes('*')) {
         list = permissions.map(permission => ({
           ...permission.toObject(),
@@ -231,5 +245,11 @@ export class AdminService {
     } catch (error) {
       return { code: 1, messages: error }
     }
+  }
+
+
+  async updateAdminPermissions(id:string,permissions:string[]){
+    
+
   }
 }

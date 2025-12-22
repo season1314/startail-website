@@ -41,10 +41,10 @@
                             </div>
                             <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
                                 style="padding: 0 35px;height:80px">
-                                <!-- 左边搜索框 -->
+                                <!--  -->
                                 <div class="d-flex align-items-center">
                                     <input type="text" id="search-input" class="form-control form-control-sm me-2"
-                                        placeholder="Username /Email / Name" style="width:180px">
+                                        placeholder="keyword" style="width:180px">
                                     <button id="btn-search" class="btn btn-primary btn-sm"
                                         style="margin-left:10px;">Search</button>
                                     <button id="btn-reset" class="btn btn-secondary btn-sm"
@@ -52,10 +52,9 @@
                                 </div>
                                 <button id="btn-add" class="btn btn-success btn-sm">save</button>
                             </div>
-
                             <div class="card-body" style="padding-top: 0">
-                                <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
-                                    1111111111
+                                <div class="permission-list">
+
                                 </div>
                             </div>
                         </div>
@@ -95,34 +94,61 @@
         window.addEventListener('DOMContentLoaded', async () => {
             //Init data
             const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            fetchList(id)
+            window.adminId = params.get('id');
+            fetchList()
         });
 
 
         //FetchData
-        async function fetchList(id) {
-            const getData = await fetchData('/admin/admin/permissions/list', 'GET', { id });
-
+        async function fetchList(keyword = "") {
+            const getData = await fetchData('/admin/admin/permissions/list', 'GET', { id: window.adminId, keyword });
+            if (getData.code !== 0) { showInfo('danger', getData.messages.message ? getData.messages.message : getData.messages); return }
+            if (getData.data.list.length > 0) {
+                $('.permission-list').empty()
+                getData.data.list.map((item, index) => {
+                    const context = `<div class="permission-item">
+                                        <input type="checkbox" id="inline-checkbox${index}" name="inline-checkbox${index}"
+                                            value="${item.key}" class="form-check-input" ${item.selected ? 'checked' : ''}  ${item.disabled ? 'disabled' : ''} style="margin-top:0">
+                                    <div>${item.name} : (${item.des})</div>
+                                    </div>      
+                                 `
+                    $('.permission-list').append(context)
+                })
+            } else {
+                $('.permission-list').empty()
+                const context = '<div>No data found</div>'
+                $('.permission-list').append(context)
+            }
         }
+
+        //Handle search
+        $(document).on('click', '#btn-search', function () {
+            const keyword = $('#search-input').val()
+            fetchList(keyword)
+        })
+
+        //Handle reset
+        $(document).on('click', '#btn-reset', function () {
+            $('#search-input').val('')
+            fetchList()
+        })
 
     </script>
 </body>
 <style>
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-    }
-
-    #bootstrap-data-table {
-        table-layout: auto;
+    .permission-list {
         width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0 30px
     }
 
-    #bootstrap-data-table th,
-    #bootstrap-data-table td {
-        white-space: nowrap;
+    .permission-item {
+        padding: 0 30px;
+        display: flex;
+        height: 20px;
+        justify-items: center;
+        align-items: center;
     }
 </style>
 

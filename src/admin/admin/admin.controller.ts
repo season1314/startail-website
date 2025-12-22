@@ -27,6 +27,10 @@ import { AdminModule } from './admin.module';
 export class AdminController {
   constructor(private readonly AdminService: AdminService) { }
 
+  /**
+   *  Render administrator page
+   */
+
   @Get()
   @Render('backend/admin/admin')
   index() {
@@ -164,15 +168,9 @@ export class AdminController {
   }
 
   /**
-      * Render administrator' permission set page
       *
-      * HTTP Method: Get
-      * Request Query:
-      * - Id * (string): Admin Id
+      * Render administrator' permission page
       *
-      * Description:
-      * Check delete administrator's permissions
-      * Delete administrator who is not super administrator
       */
 
 
@@ -190,10 +188,46 @@ export class AdminController {
     };
   }
 
+  /**
+ * Get administrator permission list
+ *
+ * HTTP Method: Get
+ * Request query:
+ * - id：* (string):admin id
+ * - keyword：(string): name keyword for search
+ *
+ * Description:
+ *
+ * Base the admin id and keyword get permissions list
+ * If admin had permission, permission selected true
+ * If admin is super admin all permissions selected true and disabled true 
+ */
 
   @Get('permissions/list')
   async permissionsList(@Query() body: any) {
     if (!body.id) { return { code: 1, messages: 'System error: Id is missing' } }
-    return this.AdminService.permissionList(body.id)
+    return this.AdminService.permissionList(body.id, body.keyword)
+  }
+
+   /**
+   * Update administrator permission
+   *
+   * HTTP Method: PUT   - 
+   * Request Body:
+   * - id  * (string): Admin Id
+   * - permissions  * (string[]): Permission Array 
+   *
+   * Description:
+   * Check the admin Id existing
+   * Check the permissions is string[]
+   * Use new permissions place old permissions
+   * Update admin state to 3 - block the admin next request , let admin re-login to refresh session (without redis and sessionId list)
+   * 
+   */
+  @Put('permissions')
+  async updateAdminPermission(@Query() body: any) {
+    if (!body.id) return { code: 1, messages: 'System error: Id is missing' }
+    if (!Array.isArray(body.permissions) || !body.permissions.every(item => typeof item === 'string')) return { code: 1, messages: 'System error: Permissions is valid' }
+    return this.AdminService.updateAdminPermissions(body.id,body.permissions)
   }
 }
