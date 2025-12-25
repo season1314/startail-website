@@ -110,7 +110,7 @@ export class AdminController {
     */
 
   @Put()
-  async edit(@Body() body: any, @Session() session: Record<string, any>) {
+  async edit(@Body() body: any, @Req() req:Request) {
     if (!body.id) { return { code: 1, messages: 'System error: Id is missing' } }
 
     if (body.type == "editInfo") {
@@ -129,7 +129,7 @@ export class AdminController {
     }
 
     if (body.type == "switchStatus") {
-      return this.AdminService.switchAdminStatus(body.id)
+      return this.AdminService.switchAdminStatus(body.id,req.sessionStore)
     }
 
     if (body.type == "resetPass") {
@@ -162,7 +162,7 @@ export class AdminController {
       */
 
   @Delete()
-  async delete(@Query() body: any, @Session() session: Record<string, any>) {
+  async delete(@Query() body: any) {
     if (!body.id) { return { code: 1, messages: 'System error: Id is missing' } }
     return this.AdminService.deleteAdmin(body.id)
   }
@@ -221,13 +221,13 @@ export class AdminController {
    * Check the admin Id existing
    * Check the permissions is string[]
    * Use new permissions place old permissions
-   * Update admin state to 3 - block the admin next request , let admin re-login to refresh session (without redis and sessionId list)
+   * Destroy admin session
    * 
    */
   @Put('permissions')
-  async updateAdminPermission(@Query() body: any) {
+  async updateAdminPermission(@Body() body: any,@Req() req:Request) {
     if (!body.id) return { code: 1, messages: 'System error: Id is missing' }
     if (!Array.isArray(body.permissions) || !body.permissions.every(item => typeof item === 'string')) return { code: 1, messages: 'System error: Permissions is valid' }
-    return this.AdminService.updateAdminPermissions(body.id,body.permissions)
+    return this.AdminService.updateAdminPermissions(body.id,body.permissions,req.sessionStore)
   }
 }

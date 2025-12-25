@@ -6,7 +6,7 @@ import hbs from 'hbs';
 import { configureHbs } from './hbs.config';
 import { ValidationPipe,HttpException,Logger  } from '@nestjs/common';
 import {GlobalHttpExceptionFilter} from './admin/Http200ExceptionFilter';
-import {SessionValidationMiddleware,FormValidationPipe} from './admin/admin.pipe'
+import {SessionValidationMiddleware,FormValidationPipe,PermissionValidationMiddleware} from './admin/admin.pipe'
 import { request } from 'http';
 const session = require('express-session');
 
@@ -45,6 +45,12 @@ async function bootstrap() {
    * Middleware: Ideal for request interception, rendering pages, and controlling the request flow synchronously, making it the best choice for login validation.
    */
   app.use(new SessionValidationMiddleware().use);
+
+  /**
+   * Middleware check admin permission
+   */
+
+  app.use(new PermissionValidationMiddleware().use)
 
 
   app.useGlobalPipes(new FormValidationPipe())

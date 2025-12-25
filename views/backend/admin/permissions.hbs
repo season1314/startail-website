@@ -7,6 +7,7 @@
 
 <head>
     {{> backend/head title=title}}
+    <link rel="stylesheet" href="/backend/css/spinner.css">
 </head>
 
 <body>
@@ -37,7 +38,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Permissions</strong>
+                                <strong class="card-title">Permissions List</strong>
                             </div>
                             <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
                                 style="padding: 0 35px;height:80px">
@@ -50,7 +51,9 @@
                                     <button id="btn-reset" class="btn btn-secondary btn-sm"
                                         style="margin-left:10px;">Reset</button>
                                 </div>
-                                <button id="btn-add" class="btn btn-success btn-sm">save</button>
+                                <button id="submit" class="btn btn-success btn-sm">
+                                    <span class="btn-text">Save</span>
+                                    <span class="spinner"></span></button>
                             </div>
                             <div class="card-body" style="padding-top: 0">
                                 <div class="permission-list">
@@ -100,8 +103,8 @@
 
 
         //FetchData
-        async function fetchList(keyword = "") {
-            const getData = await fetchData('/admin/admin/permissions/list', 'GET', { id: window.adminId, keyword });
+        async function fetchList() {
+            const getData = await fetchData('/admin/admin/permissions/list', 'GET', { id: window.adminId });
             if (getData.code !== 0) { showInfo('danger', getData.messages.message ? getData.messages.message : getData.messages); return }
             if (getData.data.list.length > 0) {
                 $('.permission-list').empty()
@@ -124,13 +127,43 @@
         //Handle search
         $(document).on('click', '#btn-search', function () {
             const keyword = $('#search-input').val()
-            fetchList(keyword)
+
+            if (!keyword) {
+                $('.permission-item').show();
+                return;
+            }
+
+            $('.permission-item').each(function () {
+                const text = $(this).find('div').text();
+                if (text.indexOf(keyword) === -1) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
         })
 
         //Handle reset
         $(document).on('click', '#btn-reset', function () {
             $('#search-input').val('')
-            fetchList()
+            $('.permission-item').show();
+        })
+
+
+        //Handle submit
+        $(document).on('click', '#submit', async function () {
+            event.preventDefault();
+            if ($('#submit').prop('disabled')) return
+            $('#submit').addClass('loading').prop('disabled', true)
+            const permissions = $('input[type="checkbox"]:checked').map(function () { return $(this).val(); }).get();
+            const result = await fetchData('/admin/admin/permissions', 'PUT', { id: window.adminId, permissions })
+            if (result.code !== 0) {
+                showInfo('danger', result.messages)
+            } else {
+                showInfo('success', result.messages)
+                fetchList()
+            }
+            $('#submit').removeClass('loading').prop('disabled', false)
         })
 
     </script>

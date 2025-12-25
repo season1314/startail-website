@@ -1,0 +1,137 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+</head>
+
+<body>
+    {{> backend/infobar}}
+    {{> backend/loading}}
+    {{> backend/admin}}
+
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+
+
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="feed-box text-center">
+                            <section class="card">
+                                <div class="card-body">
+                                    <div class="corner-ribon blue-ribon">
+                                        <i class="fa fa-twitter"></i>
+                                    </div>
+                                    <a href="#">
+                                        <img class="align-self-center rounded-circle mr-3"
+                                            style="width:85px; height:85px;" alt="" id="avatar">
+                                    </a>
+                                    <h2 id="nickname"></h2>
+                                    <p id="username" style="margin-top:20px"></p>
+                                    <p id="email"></p>
+                                    <p id="createdAt"></p>
+                                    <button class="btn btn-success btn-flat m-b-30 m-t-30" id="btn-resetPassword"
+                                        data-item="">Reset
+                                        Password</button>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- Footer -->
+        {{> backend/footer}}
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="/backend/js/init/datatables-init.js"></script>
+
+    <!--Local Stuff-->
+    <script type="text/javascript">
+        window.addEventListener('DOMContentLoaded', async () => {
+            const getData = await fetchData('/admin/auth', 'POST');
+            if (getData.code == 0) {
+                const data = {
+                    img: getData.data.avatar ? getData.data.avatar : '../backend/img/avatar/1.jpg',
+                    nickname: getData.data.nickname ? getData.data.nickname : '',
+                    username: 'Username: ' + getData.data.username,
+                    email: 'Email: ' + getData.data.email,
+                    createdAt: 'Created at   ' + getData.data.createdAt + '   By   ' + (getData.data.createdBy ? getData.data.createdBy : 'system')
+                }
+                $('#avatar').attr('src', data.img)
+                $('#nickname').text(data.nickname)
+                $('#username').text(data.username)
+                $('#email').text(data.email)
+                $('#createdAt').text(data.createdAt)
+            } else {
+                showInfo('danger', result.messages)
+            }
+        })
+
+
+        //Handle reset password button
+        $(document).on('click', '#btn-resetPassword', function () {
+            subpageOpen().password('')
+        });
+
+        //update password
+        $('#subpage-password-submit').on('click', async function (event) {
+            event.preventDefault();
+            const password = $('#password-password').val();
+            const confirmPassword = $('#password-confirmPassword').val()
+            const result = await fetchData('/admin/auth', 'PUT', {
+                password,
+                confirmPassword,
+            })
+            if (result.code == 1) {
+                showInfo('danger', result.messages)
+            } else if (result.code == 2) {
+                subpageError(result.messages, 'password')
+            } else {
+                showInfo('success', result.messages)
+                $('#subpage').find('input').val('').end().find('small').text('').end().hide();
+            }
+        });
+
+    </script>
+</body>
+
+</html>

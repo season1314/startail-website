@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
 import type { response } from '../admin_interface'
 import { Permissions } from '../config/config.permissions.schema';
+import { CommonMethods } from '../admin.common.method';
 
 @Injectable()
 export class AdminService {
@@ -72,7 +73,7 @@ export class AdminService {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(dto.entries)
-        .select('-password')
+        .select('-password -sessionID')
         .lean(),
       this.adminModel.countDocuments(),
     ]);
@@ -155,7 +156,7 @@ export class AdminService {
    * @returns
    */
 
-  async switchAdminStatus(id: string): Promise<response> {
+  async switchAdminStatus(id: string, sessionStore: any): Promise<response> {
     try {
       const existingUser = await this.adminModel.findOne({ _id: id })
       if (!existingUser) {
@@ -164,7 +165,12 @@ export class AdminService {
       if (existingUser.permissions.includes('*')) {
         return { code: 1, messages: 'Super administrator can not be disabled' }
       }
-      existingUser.status == 0 ? existingUser.status = 1 : existingUser.status = 0
+      if (existingUser.status == 0) {
+        existingUser.status = 1
+        if (existingUser.sessionID) await sessionStore.destroy(existingUser.sessionID) //Destroy session let admin re-login
+      } else {
+        existingUser.status = 0
+      }
       await existingUser.save();
       return { code: 0, messages: 'Administrator info updated successfully', data: existingUser };
     } catch (error) {
@@ -247,9 +253,29 @@ export class AdminService {
     }
   }
 
+  /**
+   * Update admin permissions
+   * @param id 
+   * @param permissions 
+   * @returns 
+   */
+  async updateAdminPermissions(id: string, permissions: string[], sessionStore: any) {
+    try {
+      const existingUser = await this.adminModel.findOne({ _id: id })
+      if (!existingUser) return { code: 1, messages: 'Administrator is not exists' }
+      if (existingUser.permissions.includes('*')) return { code: 1, messages: 'Super Administrator permission can not be changed' }
 
-  async updateAdminPermissions(id:string,permissions:string[]){
-    
-
+      const isPermissionEquality = await CommonMethods.arraysEqualIgnoreOrder(existingUser.permissions, permissions)
+      if (isPermissionEquality) {
+        return { code: 0, messages: 'Successful update permissions' }// Avoid user mis-touch submit button return a fake success
+      }
+      if (permissions == existingUser.permissions) return { code: 0, messages: 'Successful update permissions' }
+      if (existingUser.sessionID) await sessionStore.destroy(existingUser.sessionID);//Delete session in store, let admin re-login get new session
+      existingUser.permissions = permissions
+      await existingUser.save()
+      return { code: 0, messages: 'Successful update permissions' }
+    } catch (error) {
+      return { code: 1, messages: error }
+    }
   }
 }

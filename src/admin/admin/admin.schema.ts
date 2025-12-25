@@ -2,6 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+
 @Schema({ timestamps: true })
 export class Admin extends Document {
   @Prop({ unique: true, required: true })
@@ -27,6 +28,9 @@ export class Admin extends Document {
 
   @Prop()
   createdBy?: string;
+
+  @Prop()
+  sessionID?:string;
 
   createdAt: Date;
   updatedAt: Date

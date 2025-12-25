@@ -55,7 +55,7 @@ export class UpdateInfoAdminDto {
 }
 
 export class ResetPasswordDto {
-  @IsNotEmpty()
+  @IsOptional()
   id: string
 
   @IsNotEmpty()
@@ -64,13 +64,4 @@ export class ResetPasswordDto {
 
   @IsNotEmpty()
   confirmPassword: string;
-}
-
-export class updateAdminPermission {
-  @IsNotEmpty()
-  id: string
-
-  @IsArray()
-  @IsString({ each: true })
-  permissions: string[]
 }

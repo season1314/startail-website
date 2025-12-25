@@ -5,7 +5,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreatePermissionDto, editPermissionDto } from './config.dto'
 import { Permissions } from './config.permissions.schema';
 import type { response } from '../admin_interface'
-import * as bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
 import { GetListDto } from '../admin_core.dto'
 
@@ -69,7 +68,7 @@ export class ConfigService {
             const existingPermission = await this.permissionsModel.findOne(query)
             console.log(existingPermission)
             if (existingPermission) return { code: 1, messages: 'The url and Http method is already used' }
-            const key = await bcrypt.hash(dto.url + ':' + dto.method, 10);
+            const key = dto.url + ':' + dto.method;
             const created = new this.permissionsModel({
                 name: dto.name,
                 url: dto.url,

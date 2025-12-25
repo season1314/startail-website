@@ -1,0 +1,93 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+</head>
+
+<body>
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+
+
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="error-content">
+                        <div>
+                        <svg t="1766643178992" class="icon" viewBox="0 0 1024 1024" version="1.1" fill="#878787"
+                            xmlns="http://www.w3.org/2000/svg" p-id="2635" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="100" height="100">
+                            <path
+                                d="M512 1024A512 512 0 1 1 512 0a512 512 0 0 1 0 1024zM332.8 460.8a76.8 76.8 0 1 0 0-153.6 76.8 76.8 0 0 0 0 153.6z m358.4 0a76.8 76.8 0 1 0 0-153.6 76.8 76.8 0 0 0 0 153.6z m39.936 297.574A391.475 391.475 0 0 0 511.181 691.2c-78.746 0-154.112 23.245-218.112 66.048a25.6 25.6 0 0 0 28.365 42.598A340.275 340.275 0 0 1 511.18 742.4c69.222 0 135.168 20.48 191.283 58.368a25.6 25.6 0 1 0 28.672-42.394z"
+                                p-id="2636"></path>
+                        </svg>
+                        </div>
+                        <span class="error-content-messages">{{messages}}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- .content -->
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- Footer -->
+        {{> backend/footer}}
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="/backend/js/init/datatables-init.js"></script>
+
+</body>
+
+<style>
+    .error-content {
+        width: 100%;
+        height: calc(100vh - 320px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .error-content-messages{
+        margin-top: 30px;
+        color: #878787;
+        font-size: 24px;
+
+    }
+</style>
+
+</html>
