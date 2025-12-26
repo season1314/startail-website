@@ -1,4 +1,4 @@
-// common methods
+//Common methods
 export class CommonMethods {
     /**
  * Check equality of two array

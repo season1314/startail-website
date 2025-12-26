@@ -4,9 +4,12 @@ import { AdminModule } from './admin/admin.module';
 import { DashboardModule } from './dashboard/dashboard.module'
 import { RouterModule } from '@nestjs/core';
 import { ConfigModule } from './config/config.module'
+import { FilesController } from './update.controller';
 
 @Global()
-@Module({})
+@Module({
+  controllers:[FilesController]
+})
 export class AdminCoreModule {
   static forRoot(): DynamicModule {
     return {

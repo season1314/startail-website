@@ -1,0 +1,133 @@
+<div id='subpage' class="subpage">
+    <div class="page-view">
+        <div class='card'>
+            <div class='card-header d-flex justify-content-between align-items-center'>
+                <div class='header-left'>
+                    <strong id="subpage-title"></strong>
+                </div>
+                <div class='header-right'>
+                    <button type='button' class='btn btn-danger btn-sm' id='subpage-closeBtn'>&times;</button>
+                </div>
+            </div>
+
+            <!-- password -->
+            <div id="subpage-password">
+                <div class='card-body card-block'
+                    style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+                    <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>new
+                                    password<span style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'><input type='password' id='password-password'
+                                    name="password-password" placeholder='new password' class='form-control'
+                                    autocomplete="password-password" /><small class="help-block form-text color-red"
+                                    style="height:12px"></small>
+                            </div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>confirm
+                                    password<span style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'><input type='password' id='password-confirmPassword'
+                                    name='text-input' placeholder='confirm password' class='form-control' /><small
+                                    class="help-block form-text color-red" style="height:12px"></small></div>
+                        </div>
+                    </form>
+                </div>
+                <div class='card-footer' id='subpage-password'>
+                    <button type='submit' class='btn btn-primary btn-sm' id='subpage-password-submit'>
+                        <i class='fa fa-dot-circle-o'></i>
+                        Submit
+                    </button>
+                    <button type='reset' class='btn btn-danger btn-sm'>
+                        <i class='fa fa-ban'></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <!-- password end -->
+
+            <!-- avatar -->
+            <div id="subpage-avatar">
+                <div class='card-body card-block avatar'style=''>
+                    <img src="" class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;margin:16px" />
+                    <button class="btn btn-info" style="margin-top:10px;width:200px" id="upload-avatar">Upload Avatar</button>
+                </div>
+                <div class='card-footer' id='subpage-avatar'>
+                    <button type='submit' class='btn btn-primary btn-sm' id='subpage-avatar-submit'>
+                        <i class='fa fa-dot-circle-o'></i>
+                        Submit
+                    </button>
+                    <input type="file" id="avatar-file" style="display:none" accept="image/*" />
+                </div>
+            </div>
+            <!-- avatar end -->
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    .avatar{
+        float: none !important;
+        width:auto !important;
+        max-height:80vh !important;
+        padding:50px 100px !important;
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>    
+
+<script>
+    var _date;
+    $(document).ready(function () {
+        $('input').focus(function () {
+            const $small = $(this).next('small');
+            $small.text('');
+        });
+    });
+
+    const subpageOpen = () => {
+        return {
+            password: () => {
+                $('#subpage-title').text('Rest Password');
+                $('#subpage-password').show();
+                $('#subpage-avatar').hide()
+                $('#subpage').show();
+            },
+            avatar: (url) => {
+                console.log(url)
+                $('#subpage-title').text('Edit Avatar');
+                $('#subpage-avatar').find('img').attr('src', url);
+                $('#subpage-password').hide();
+                $('#subpage-avatar').show()
+                $('#subpage').show();
+            }
+        }
+    }
+
+    const subpageError = (messages, type) => {
+        Object.entries(messages).forEach(([key, value]) => {
+            const dom = $('#' + type + '-' + key)
+            if (dom) dom.next('small').text(value[0])
+        });
+    }
+
+
+    const subpageReset = () => {
+        return {
+            create: () => {
+                $('#subpage')
+                    .find('input')
+                    .val('')
+                    .end()
+                    .find('small')
+                    .text('')
+                    .end()
+            }
+        };
+    }
+</script>

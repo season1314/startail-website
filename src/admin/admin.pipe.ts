@@ -50,7 +50,6 @@ export class PermissionValidationMiddleware implements NestMiddleware {
       let url = req.url.split('?')[0]
       if (url.endsWith('/list')) url = url.slice(0, -5)
       const key = url + ':' + req.method
-      console.log(req.method)
       if (!permissions.includes('*') && !permissions.includes(key)) {
         if (req.method == 'GET') { 
           return res.render('backend/error', { title: 'error', messages: 'You did not have permission to access this page.' }); 

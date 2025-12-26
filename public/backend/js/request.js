@@ -9,9 +9,6 @@ async function fetchData(url, method = 'GET', params = {}) {
     try {
         let options = {
             method: method.toUpperCase(),
-            headers: {
-                'Content-Type': 'application/json'
-            },
             credentials: 'include',
         };
 
@@ -21,7 +18,8 @@ async function fetchData(url, method = 'GET', params = {}) {
             const queryString = new URLSearchParams(params).toString();
             if (queryString) fullUrl += '?' + queryString;
         } else if (['POST', 'PUT'].includes(options.method)) {
-            options.body = JSON.stringify(params);
+            if (params instanceof FormData) { options.body = params } // if post upload file
+            else { options.body = JSON.stringify(params); options.headers = { 'Content-Type': 'application/json' } }
         }
         const response = await fetch(fullUrl, options);
         const result = await response.json();

@@ -46,7 +46,7 @@ export class AuthController {
    *  Render administrator page
    */
   @Get('auth')
-  @Render('backend/auth')
+  @Render('backend/profile')
   getAuth() {
     return {
       title: 'Profile',

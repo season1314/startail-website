@@ -12,7 +12,7 @@
 <body>
     {{> backend/infobar}}
     {{> backend/loading}}
-    {{> backend/admin}}
+    {{> backend/profile}}
 
     <!-- Left Panel -->
     {{> backend/sidebar title=title}}
@@ -41,10 +41,9 @@
                                     <div class="corner-ribon blue-ribon">
                                         <i class="fa fa-twitter"></i>
                                     </div>
-                                    <a href="#">
-                                        <img class="align-self-center rounded-circle mr-3"
-                                            style="width:85px; height:85px;" alt="" id="avatar">
-                                    </a>
+
+                                    <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;"
+                                        alt="" id="avatar">
                                     <h2 id="nickname"></h2>
                                     <p id="username" style="margin-top:20px"></p>
                                     <p id="email"></p>
@@ -109,10 +108,11 @@
 
         //Handle reset password button
         $(document).on('click', '#btn-resetPassword', function () {
-            subpageOpen().password('')
+            subpageOpen().password()
         });
 
-        //update password
+
+        //Update password
         $('#subpage-password-submit').on('click', async function (event) {
             event.preventDefault();
             const password = $('#password-password').val();
@@ -130,6 +130,32 @@
                 $('#subpage').find('input').val('').end().find('small').text('').end().hide();
             }
         });
+
+        //Handle update avatar
+        $(document).on('click', '#avatar', function () {
+            const url = $('#avatar').attr('src')
+            subpageOpen().avatar(url)
+        });
+
+        //Handle upload avatar button
+        $(document).on('click', '#upload-avatar', function () {
+            event.preventDefault();
+            $('#avatar-file').click();
+        });
+
+        //Avatar file
+        $('#avatar-file').on('change', async function () {
+            const fileInput = this;
+            console.log(fileInput)
+            if (fileInput.files && fileInput.files[0]) {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                const getData = await fetchData('/upload', 'POST', formData);
+                console.log(getData)
+            } else {
+
+            }
+        })
 
     </script>
 </body>

@@ -111,7 +111,7 @@
       <div id="subpage-password">
         <div class='card-body card-block' style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
           <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
-            <div class="row form-group" id="password-username-row">
+            <div class="row form-group">
               <div class="col col-md-3"><label class=" form-control-label">username</label></div>
               <div class="col-12 col-md-9">
                 <p class="form-control-static" id="password-username"></p>
@@ -190,17 +190,12 @@
 
       password: (data) => {
         _data = data
-        if (_data) {
-          Object.entries(_data).forEach(([key, value]) => {
-            if (key == '_id') $('#password-username').data('id', value);
-            const dom = $('#password-' + key)
-            if (!dom) return
-            dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
-          })
-          $('#password-username-row').show();
-        } else {
-          $('#password-username-row').hide();
-        }
+        Object.entries(_data).forEach(([key, value]) => {
+          if (key == '_id') $('#password-username').data('id', value);
+          const dom = $('#password-' + key)
+          if (!dom) return
+          dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+        })
         $('#subpage-title').text('Rest Password');
         $('#subpage-create').hide();
         $('#subpage-edit').hide();
