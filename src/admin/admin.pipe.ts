@@ -45,7 +45,7 @@ export class FormValidationPipe extends ValidationPipe {
 @Injectable()
 export class PermissionValidationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
-    if (req.url.startsWith('/admin') && req.url !== '/admin/login' && req.url !== '/admin/auth') {
+    if (req.url.startsWith('/admin') && req.url !== '/admin/login' && req.url !== '/admin/auth' && req.url !== '/admin/upload') {
       const permissions = req.session.user.permissions
       let url = req.url.split('?')[0]
       if (url.endsWith('/list')) url = url.slice(0, -5)

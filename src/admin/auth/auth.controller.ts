@@ -4,7 +4,9 @@ import { AuthService } from './auth.service';
 import { error } from 'console';
 import { ValidateAdminDto, ResetPasswordDto } from '../admin/admin.dto'
 import * as session from 'express-session';
+import { validate } from 'class-validator';
 const { promisify } = require('util');
+import { FormValidationPipe } from '../admin.pipe';
 
 @Controller()
 export class AuthController {
@@ -96,15 +98,32 @@ export class AuthController {
 
 
   /**
- * Reset current admin password 
+ * Update current administrator
  * 
  * HTTP Method: PUT
  * 
  * Description:
- * reset current admin password
+ * type:password - update password
+ * type:avatar - update avatar
  */
   @Put('auth')
-  async edit(@Body() dto: ResetPasswordDto, @Session() session: Record<string, any>) {
-    return await this.authService.resetPassword(dto, session.user.id)
+  async edit(@Body() body, @Session() session: Record<string, any>) {
+    if (body.type == "password") {
+      const dto = new ResetPasswordDto()
+      dto.id = session.user.id
+      dto.password = body.password
+      dto.confirmPassword = body.confirmPassword
+      const validationErrors = await validate(dto);
+      if (validationErrors.length > 0) {
+        const formValidationPipe = new FormValidationPipe();
+        const exception = formValidationPipe['exceptionFactory'](validationErrors);
+        throw exception
+      }
+      return await this.authService.resetPassword(dto)
+    }
+    if (body.type == "avatar") {
+      return await this.authService.updateAvatar(body.path, session.user.id)
+    }
+    return { code: 1, messages: 'System error: Update options are missing' }
   }
 }

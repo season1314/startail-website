@@ -6,12 +6,13 @@ import { Model } from 'mongoose';
 import { Admin } from '../admin/admin.schema';
 import * as bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
+import { ConfigService } from '@nestjs/config';
 
 
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(Admin.name) private adminModel: Model<Admin>) { }
+  constructor(@InjectModel(Admin.name) private adminModel: Model<Admin>, private readonly configService: ConfigService) { }
 
 
   /**
@@ -30,7 +31,7 @@ export class AuthService {
       existingUser.sessionID = sessionID //operation of session 
       await existingUser.save()
       session.user = existingUser
-      return { code: 0, messages: 'Login successful', data: existingUser }
+      return { code: 0, messages: 'Login successful' }
     } catch (error) {
       return { code: 1, messages: error }
 
@@ -49,7 +50,11 @@ export class AuthService {
       const userObject = existingUser.toObject()
       const data = {
         ...userObject,
-        createdAt: dayjs(existingUser.createdAt).format('YYYY-MM-DD HH:mm')
+        createdAt: dayjs(existingUser.createdAt).format('YYYY-MM-DD HH:mm'),
+      }
+      if (data.avatar) {
+        const imgUrl = this.configService.get<string>('IMG_URL')
+        data.avatar = imgUrl + data.avatar
       }
       return { code: 0, data: data }
     } catch (error) {
@@ -64,14 +69,33 @@ export class AuthService {
    * @param id 
    * @returns 
    */
-  async resetPassword(dto: ResetPasswordDto, id: string): Promise<response> {
+  async resetPassword(dto: ResetPasswordDto): Promise<response> {
     try {
       if (dto.password !== dto.confirmPassword) return { code: 2, messages: { confirmPassword: ['passwords do not match'] } };
-      const existingUser = await this.adminModel.findOne({ _id: id });
+      const existingUser = await this.adminModel.findOne({ _id: dto.id });
       if (!existingUser) return { code: 1, messages: 'Administrator is not exists' }
       existingUser.password = await bcrypt.hash(dto.password, 10);
       await existingUser.save()
       return { code: 0, messages: 'Successful reset password' }
+    } catch (error) {
+      return { code: 1, messages: error }
+    }
+  }
+
+  /**
+   * Update current administrator avatar
+   * @param path 
+   * @param id 
+   * @returns 
+   */
+  async updateAvatar(path: string, id: string): Promise<response> {
+    try {
+      if (!path) return { code: 1, messages: 'The file path is missing' };
+      const existingUser = await this.adminModel.findOne({ _id: id });
+      if (!existingUser) return { code: 1, messages: 'Administrator is not exists' }
+      existingUser.avatar = path;
+      await existingUser.save()
+      return { code: 0, messages: 'Successful update avatar' }
     } catch (error) {
       return { code: 1, messages: error }
     }

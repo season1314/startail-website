@@ -55,7 +55,7 @@ export class UpdateInfoAdminDto {
 }
 
 export class ResetPasswordDto {
-  @IsOptional()
+  @IsNotEmpty()
   id: string
 
   @IsNotEmpty()

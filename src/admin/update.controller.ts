@@ -12,9 +12,9 @@ import * as fs from 'fs';
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 
-@Controller('upload')
+@Controller('admin/upload')
 export class FilesController {
-    constructor(private readonly configService: ConfigService) {}
+    constructor(private readonly configService: ConfigService) { }
 
     @Post()
     @UseInterceptors(
@@ -76,8 +76,8 @@ export class FilesController {
         const imgUrl = this.configService.get<string>('IMG_URL')
         return {
             code: 0,
-            message: 'Successful upload file',
-            data: { url: `${imgUrl}/uploads/${dayjs().format('YYYY-MM')}/${file.filename}`}
+            messages: 'Successful upload file',
+            data: { url: `${imgUrl}/uploads/${dayjs().format('YYYY-MM')}/${file.filename}`, path: `/uploads/${dayjs().format('YYYY-MM')}/${file.filename}` }
         };
     }
 }

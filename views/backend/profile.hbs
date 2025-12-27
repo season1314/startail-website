@@ -85,24 +85,8 @@
 
     <!--Local Stuff-->
     <script type="text/javascript">
-        window.addEventListener('DOMContentLoaded', async () => {
-            const getData = await fetchData('/admin/auth', 'POST');
-            if (getData.code == 0) {
-                const data = {
-                    img: getData.data.avatar ? getData.data.avatar : '../backend/img/avatar/1.jpg',
-                    nickname: getData.data.nickname ? getData.data.nickname : '',
-                    username: 'Username: ' + getData.data.username,
-                    email: 'Email: ' + getData.data.email,
-                    createdAt: 'Created at   ' + getData.data.createdAt + '   By   ' + (getData.data.createdBy ? getData.data.createdBy : 'system')
-                }
-                $('#avatar').attr('src', data.img)
-                $('#nickname').text(data.nickname)
-                $('#username').text(data.username)
-                $('#email').text(data.email)
-                $('#createdAt').text(data.createdAt)
-            } else {
-                showInfo('danger', result.messages)
-            }
+        window.addEventListener('DOMContentLoaded', () => {
+            getInfo()
         })
 
 
@@ -120,6 +104,7 @@
             const result = await fetchData('/admin/auth', 'PUT', {
                 password,
                 confirmPassword,
+                type: 'password'
             })
             if (result.code == 1) {
                 showInfo('danger', result.messages)
@@ -146,16 +131,65 @@
         //Avatar file
         $('#avatar-file').on('change', async function () {
             const fileInput = this;
-            console.log(fileInput)
             if (fileInput.files && fileInput.files[0]) {
                 const formData = new FormData();
                 formData.append('file', fileInput.files[0]);
-                const getData = await fetchData('/upload', 'POST', formData);
-                console.log(getData)
-            } else {
-
+                const result = await fetchData('/admin/upload', 'POST', formData);
+                if (result.code == 0) {
+                    showInfo('success', result.messages)
+                    $('#subpage-avatar').find('img').attr('src', result.data.url);
+                    $('#subpage-avatar').find('img').attr('data-path', result.data.path);
+                } else {
+                    showInfo('danger', result.messages)
+                }
             }
         })
+        //Handle avatar submit button
+        $(document).on('click', '#subpage-avatar-submit', async function () {
+            event.preventDefault();
+            const path = $('#subpage-avatar').find('img').attr('data-path');
+            if (!path) {
+                showInfo('danger', 'Please upload new avatar first')
+                return
+            }
+            const result = await fetchData('/admin/auth', 'PUT', {
+                path,
+                type: 'avatar'
+            })
+            if (result.code == 0) {
+                showInfo('success', result.messages)
+                getInfo()
+                $('#subpage').hide()
+            } else {
+                showInfo('danger', result.messages)
+            }
+        });
+
+        //Get administrator info
+        async function getInfo() {
+            const getData = await fetchData('/admin/auth', 'POST');
+            if (getData.code == 0) {
+                const data = {
+                    img: getData.data.avatar ? getData.data.avatar : '../backend/img/avatar/1.jpg',
+                    nickname: getData.data.nickname ? getData.data.nickname : '',
+                    username: 'Username: ' + getData.data.username,
+                    email: 'Email: ' + getData.data.email,
+                    createdAt: 'Created at   ' + getData.data.createdAt + '   By   ' + (getData.data.createdBy ? getData.data.createdBy : 'system')
+                }
+                $('#avatar').attr('src', data.img)
+                $('#nickname').text(data.nickname)
+                $('#username').text(data.username)
+                $('#email').text(data.email)
+                $('#createdAt').text(data.createdAt)
+            } else {
+                showInfo('danger', result.messages)
+            }
+        }
+
+        $('#subpage-password-submit').next('button').on('click', async function (event) {
+            event.preventDefault();
+            subpageReset().create()
+        });
 
     </script>
 </body>
