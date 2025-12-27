@@ -14,7 +14,7 @@ export class SessionValidationMiddleware implements NestMiddleware {
       const contentType = req.method;
       if (!req.session || !req.session.user) {
         //GET re-renders else return Json 
-        if (contentType == 'GET') return res.render('backend/login', { title: 'Login Required', messages: 'You must be logged in to access this resource.' });
+        if (contentType == 'GET') return res.render('backend/login', { title: 'Login', messages: 'You must be logged in to access this resource.' });
         else throw new HttpException({ code: 3, messages: 'Unauthorized access. Please log in.' }, HttpStatus.UNAUTHORIZED)
       }
     }

@@ -31,7 +31,7 @@ export class AuthService {
       existingUser.sessionID = sessionID //operation of session 
       await existingUser.save()
       session.user = existingUser
-      return { code: 0, messages: 'Login successful' }
+      return { code: 0, messages: 'Login successful',data:{avatar:existingUser.avatar} }
     } catch (error) {
       return { code: 1, messages: error }
 

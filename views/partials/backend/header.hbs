@@ -14,7 +14,7 @@
             <div class="user-area dropdown float-right">
                 <a href="#" class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <img class="user-avatar rounded-circle" src="/backend/img/admin.jpg" alt="User Avatar">
+                    <img class="user-avatar rounded-circle" src="" id="header-avatar">
                 </a>
 
                 <div class="user-menu dropdown-menu">
@@ -29,8 +29,22 @@
 </header>
 <script>
     //Handle logout
-    $(document).on('click', '#logout', async function() {
+    $(document).on('click', '#logout', async function () {
         event.preventDefault();
         const result = await fetchData('/admin/auth', 'DELETE')
     });
+
+    //Refresh administrator info 
+    window.addEventListener('DOMContentLoaded', async () => {
+        let avatar = localStorage.getItem('avatar');
+        const fromUrl = document.referrer;
+        let path = ''
+        if (fromUrl) path = new URL(fromUrl).pathname
+        if (!path) {
+            const result = await fetchData('/admin/auth', 'POST');
+            avatar = result.data.avatar
+            localStorage.setItem('avatar', avatar)
+        }
+        $('#header-avatar').attr('src', avatar)
+    })
 </script>

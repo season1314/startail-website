@@ -2,15 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { PermissionsSchema } from './config.permissions.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreatePermissionDto, editPermissionDto } from './config.dto'
+import { CreatePermissionDto, editPermissionDto, configDto } from './config.dto'
 import { Permissions } from './config.permissions.schema';
+import { Config } from './config.common.schema'
 import type { response } from '../admin_interface'
 import dayjs from 'dayjs';
 import { GetListDto } from '../admin_core.dto'
 
 @Injectable()
 export class ConfigService {
-    constructor(@InjectModel(Permissions.name) private permissionsModel: Model<Permissions>) { }
+    constructor(@InjectModel(Permissions.name) private permissionsModel: Model<Permissions>, @InjectModel(Config.name) private configModel: Model<Config>) { }
 
     /**
        * Get permissions list
@@ -75,7 +76,7 @@ export class ConfigService {
                 method: dto.method,
                 des: dto.des || '',
                 createdBy: createBy,
-                key:key
+                key: key
             }).save();
             return { code: 0, messages: 'Successfully created new permission' }
         } catch (error) {
@@ -114,6 +115,53 @@ export class ConfigService {
             if (!existingPermission) return { code: 1, messages: 'Permission is not existing' }
             const result = await this.permissionsModel.deleteOne({ _id: existingPermission._id });
             return { code: 0, messages: 'Successfully delete permission' };
+        } catch (error) {
+            return { code: 1, messages: error }
+        }
+    }
+
+    /**
+     * Get config
+     * @param key 
+     * @returns 
+     */
+
+    async getConfig(key: string): Promise<response> {
+        try {
+            const config = await this.configModel.findOne({ key: key })
+            return { code: 0, data: config }
+        } catch (error) {
+            return { code: 1, messages: error }
+        }
+    }
+
+
+    /**
+     * Save Config
+     * @param dto 
+     * @param createBy 
+     * @returns 
+     */
+
+    async SaveConfig(dto: configDto, createBy: string): Promise<response> {
+        try {
+            const config = await this.configModel.findOne({ key: dto.key })
+            if (!config) {
+                const data = new this.configModel({
+                    name: dto.name,
+                    key: dto.key,
+                    property: dto.property,
+                    createBy: createBy
+                }).save()
+                return { code: 0, messages: 'Successful save config property', data: data }
+            } else {
+                config.name = dto.name
+                config.key = dto.key
+                config.property = dto.property
+                config.createdBy = createBy
+                const data = await config.save()
+                return { code: 0, messages: 'Successful save config property', data: data }
+            }
         } catch (error) {
             return { code: 1, messages: error }
         }

@@ -1,0 +1,108 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+</head>
+
+<body>
+    {{> backend/infobar}}
+    {{> backend/confirm}}
+    {{> backend/loading}}
+
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+
+
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong>Inline</strong> Form
+                            </div>
+                            <div class="card-body card-block">
+                                <form class="form-inline">
+                                    <div class="form-group"><label class="pr-1  form-control-label">Name:</label><input
+                                            type="text" id="name1" placeholder="Jane Doe" class="form-control">
+                                    </div>
+                                    <div class="form-group"><label class="px-1  form-control-label">Email:</label><input
+                                            type="email" id="property1" placeholder="jane.doe@example.com"
+                                            class="form-control" style="width:400px;"></div>
+                                </form>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-dot-circle-o"></i> Submit
+                                </button>
+                                <button type="reset" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-ban"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- Footer -->
+        {{> backend/footer}}
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="/backend/js/init/datatables-init.js"></script>
+
+    <!--Local Stuff-->
+    <script type="text/javascript">
+        window.addEventListener('DOMContentLoaded', async () => {
+            //Init data
+            fetchList()
+        });
+
+
+        //FetchData
+        async function fetchList(page) {
+            const getData = await fetchData('/admin/config/config', 'GET', { key: "categories" });
+            console.log(getData)
+        }
+    </script>
+</body>
+<style>
+</style>
+
+</html>

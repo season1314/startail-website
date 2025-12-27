@@ -18,7 +18,7 @@ export class Admin extends Document {
   nickname?: string;
 
   @Prop()
-  avatar?: string;
+  avatar: string;
 
   @Prop()
   permissions: string[];

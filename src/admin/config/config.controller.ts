@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Render, Res, Req, Session, Query, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Res, Req, Session, Query, Put, Delete, Param } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { error } from 'console';
 import { ValidateAdminDto } from '../admin/admin.dto'
@@ -7,16 +7,20 @@ import { CreatePermissionDto, editPermissionDto } from './config.dto';
 import { ConfigService } from './config.service';
 import { validate } from 'class-validator';
 import { FormValidationPipe } from '../admin.pipe';
+import session from 'express-session';
 
 @Controller()
 export class ConfigController {
     constructor(private readonly ConfigService: ConfigService) { }
 
 
-
+    /**
+     * Render permissions page
+     * @returns 
+     */
     @Get('permissions')
-    @Render('backend/permissions')
-    index() {
+    @Render('backend/config/permissions')
+    permissionsIndex() {
         return {
             title: 'Permissions',
             items: ['Permissions'],
@@ -24,7 +28,7 @@ export class ConfigController {
                 { url: '#', name: 'Dashboard' },
                 { url: '#', name: 'Configuration' },
                 { url: '#', name: 'Permissions' },
-              ],
+            ],
         };
     }
 
@@ -33,13 +37,11 @@ export class ConfigController {
      *
      * HTTP Method: Get
      * Request query:
-     * - page:  * (number): Page number
-     * - entries: (number): entries : default 20
      * - keyword：(string): name keyword for search
      *
      * Description:
      *
-     * base the page and keyword get administrator list
+     * base  keyword get permissions list
      */
 
     @Get('permissions/list')
@@ -119,5 +121,64 @@ export class ConfigController {
     async delete(@Query() body: any) {
         if (!body.id) { return { code: 1, messages: 'System error: Id is missing' } }
         return await this.ConfigService.deletePermission(body.id)
+    }
+
+
+    /**
+     * Render category page
+     * @returns 
+     */
+
+    @Get('categories')
+    @Render('backend/config/categories')
+    categoryIndex() {
+        return {
+            title: 'Categories',
+            items: ['Categories'],
+            bc: [
+                { url: '#', name: 'Dashboard' },
+                { url: '#', name: 'Configuration' },
+                { url: '#', name: 'categories' },
+            ],
+        };
+    }
+
+
+    /**
+      * Get config
+      *
+      * HTTP Method: Get
+      * Request query:
+      * - key(string): config key
+      *
+      * Description:
+      * base  key find config column
+      */
+
+    @Get('config')
+    async getConfig(@Query() body: any) {
+        if (!body.key) { return { code: 1, messages: 'System error: key is missing' } }
+        return await this.ConfigService.getConfig(body.key)
+    }
+
+    /**
+     * Save config
+     * 
+     * HTTP Method: Get
+     * 
+     * Request body:
+     * - key(string):config key 
+     * - name(string): config name
+     * - property(any): config property
+     * 
+     * Description:
+     * find key in db update config
+     * can not find key in db create config
+     */
+    @Post('config')
+    async saveConfig(@Body() dto: any, @Session() session: Record<string, any>) {
+        if (!dto.key) { return { code: 1, messages: 'System error: key is missing' } }
+        if (!dto.name) { return { code: 1, messages: 'System error: name is missing' } }
+        return await this.ConfigService.SaveConfig(dto, session.user.id)
     }
 }

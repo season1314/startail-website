@@ -41,7 +41,7 @@ export class AdminService {
         email: dto.email,
         password: hashedPassword,
         nickname: dto.nickname,
-        avatar: dto.avatar,
+        avatar: '/backend/img/admin.jpg',
         status: 0,
         createdBy: createBy
       }).save();

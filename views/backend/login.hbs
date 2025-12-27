@@ -54,13 +54,15 @@
       const password = $('#password').val();
 
       const result = await fetchData('/admin/login', 'POST', { username, password });
-      console.log(result)
+
       if (result.code == 2) {
         Object.entries(result.messages).forEach(([key, value]) => {
           $('#' + key).next('small').text(value[0])
         });
       } else if (result.code == 0) {
-        window.location.href = "/admin"
+        history.pushState(null, '', '/admin/login');
+        localStorage.setItem('avatar', result.data.avatar)
+        window.location.replace('/admin')
       } else {
         showInfo('danger', result.messages)
       }

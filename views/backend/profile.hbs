@@ -177,6 +177,8 @@
                     createdAt: 'Created at   ' + getData.data.createdAt + '   By   ' + (getData.data.createdBy ? getData.data.createdBy : 'system')
                 }
                 $('#avatar').attr('src', data.img)
+                $('#header-avatar').attr('src', data.img)
+                localStorage.setItem('avatar', data.img)
                 $('#nickname').text(data.nickname)
                 $('#username').text(data.username)
                 $('#email').text(data.email)
@@ -184,7 +186,6 @@
             } else {
                 showInfo('danger', result.messages)
             }
-        }
 
         $('#subpage-password-submit').next('button').on('click', async function (event) {
             event.preventDefault();

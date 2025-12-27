@@ -27,3 +27,14 @@ export class editPermissionDto {
     des?: string;
 
 }
+
+export class configDto {
+    @IsNotEmpty()
+    name: string;
+
+    @IsOptional()
+    property: any
+
+    @IsNotEmpty()
+    key: string
+}
