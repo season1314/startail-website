@@ -67,7 +67,6 @@ export class ConfigService {
         try {
             const query = { url: { $regex: new RegExp(`^${dto.url}$`, 'i') }, method: { $regex: new RegExp(`^${dto.method}$`, 'i') } }
             const existingPermission = await this.permissionsModel.findOne(query)
-            console.log(existingPermission)
             if (existingPermission) return { code: 1, messages: 'The url and Http method is already used' }
             const key = dto.url + ':' + dto.method;
             const created = new this.permissionsModel({

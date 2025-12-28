@@ -5,6 +5,7 @@ import { DashboardModule } from './dashboard/dashboard.module'
 import { RouterModule } from '@nestjs/core';
 import { ConfigModule } from './config/config.module'
 import { FilesController } from './update.controller';
+import {ArticlesModule} from './articles/articles.module'
 
 @Global()
 @Module({
@@ -19,6 +20,7 @@ export class AdminCoreModule {
         AdminModule,
         DashboardModule,
         ConfigModule,
+        ArticlesModule,
         RouterModule.register([
           {
             path: 'admin',
@@ -35,6 +37,10 @@ export class AdminCoreModule {
           {
             path: 'admin/config',
             module: ConfigModule
+          },
+          {
+            path: 'admin/articles',
+            module:ArticlesModule
           }
         ])
       ],

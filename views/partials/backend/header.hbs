@@ -41,7 +41,7 @@
         let path = ''
         if (fromUrl) path = new URL(fromUrl).pathname
         if (!path) {
-            const result = await fetchData('/admin/auth', 'POST');
+            const result = await fetchData('/admin/auth/info', 'GET');
             avatar = result.data.avatar
             localStorage.setItem('avatar', avatar)
         }

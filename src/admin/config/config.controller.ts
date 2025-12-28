@@ -138,7 +138,7 @@ export class ConfigController {
             bc: [
                 { url: '#', name: 'Dashboard' },
                 { url: '#', name: 'Configuration' },
-                { url: '#', name: 'categories' },
+                { url: '#', name: 'Categories' },
             ],
         };
     }
@@ -181,4 +181,23 @@ export class ConfigController {
         if (!dto.name) { return { code: 1, messages: 'System error: name is missing' } }
         return await this.ConfigService.SaveConfig(dto, session.user.id)
     }
+
+        /**
+     * Render languages page
+     * @returns 
+     */
+
+        @Get('languages')
+        @Render('backend/config/languages')
+        LanguagesIndex() {
+            return {
+                title: 'Languages',
+                items: ['Languages'],
+                bc: [
+                    { url: '#', name: 'Dashboard' },
+                    { url: '#', name: 'Configuration' },
+                    { url: '#', name: 'Languages' },
+                ],
+            };
+        }
 }

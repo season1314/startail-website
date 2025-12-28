@@ -9,15 +9,30 @@
                 <li class="{{#if (containsAny title 'Administrator')}}active{{/if}}">
                     <a href="/admin/admin"> <i class="menu-icon fa fa-users"></i> Administrator </a>
                 </li>
-                <li class="menu-item-has-children {{#if (containsAny title 'Permissions' 'Categories')}}active{{/if}} dropdown">
+                <li class="menu-item-has-children {{#if (containsAny title 'Permissions' 'Categories' 'Languages')}}active{{/if}} dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Configuration</a>
                     <ul class="sub-menu children dropdown-menu">
                         <li>
-                            <i class="fa fa-id-card-o"></i><a href="/admin/config/permissions">Permissions</a>
+                            <i class="fa fa-unlock-alt"></i><a href="/admin/config/permissions">Permissions</a>
                         </li>
                         <li>
                             <i class="fa fa-book"></i><a href="/admin/config/categories">Categories</a>
+                        </li>
+                        <li>
+                            <i class="fa fa-flag"></i><a href="/admin/config/languages">Languages</a>
+                        </li>
+                    </ul>
+                </li>
+                 <li class="menu-item-has-children {{#if (containsAny title 'Tags' 'Content')}}active{{/if}} dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Articles</a>
+                    <ul class="sub-menu children dropdown-menu">
+                        <li>
+                            <i class="fa fa-tags"></i><a href="/admin/articles/tags">Tags</a>
+                        </li>
+                        <li>
+                            <i class="fa fa-file"></i><a href="/admin/articles/content">Content</a>
                         </li>
                     </ul>
                 </li>

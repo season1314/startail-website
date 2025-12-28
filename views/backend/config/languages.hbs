@@ -37,7 +37,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong>Categories</strong>
+                                <strong>Languages</strong>
                                 <button class="btn btn-success btn-sm" style="float:right" id="new-button">
                                     New
                                 </button>
@@ -89,7 +89,7 @@
         });
         //FetchData
         async function fetchList(page) {
-            const getData = await fetchData('/admin/config/config', 'GET', { key: "categories" });
+            const getData = await fetchData('/admin/config/config', 'GET', { key: "languages" });
             if (getData.code == 0 && getData.data.property) {
                 const html = getData.data.property.map(item => {
                     const itemStr = JSON.stringify(item);
@@ -110,7 +110,7 @@
                     if (!data) return;
                     return JSON.parse(data)
                 }).get();
-                const update = await fetchData('/admin/config/config', 'POST', { key: 'categories', property: array, name: 'categories' })
+                const update = await fetchData('/admin/config/config', 'POST', { key: 'languages', property: array, name: 'languages' })
                 if (update.code == 0) {
                     showInfo('success', update.messages)
                     fetchList()

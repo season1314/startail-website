@@ -167,7 +167,7 @@
 
         //Get administrator info
         async function getInfo() {
-            const getData = await fetchData('/admin/auth', 'POST');
+            const getData = await fetchData('/admin/auth/info', 'GET');
             if (getData.code == 0) {
                 const data = {
                     img: getData.data.avatar ? getData.data.avatar : '../backend/img/avatar/1.jpg',
@@ -187,10 +187,11 @@
                 showInfo('danger', result.messages)
             }
 
-        $('#subpage-password-submit').next('button').on('click', async function (event) {
-            event.preventDefault();
-            subpageReset().create()
-        });
+            $('#subpage-password-submit').next('button').on('click', async function (event) {
+                event.preventDefault();
+                subpageReset().create()
+            });
+        }
 
     </script>
 </body>

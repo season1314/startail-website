@@ -8,14 +8,17 @@
 
 
 
-    $('#bootstrap-data-table').DataTable({
-        // lengthMenu: [[10, 20, 50], [10, 20, 50]],
-		searching: false, 
-		lengthMenu:false,
-		language: {
-			lengthMenu: ""     // 去掉 “entries” 文本
-		}
-    });
+    // $('#bootstrap-data-table').DataTable({
+    //     // lengthMenu: [[10, 20, 50], [10, 20, 50]],
+	// 	searching: false, 
+	// 	lengthMenu:false,
+	// 	language: {
+	// 		lengthMenu: ""     // 去掉 “entries” 文本
+	// 	},
+	// 	paging: true,
+    //     ordering: false,
+    //     info: true,
+    // });
 
 
 

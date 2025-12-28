@@ -70,7 +70,7 @@ export class AuthController {
    * valid administrator existed
    * return user info
    */
-  @Post('auth')
+  @Get('auth/info')
   async getAuthInfo(@Session() session: Record<string, any>) {
     return this.authService.getUserInfo(session.user.id)
   }
