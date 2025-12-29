@@ -90,6 +90,9 @@ jQuery(document).ready(function ($) {
 	$('#subpage-closeBtn').on('click', function (event) {
 		event.preventDefault();
 		$('#subpage')
+		.find('.temporary')
+		.remove()
+		.end()
         .find('input:not([type="radio"])')
         .end()
 		.find('input[type="radio"]')

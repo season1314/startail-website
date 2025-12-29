@@ -104,59 +104,32 @@
     <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
     <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
     <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
-    <script src="/backend/js/init/datatables-init.js"></script>
+    <script src="/backend/js/bootstrap-table.js"></script>
 
     <!--Local Stuff-->
     <script type="text/javascript">
         $(document).ready(function () {
-            //Table init
-            const table = $('#bootstrap-data-table').DataTable({
-                paging: true,
-                searching: false,
-                ordering: true,
-                info: true,
-                pageLength: 20,
-                language: {
-                    lengthMenu: "",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                    infoEmpty: "Showing 0 to 0 of 0 entries",
-                    search: "Search:",
-                    paginate: {
-                        previous: "Previous",
-                        next: "Next"
+
+            //Init table by bootstrap-table.js
+            const columns = [
+                { data: "name" },
+                { data: "url" },
+                { data: "method" },
+                { data: "des" },
+                { data: "createdBy" },
+                { data: "createdAt" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const itemStr = JSON.stringify(row).replace(/"/g, '&quot;');
+                        return `<button class="btn btn-sm btn-primary btn-edit" data-item="${itemStr}">Edit</button>
+                        <button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Delete</button>`;
                     }
-                },
-                serverSide: true,
-                ajax: function (data, callback, settings) {
-                    const page = settings._iDisplayStart / settings._iDisplayLength + 1;
-                    const limit = settings._iDisplayLength;
-                    fetchList(page, limit).then(response => {
-                        console.log(response)
-                        callback({
-                            draw: settings.iDraw,
-                            recordsTotal: response.totalRecords,
-                            recordsFiltered: response.totalRecords,
-                            data: response.data,
-                        });
-                    });
-                },
-                columns: [
-                    { data: "name" },
-                    { data: "url" },
-                    { data: "method" },
-                    { data: "des" },
-                    { data: "createdBy" },
-                    { data: "createdAt" },
-                    {
-                        data: null,
-                        render: function (data, type, row) {
-                            const itemStr = JSON.stringify(row).replace(/"/g, '&quot;');
-                            return `<button class="btn btn-sm btn-primary btn-edit" data-item="${itemStr}">Edit</button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Delete</button>`;
-                        }
-                    }
-                ]
-            });
+                }
+            ];
+
+            const table = initDataTable('#bootstrap-data-table', '/admin/config/permissions/list', columns);
+
 
             //Handle new button
             $('#btn-add').on('click', function (event) {
@@ -219,8 +192,7 @@
                 } else {
                     showInfo('success', result.messages)
                     $('#subpage').find('input').val('').end().find('small').text('').end().hide();
-                    console.log(11111111111)
-                    table.ajax.reload()
+                    table.ajax.reload(null, false)
                 }
             })
 
@@ -250,7 +222,7 @@
                             showInfo('danger', result.messages)
                         } else {
                             showInfo('success', result.messages)
-                            $(this).closest('tr').remove();
+                            table.ajax.reload()
                         }
                         loading().hide()
                     }
@@ -258,15 +230,6 @@
             });
 
         });
-
-        //Fetch list
-        async function fetchList(page, limit) {
-            const response = await fetchData('/admin/config/permissions/list', 'GET', { page });
-            return {
-                data: response.data.list,
-                totalRecords: response.data.total
-            };
-        }
     </script>
 </body>
 <style>

@@ -38,10 +38,6 @@ export class Admin extends Document {
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);
 
-AdminSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
-
 
 AdminSchema.set('toJSON', { virtuals: true });
 AdminSchema.set('toObject', { virtuals: true });

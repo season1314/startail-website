@@ -155,12 +155,11 @@
 
 <script>
   var _date;
-  $(document).ready(function () {
-    $('input').focus(function () {
-      const $small = $(this).next('small');
-      $small.text('');
-    });
-  });
+  $(document).on('focus', 'input', function () {
+    const $small = $(this).next('small');
+    $small.text('');
+
+  })
 
   const subpageOpen = () => {
     return {

@@ -22,10 +22,6 @@ export class Config extends Document {
 
 export const ConfigSchema = SchemaFactory.createForClass(Config);
 
-ConfigSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
-
 
 ConfigSchema.set('toJSON', { virtuals: true });
 ConfigSchema.set('toObject', { virtuals: true });

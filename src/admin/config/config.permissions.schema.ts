@@ -35,10 +35,6 @@ export class Permissions extends Document {
 
 export const PermissionsSchema = SchemaFactory.createForClass(Permissions);
 
-PermissionsSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
-
 
 PermissionsSchema.set('toJSON', { virtuals: true });
 PermissionsSchema.set('toObject', { virtuals: true });

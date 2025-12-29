@@ -9,7 +9,10 @@ export class Tags extends Document {
   name: string;
 
   @Prop({ type: Object, default: {} })
-  text: Record<string, any>;
+  lang: Record<string, any>;
+
+  @Prop()
+  type?:string
 
 
   @Prop()
@@ -20,10 +23,6 @@ export class Tags extends Document {
 }
 
 export const TagsSchema = SchemaFactory.createForClass(Tags);
-
-TagsSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
 
 
 TagsSchema.set('toJSON', { virtuals: true });

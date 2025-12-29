@@ -9,21 +9,3 @@ const { promisify } = require('util');
 import { FormValidationPipe } from '../admin.pipe';
 import { ArticlesService } from './articles.service'
 
-
-@Controller()
-export class ArticlesController {
-    constructor(private readonly authService: ArticlesService) { }
-
-    /**
-     *  Render tags page
-     */
-    @Get('tags')
-    @Render('backend/articles/tags')
-    index() {
-        return {
-            title: 'Tags',
-        };
-    }
-
-
-}
