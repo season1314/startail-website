@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Render, Res, Req, Session, Delete, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Res, Req, Session, Delete, Put, Query, Param } from '@nestjs/common';
 import type { Request, Response } from 'express';
 // import { AuthService } from './auth.service';
 import { error } from 'console';
@@ -12,7 +12,7 @@ import { GetListDto } from '../admin_core.dto';
 
 @Controller()
 export class ArticlesController {
-    constructor(private readonly authService: ArticlesService) { }
+    constructor(private readonly articles: ArticlesService) { }
 
     /**
      *  Render tags page
@@ -41,7 +41,7 @@ export class ArticlesController {
 
     @Get('tags/list')
     async list(@Query() dto: GetListDto) {
-        return this.authService.getTags(dto);
+        return this.articles.getTags(dto);
     }
 
 
@@ -63,7 +63,7 @@ export class ArticlesController {
 
     @Post('tags')
     async create(@Body() dto: TagsDto, @Session() session: Record<string, any>) {
-        return this.authService.createTag(dto, session.user.username)
+        return this.articles.createTag(dto, session.user.username)
     }
 
     /**
@@ -85,7 +85,7 @@ export class ArticlesController {
 
     @Put('tags')
     async update(@Body() dto: TagsDto) {
-        return this.authService.updateTag(dto)
+        return this.articles.updateTag(dto)
     }
 
     /**
@@ -102,6 +102,30 @@ export class ArticlesController {
      */
     @Delete('tags')
     async delete(@Query() body: any) {
-        return this.authService.deleteTag(body.id)
+        return this.articles.deleteTag(body.id)
+    }
+
+    /**
+    *  Render articles page
+    */
+    @Get('content')
+    @Render('backend/articles/content')
+    contentIndex() {
+        return {
+            title: 'Articles',
+        };
+    }
+
+
+
+    /**
+     * 
+     * @param id 
+     * @returns 
+     */
+    @Get('content/:id')
+    @Render('backend/articles/detail')
+    async contentDetail(@Param('id') id: string | number) {
+        return await this.articles.getDetail(id)
     }
 }

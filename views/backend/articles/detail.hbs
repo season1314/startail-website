@@ -1,0 +1,279 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+    <link rel="stylesheet" href="/backend/css/spinner.css">
+</head>
+
+<body>
+    {{> backend/infobar}}
+    {{> backend/confirm}}
+    {{> backend/loading}}
+
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div style="width:100%">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Article</strong>
+                                <button class="btn btn-success btn-sm" style="float:right" id="new-button">
+                                    Save
+                                </button>
+                            </div>
+                            <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
+                                style="padding: 0 35px">
+                            </div>
+                            <div class="card-body" style="padding-top: 0">
+                                <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>title<span style="color:red">*</span></label>
+                                        </div>
+                                        <div class='col-12 col-md-9'><input type='text' id='title'
+                                                placeholder='article title' class='form-control' name="title"
+                                                autocomplete="title" /><small class="help-block form-text color-red"
+                                                style="height:12px"></small>
+                                        </div>
+                                    </div>
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>introduction<span
+                                                    style="color:red">*</span></label>
+                                        </div>
+                                        <div class='col-12 col-md-9'> <textarea class="form-control" id="introduction"
+                                                rows="3" placeholder="article description..."></textarea><small
+                                                class="help-block form-text color-red" style="height:12px"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>categories<span
+                                                    style="color:red">*</span></label>
+                                        </div>
+                                        <div class='col-12 col-md-9'>
+                                            <div>{{#each data.categories}}
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" />
+                                                    {{#each (keys this)}} <label
+                                                        class="form-check-label">{{this}}</label>{{/each}}
+                                                </div>{{/each}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>cover image<span
+                                                    style="color:red">*</span></label>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class='col-12 col-md-9' style="max-width:none" id="cover-image">
+                                                {{#if data.coverImg}}
+                                                <div style="display:flex;width:100%">
+                                                    <div class="coverImgDiv"></div>
+                                                    <div class="coverImgOpt">
+                                                        <i class="menu-icon fa fa-trash-o"></i>
+                                                    </div>
+                                                </div>
+                                                {{else}}
+                                                <button class="btn btn-secondary btn-sm"
+                                                    id="cover-image-add">Add</button>
+                                                {{/if}}
+                                                <small class="help-block form-text color-red"
+                                                    style="height:12px"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>tags</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'>
+                                            <button class="btn btn-secondary btn-sm" id="new-button">Add</button>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
+                                        </div>
+                                    </div>
+
+
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>downloads</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'>
+                                            <button class="btn btn-secondary btn-sm" id="new-button">Add</button>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>guides</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'>
+                                            <button class="btn btn-secondary btn-sm" id="new-button">Add</button>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>operation system</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'>
+                                            <div>{{#each data.os}}
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" />
+                                                    {{#each (keys this)}} <label
+                                                        class="form-check-label">{{this}}</label>{{/each}}
+                                                </div>{{/each}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <input type="file" id="images-file" style="display:none" accept="image/*" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <!-- Content -->
+
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- Footer -->
+        {{> backend/footer}}
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+
+    <!--Local Stuff-->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#cover-image').on('click', '#cover-image-add', function (event) {
+                event.preventDefault();
+                $('#images-file').click();
+            })
+
+            $('#cover-image').on('click', '#delete-img', function (event) {
+                event.preventDefault();
+                const content = `<button class="btn btn-secondary btn-sm" id="cover-image-add">Add</button>`
+                $('#images-file').val('');
+                $('#cover-image').find('div').remove().end().prepend(content).end();
+            });
+
+            $('#cover-image').on('click', '.coverImgDiv', function (event) {
+                event.preventDefault();
+                var backgroundImageUrl = $(this).css('background-image');
+                backgroundImageUrl = backgroundImageUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                window.open(backgroundImageUrl, '_blank');
+            })
+        })
+
+        //images file
+        $('#images-file').on('change', async function () {
+            const fileInput = this;
+            if (fileInput.files && fileInput.files[0]) {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                const result = await fetchData('/admin/upload', 'POST', formData);
+                if (result.code == 0) {
+                    showInfo('success', result.messages)
+                    const content = `<div style="display:flex;width:100%">
+                                         <div class="coverImgDiv" style="background-image:url(${result.data.url})" data-path="${result.data.path}"/>
+                                         <div class="coverImgOpt" id="delete-img"><i class="menu-icon fa fa-trash-o"></i></div>
+                                       </div>`
+                    $('#cover-image').find('button').remove().end().prepend(content).end()
+                } else {
+                    showInfo('danger', result.messages)
+                }
+            }
+        })
+
+
+        //FetchData
+        async function fetchList() {
+            const getData = await fetchData('/admin/admin/permissions/list', 'GET', { id: window.adminId });
+            if (getData.code !== 0) { showInfo('danger', getData.messages.message ? getData.messages.message : getData.messages); return }
+            if (getData.data.list.length > 0) {
+                $('.permission-list').empty()
+                getData.data.list.map((item, index) => {
+                    const context = `<div class="permission-item">
+                                        <input type="checkbox" id="inline-checkbox${index}" name="inline-checkbox${index}"
+                                            value="${item.key}" class="form-check-input" ${item.selected ? 'checked' : ''}  ${item.disabled ? 'disabled' : ''} style="margin-top:0">
+                                    <div>${item.name} : (${item.des})</div>
+                                    </div>      
+                                 `
+                    $('.permission-list').append(context)
+                })
+            } else {
+                $('.permission-list').empty()
+                const context = '<div>No data found</div>'
+                $('.permission-list').append(context)
+            }
+        }
+
+
+    </script>
+</body>
+<style>
+    .coverImgDiv {
+        height: 80px;
+        width: 80px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center
+    }
+
+    .coverImgOpt {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 20px;
+        cursor: pointer;
+    }
+</style>
+
+</html>

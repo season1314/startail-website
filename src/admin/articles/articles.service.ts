@@ -116,4 +116,34 @@ export class ArticlesService {
             return { code: 1, messages: error }
         }
     }
+
+    /**
+     *
+     */
+    async getDetail(id: string | number) {
+        try {
+            const configLang = await this.configModel.findOne({ key: 'languages' }).select('property -_id')
+            const configCategories = await this.configModel.findOne({ key: 'categories' }).select('property -_id')
+            if (id == 0) {
+                const categories = configCategories?.property.map((item) => {
+                    return { [Object.keys(item)[0]]: false };
+                })
+                const os = [{ 'Window': false }, { 'macOS': false }, { 'iOS': false }, { 'Android': false }, { 'Linux': false }, { 'Web': false }]
+                return {
+                    title: 'Articles',
+                    articleId: id,
+                    configLang,
+                    data: { categories, os }
+                }
+            }
+
+            return {
+                title: 'Article Details',
+                articleId: id,
+                // data: { lang: lang, category: category }
+            }
+        } catch (error) {
+
+        }
+    }
 }

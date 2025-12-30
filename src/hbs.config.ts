@@ -31,3 +31,11 @@ hbs.registerHelper('last', function (array) {
 hbs.registerHelper('containsAny', function(item, ...values) {
   return values.includes(item);
 });
+
+hbs.registerHelper('keys', function(obj) {
+  return Object.keys(obj);
+});
+
+hbs.registerHelper('values', function(obj) {
+  return Object.values(obj);
+});

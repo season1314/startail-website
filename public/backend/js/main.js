@@ -93,7 +93,7 @@ jQuery(document).ready(function ($) {
 		.find('.temporary')
 		.remove()
 		.end()
-        .find('input:not([type="radio"])')
+        .find('input:not([type="radio"])').val('')
         .end()
 		.find('input[type="radio"]')
         .prop('checked', false)

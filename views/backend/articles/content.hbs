@@ -13,7 +13,6 @@
     {{> backend/infobar}}
     {{> backend/confirm}}
     {{> backend/loading}}
-    {{> backend/permissions}}
 
     <!-- Left Panel -->
     {{> backend/sidebar title=title}}
@@ -55,15 +54,15 @@
                                 <button id="btn-add" class="btn btn-success btn-sm">New</button>
                             </div>
 
-                            <div class="card-body" style="padding-top: 0">
+                            <div class="card-body" style="padding-top">
                                 <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
-                                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                    <table id="bootstrap-data-table" class="table table-striped table-bordered"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Permission Name</th>
-                                                <th>Url</th>
-                                                <th>Method</th>
-                                                <th>Des</th>
+                                                <th>Tag Name</th>
+                                                <th>Display Name</th>
+                                                <th>Type</th>
                                                 <th>CreateBy</th>
                                                 <th>CreateAt</th>
                                                 <th>Opt</th>
@@ -113,9 +112,8 @@
             //Init table by bootstrap-table.js
             const columns = [
                 { data: "name" },
-                { data: "url" },
-                { data: "method" },
-                { data: "des" },
+                { data: "display" },
+                { data: "type" },
                 { data: "createdBy" },
                 { data: "createdAt" },
                 {
@@ -128,107 +126,17 @@
                 }
             ];
 
-            const table = initDataTable('#bootstrap-data-table', '/admin/config/permissions/list', columns);
+            const table = initDataTable('#bootstrap-data-table', '/admin/articles/tags/list', columns);
 
 
             //Handle new button
             $('#btn-add').on('click', function (event) {
-                event.preventDefault();
-                subpageOpen().create()
+                window.location.href = "/admin/articles/content/0"
             })
-
-            //Handle subpage create submit
-            $('#subpage-create-submit').on('click', async function (event) {
-                event.preventDefault();
-                const name = $('#create-name').val();
-                const url = $('#create-url').val();
-                const method = $('#create-method input[type="radio"]:checked').val();
-                const des = $('#create-des').val();
-                const result = await fetchData('/admin/config/permissions', 'POST', {
-                    name,
-                    url,
-                    method,
-                    des,
-                });
-                if (result.code == 2) {
-                    subpageError(result.messages, 'create')
-                } else if (result.code == 1) {
-                    showInfo('danger', result.messages)
-                } else {
-                    showInfo('success', result.messages)
-                    $('#subpage')
-                        .find('input:not([type="radio"])').val('')
-                        .end()
-                        .find('input[type="radio"]')
-                        .prop('checked', false)
-                        .end()
-                        .find('small')
-                        .text('')
-                        .end()
-                        .hide();
-                    table.ajax.reload()
-                }
-            })
-            $('#subpage-create-submit').next('button').on('click', async function (event) {
-                event.preventDefault();
-                subpageReset().create()
-            });
-
-            //Handle subpage editInfo submit
-            $('#subpage-edit-submit').on('click', async function (event) {
-                event.preventDefault();
-                const id = $('#edit-id').data('id');
-                const name = $('#edit-name').val();
-                const des = $('#edit-des').val();
-                const result = await fetchData('/admin/config/permissions', 'PUT', {
-                    id,
-                    name,
-                    des,
-                })
-                if (result.code == 1) {
-                    showInfo('danger', result.messages)
-                } else if (result.code == 2) {
-                    subpageError(result.messages, 'edit')
-                } else {
-                    showInfo('success', result.messages)
-                    $('#subpage').find('input').val('').end().find('small').text('').end().hide();
-                    table.ajax.reload(null, false)
-                }
-            })
-
-            $('#subpage-edit-submit').next('button').on('click', async function (event) {
-                event.preventDefault();
-                subpageReset().edit()
-            });
 
             //Handle edit button
             $('#bootstrap-data-table').on('click', '.btn-edit', function () {
-                const item = JSON.parse($(this).attr('data-item'));
-                subpageOpen().edit(item)
             });
-
-            //Handle delete button
-            $('#bootstrap-data-table').on('click', '.btn-delete', function () {
-                const id = $(this).attr('data-item');
-                openConfirm({
-                    title: 'Confirm Delete',
-                    context: 'Deleting this permission may result in users being unable to access this functionality.',
-                    onConfirm: async () => {
-                        loading().show()
-                        const result = await fetchData('/admin/config/permissions', 'DELETE', {
-                            id,
-                        })
-                        if (result.code !== 0) {
-                            showInfo('danger', result.messages)
-                        } else {
-                            showInfo('success', result.messages)
-                            table.ajax.reload()
-                        }
-                        loading().hide()
-                    }
-                })
-            });
-
         });
     </script>
 </body>

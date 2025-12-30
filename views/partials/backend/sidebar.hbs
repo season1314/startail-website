@@ -24,17 +24,12 @@
                         </li>
                     </ul>
                 </li>
-                 <li class="menu-item-has-children {{#if (containsAny title 'Tags' 'Content')}}active{{/if}} dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Articles</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li>
-                            <i class="fa fa-tags"></i><a href="/admin/articles/tags">Tags</a>
-                        </li>
-                        <li>
-                            <i class="fa fa-file"></i><a href="/admin/articles/content">Content</a>
-                        </li>
-                    </ul>
+                <li class="menu-title">Content</li><!-- /.menu-title -->
+                <li class="{{#if (containsAny title 'Tags')}}active{{/if}}">
+                    <a href="/admin/articles/tags"><i class="menu-icon fa fa-tags"></i>Tags</a>
+                </li>
+                 <li class="{{#if (containsAny title 'Articles')}}active{{/if}}">
+                    <a href="/admin/articles/content"><i class="menu-icon fa fa-file"></i>Articles</a>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->
