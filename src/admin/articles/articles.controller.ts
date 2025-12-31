@@ -26,7 +26,7 @@ export class ArticlesController {
     }
 
     /**
-     * Get administrator list
+     * Get tags list
      *
      * HTTP Method: Get
      * Request query:
@@ -36,7 +36,7 @@ export class ArticlesController {
      *
      * Description:
      *
-     * base the page and keyword get administrator list
+     * base the page and keyword get tags list
      */
 
     @Get('tags/list')

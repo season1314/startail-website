@@ -14,6 +14,7 @@
     {{> backend/infobar}}
     {{> backend/confirm}}
     {{> backend/loading}}
+    {{> backend/detail}}
 
     <!-- Left Panel -->
     {{> backend/sidebar title=title}}
@@ -107,12 +108,12 @@
                                         </div>
                                     </div>
 
-                                    <div class='row form-group'>
+                                    <div class='row form-group' id="tags">
                                         <div class='col col-md-3'><label for='text-input'
                                                 class='form-control-label'>tags</label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <button class="btn btn-secondary btn-sm" id="new-button">Add</button>
+                                            <button class="btn btn-secondary btn-sm" id="tags-add">Add</button>
                                             <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
@@ -189,6 +190,8 @@
 
     <!--Local Stuff-->
     <script type="text/javascript">
+        let TagsPage = 1
+        let Tags = "{{tags}}" ? "{{tags}}" : []
         $(document).ready(function () {
 
             $('#cover-image').on('click', '#cover-image-add', function (event) {
@@ -205,9 +208,23 @@
 
             $('#cover-image').on('click', '.coverImgDiv', function (event) {
                 event.preventDefault();
-                var backgroundImageUrl = $(this).css('background-image');
+                let backgroundImageUrl = $(this).css('background-image');
                 backgroundImageUrl = backgroundImageUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
                 window.open(backgroundImageUrl, '_blank');
+            })
+
+            $('#tags').on('click', '#tags-add', async function (event) {
+                event.preventDefault();
+                fetchTags({ page: TagsPage });
+                $('#subpage-title').text('Tags');
+                $('#subpage-tags').show();
+                $('#subpage').show();
+            })
+
+            $('#subpage-tags').find('#operation').find('button').eq(0).on('click', async function (event) {
+                event.preventDefault();
+                const keyword = $('#subpage-tags').find('#operation').find('input').eq(0).val()
+                fetchTags({ page: TagsPage, keyword });
             })
         })
 
@@ -232,28 +249,26 @@
         })
 
 
-        //FetchData
-        async function fetchList() {
-            const getData = await fetchData('/admin/admin/permissions/list', 'GET', { id: window.adminId });
-            if (getData.code !== 0) { showInfo('danger', getData.messages.message ? getData.messages.message : getData.messages); return }
-            if (getData.data.list.length > 0) {
-                $('.permission-list').empty()
-                getData.data.list.map((item, index) => {
-                    const context = `<div class="permission-item">
-                                        <input type="checkbox" id="inline-checkbox${index}" name="inline-checkbox${index}"
-                                            value="${item.key}" class="form-check-input" ${item.selected ? 'checked' : ''}  ${item.disabled ? 'disabled' : ''} style="margin-top:0">
-                                    <div>${item.name} : (${item.des})</div>
-                                    </div>      
-                                 `
-                    $('.permission-list').append(context)
-                })
-            } else {
-                $('.permission-list').empty()
-                const context = '<div>No data found</div>'
-                $('.permission-list').append(context)
-            }
-        }
+        //FetchTags
+        async function fetchTags(params) {
+            const tagsList = await fetchData('/admin/articles/tags/list', 'GET', params)
+            $('#subpage-tags').find('#subpage-tags-content').empty()
+            const list = tagsList.data.list.map((item) => {
+                return { id: item._id, name: item.name, selected: Tags.includes(item._id) ? true : false }
+            })
+            list.map((item) => {
+                const content = `<div class="subpageTagsColumn">
+                           <input type="checkbox" value="${item._id}" ${item.selected ? 'checked' : ''} style="margin-top:0">
+                                    <div style="margin-left:10px">${item.name}</div>
+                    </div>`
 
+                $('#subpage-tags').find('.subpageTagsContent').append(content)
+            })
+            $('#subpage-tags').find('.subpagePagination').find('a').eq(0).text(tagsList.data.page)
+            $('#subpage-tags').find('.subpagePagination').find('a').eq(1).text(tagsList.data.totalPages)
+            $('#subpage-tags').find('.subpagePagination').find('button').eq(0).prop('disabled', tagsList.data.page == 1)
+            $('#subpage-tags').find('.subpagePagination').find('button').eq(1).prop('disabled', tagsList.data.page == tagsList.data.totalPages)
+        }
 
     </script>
 </body>

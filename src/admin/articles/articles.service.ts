@@ -28,7 +28,7 @@ export class ArticlesService {
             ];
         }
         const [list, total, lang] = await Promise.all([
-            this.tagsModel.find().sort({ createdAt: -1 }).skip(skip).limit(dto.entries).lean(),
+            this.tagsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(dto.entries).lean(),
             this.tagsModel.countDocuments(),
             this.configModel.findOne({ key: 'languages' }).select('property -_id')
         ])

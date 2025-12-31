@@ -90,17 +90,19 @@ jQuery(document).ready(function ($) {
 	$('#subpage-closeBtn').on('click', function (event) {
 		event.preventDefault();
 		$('#subpage')
-		.find('.temporary')
-		.remove()
-		.end()
-        .find('input:not([type="radio"])').val('')
-        .end()
-		.find('input[type="radio"]')
-        .prop('checked', false)
-		.end()
-        .find('small')
-		.text('')
-        .end()
-        .hide(); 
+			.find('.temporary')
+			.remove()
+			.end()
+			.find('input:not([type="radio"])').val('')
+			.end()
+			.find('input[type="radio"]')
+			.prop('checked', false)
+			.end()
+			.find('small')
+			.text('')
+			.end()
+			.hide();
+
+		$('#subpage-tags-content').text('')
 	});
 });
