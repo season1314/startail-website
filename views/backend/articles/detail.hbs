@@ -113,7 +113,9 @@
                                                 class='form-control-label'>tags</label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <button class="btn btn-secondary btn-sm" id="tags-add">Add</button>
+                                            <div class="mainTags">
+                                                <button class="btn btn-secondary btn-sm" id="tags-add">choose</button>
+                                            </div>
                                             <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
@@ -192,7 +194,10 @@
     <script type="text/javascript">
         let TagsPage = 1
         let Tags = "{{tags}}" ? "{{tags}}" : []
+        let TagsKey = ""
         $(document).ready(function () {
+
+            $('#subpage-selected').text(Tags.length);
 
             $('#cover-image').on('click', '#cover-image-add', function (event) {
                 event.preventDefault();
@@ -219,13 +224,54 @@
                 $('#subpage-title').text('Tags');
                 $('#subpage-tags').show();
                 $('#subpage').show();
+                document.body.style.overflow = 'hidden';
             })
 
             $('#subpage-tags').find('#operation').find('button').eq(0).on('click', async function (event) {
                 event.preventDefault();
-                const keyword = $('#subpage-tags').find('#operation').find('input').eq(0).val()
-                fetchTags({ page: TagsPage, keyword });
+                TagsKey = $('#subpage-tags').find('#operation').find('input').eq(0).val()
+                TagsPage = 1
+                fetchTags({ page: TagsPage, keyword: TagsKey });
             })
+
+            $('#subpage-tags').find('#operation').find('button').eq(1).on('click', async function (event) {
+                event.preventDefault();
+                $('#subpage-tags').find('#operation').find('input').eq(0).val('')
+                TagsKey = ''
+                TagsPage = 1
+                fetchTags({ page: TagsPage, keyword: TagsKey });
+            })
+
+            $('#subpage-tags').find('.subpagePagination').find('button').eq(0).on('click', async function (event) {
+                event.preventDefault();
+                TagsPage = TagsPage - 1
+                fetchTags({ page: TagsPage, keyword: TagsKey });
+            })
+
+            $('#subpage-tags').find('.subpagePagination').find('button').eq(1).on('click', async function (event) {
+                event.preventDefault();
+                TagsPage = TagsPage + 1
+                console.log(TagsPage)
+                fetchTags({ page: TagsPage });
+            })
+
+            $('#subpage-tags').find('.subpageTagsContent').on('change', 'input[type="checkbox"]', function () {
+                const value = this.value;
+                const name =  $(this).next('div').text()
+                if (Tags.length >= 5 && this.checked) {
+                    showInfo('danger', 'Please select no more than 5 tags.')
+                    this.checked = false
+                    return
+                }
+                if (this.checked) {
+                    const content = `<span class="badge badge-info" id="${value}">${name}</span>`
+                    $('.mainTags').prepend(content)
+                    Tags.push(value)
+                } else {
+                    Tags = Tags.filter(item => item !== value);
+                    $('#'+ value).remove()
+                }
+            });
         })
 
         //images file
@@ -253,21 +299,31 @@
         async function fetchTags(params) {
             const tagsList = await fetchData('/admin/articles/tags/list', 'GET', params)
             $('#subpage-tags').find('#subpage-tags-content').empty()
-            const list = tagsList.data.list.map((item) => {
-                return { id: item._id, name: item.name, selected: Tags.includes(item._id) ? true : false }
-            })
-            list.map((item) => {
-                const content = `<div class="subpageTagsColumn">
-                           <input type="checkbox" value="${item._id}" ${item.selected ? 'checked' : ''} style="margin-top:0">
+            if (tagsList.data.totalPages == 0) {
+                $('#subpage-tags').find('.subpagePagination').find('a').eq(0).text(0)
+                $('#subpage-tags').find('.subpagePagination').find('a').eq(1).text(0)
+                $('#subpage-tags').find('.subpagePagination').find('button').eq(0).prop('disabled', true)
+                $('#subpage-tags').find('.subpagePagination').find('button').eq(1).prop('disabled', true)
+                const content = `<div>No data available</div>`
+                $('#subpage-tags').find('.subpageTagsContent').append(content)
+
+            } else {
+                const list = tagsList.data.list.map((item) => {
+                    return { id: item._id, name: item.name, selected: Tags.includes(item._id) ? true : false }
+                })
+                list.map((item) => {
+                    const content = `<div class="subpageTagsColumn">
+                           <input type="checkbox" value="${item.id}" ${item.selected ? 'checked' : ''} style="margin-top:0">
                                     <div style="margin-left:10px">${item.name}</div>
                     </div>`
 
-                $('#subpage-tags').find('.subpageTagsContent').append(content)
-            })
-            $('#subpage-tags').find('.subpagePagination').find('a').eq(0).text(tagsList.data.page)
-            $('#subpage-tags').find('.subpagePagination').find('a').eq(1).text(tagsList.data.totalPages)
-            $('#subpage-tags').find('.subpagePagination').find('button').eq(0).prop('disabled', tagsList.data.page == 1)
-            $('#subpage-tags').find('.subpagePagination').find('button').eq(1).prop('disabled', tagsList.data.page == tagsList.data.totalPages)
+                    $('#subpage-tags').find('.subpageTagsContent').append(content)
+                })
+                $('#subpage-tags').find('.subpagePagination').find('a').eq(0).text(tagsList.data.page)
+                $('#subpage-tags').find('.subpagePagination').find('a').eq(1).text(tagsList.data.totalPages)
+                $('#subpage-tags').find('.subpagePagination').find('button').eq(0).prop('disabled', tagsList.data.page == 1)
+                $('#subpage-tags').find('.subpagePagination').find('button').eq(1).prop('disabled', tagsList.data.page == tagsList.data.totalPages)
+            }
         }
 
     </script>

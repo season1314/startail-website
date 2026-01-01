@@ -32,32 +32,32 @@
 
 
         <!-- Content -->
-        <div class="content" style="min-height:calc(100vh - 240px)">
+        <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
                     <div style="width:100%">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Permission List</strong>
+                                <strong class="card-title">Tags List</strong>
                             </div>
                             <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
                                 style="padding: 0 35px;height:80px;margin-bottom:0 !important">
-            
+
                                 <div class="d-flex align-items-center">
                                     <input type="text" id="search-input" class="form-control form-control-sm me-2"
-                                        placeholder="Permission Name" style="width:180px">
+                                        placeholder="Tags name keyword" style="width:180px">
                                     <button id="btn-search" class="btn btn-primary btn-sm"
                                         style="margin-left:10px;">Search</button>
                                     <button id="btn-reset" class="btn btn-secondary btn-sm"
                                         style="margin-left:10px;">Reset</button>
                                 </div>
-                     
+
                                 <button id="btn-add" class="btn btn-success btn-sm">New</button>
                             </div>
 
                             <div class="card-body" style="padding-top">
-                                <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
-                                    <table id="bootstrap-data-table" class="table table-striped table-bordered"
+                                <div class="table-responsive">
+                                    <table id="bootstrap-data-table" class="table table-striped table-fixed"
                                         style="width:100%">
                                         <thead>
                                             <tr>
@@ -84,9 +84,6 @@
 
         <!-- /.content -->
         <div class="clearfix"></div>
-        <!-- Footer -->
-        {{> backend/footer}}
-        <!-- /.site-footer -->
     </div>
     <!-- /#right-panel -->
 
@@ -108,8 +105,8 @@
 
     <!--Local Stuff-->
     <script type="text/javascript">
+        let _data;
         $(document).ready(function () {
-
             //Init table by bootstrap-table.js
             const columns = [
                 { data: "name" },
@@ -134,7 +131,20 @@
             $('#btn-add').on('click', function (event) {
                 event.preventDefault();
                 const data = $('#bootstrap-data-table').data('lang')
-                subpageOpen().create(data)
+                $('#subpage-title').text('Create New');
+                $('#subpage-create').show();
+                data.map((item) => {
+                    const content = `<div class='row form-group temporary'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>${Object.values(item)}
+                                ${Object.keys(item) == 'en' ? '<span style="color:red">*</span>' : ''}</label></div>
+                            <div class='col-12 col-md-9'>
+                                <input type='text' name='create-lang'placeholder='display name' class='form-control create-lang' id='create-lang-${Object.keys(item)}' />
+                                <small class="help-block form-text color-red" style="height:12px"></small></div>
+                            </div>`
+                    $('#create').after(content)
+                })
+                $('#subpage-edit').hide();
+                $('#subpage').show();
             })
 
             //Handle subpage create submit
@@ -165,12 +175,45 @@
                         .find('input[type="radio"]').prop('checked', false).end()
                         .find('small').text('').end()
                         .hide();
+                    table.setKeyword('');
+                    $('#search-input').val('')
                     table.ajax.reload()
                 }
             })
+
+            //Create reset
             $('#subpage-create-submit').next('button').on('click', async function (event) {
                 event.preventDefault();
-                subpageReset().create()
+                $('#subpage').find('input').val('').end().find('small').text('').end()
+            });
+
+
+            //Handle edit button
+            $('#bootstrap-data-table').on('click', '.btn-edit', function () {
+                const data = JSON.parse($(this).attr('data-item'));
+                _data = data
+                const lang = $('#bootstrap-data-table').data('lang')
+                $('#subpage-title').text('Edit');
+                $('#subpage-create').hide();
+                $('#subpage-edit').show();
+                lang.map((item) => {
+                    const content = `<div class='row form-group temporary'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>${Object.values(item)}
+                                ${Object.keys(item) == 'en' ? '<span style="color:red">*</span>' : ''}</label></div>
+                            <div class='col-12 col-md-9'>
+                                <input type='text' name='create-lang'placeholder='display name' class='form-control create-lang' id='edit-lang-${Object.keys(item)}' />
+                                <small class="help-block form-text color-red" style="height:12px"></small></div>
+                            </div>`
+                    $('#edit').after(content).end()
+                })
+                $('#edit-name').data('id', _data._id);
+                $('#edit-name').val(_data.name)
+                $('#edit-type').val(_data.type)
+                data.lang.map((item) => {
+                    const id = '#edit-lang-' + Object.keys(item)
+                    if (id) $(id).val(Object.values(item))
+                })
+                $('#subpage').show();
             });
 
             //Handle subpage editInfo submit
@@ -197,7 +240,7 @@
                     subpageError(result.messages, 'edit')
                 } else {
                     showInfo('success', result.messages)
-                        $('#subpage')
+                    $('#subpage')
                         .find('input:not([type="radio"])').val('').end()
                         .find('.temporary').remove().end()
                         .find('input[type="radio"]').prop('checked', false).end()
@@ -207,17 +250,19 @@
                 }
             })
 
+            //edit reset
             $('#subpage-edit-submit').next('button').on('click', async function (event) {
                 event.preventDefault();
-                subpageReset().edit()
+                $('#edit-name').data('id', _data.id);
+                $('#edit-name').val(_data.name)
+                $('#edit-type').val(_data.type)
+                _data.lang.map((item) => {
+                    const id = '#edit-lang-' + Object.keys(item)
+                    if (id) $(id).val(Object.values(item))
+                })
             });
 
-            //Handle edit button
-            $('#bootstrap-data-table').on('click', '.btn-edit', function () {
-                const item = JSON.parse($(this).attr('data-item'));
-                const lang = $('#bootstrap-data-table').data('lang')
-                subpageOpen().edit(item, lang)
-            });
+
 
             //Handle delete button
             $('#bootstrap-data-table').on('click', '.btn-delete', function () {
@@ -241,6 +286,25 @@
                 })
             });
 
+            //Handle search
+            $('#btn-search').on('click', async function () {
+                event.preventDefault();
+                const kw = $('#search-input').val()
+                table.setKeyword(kw);
+                table.ajax.reload();
+            })
+
+
+            //Clear search
+            $('#btn-reset').on('click', async function () {
+                event.preventDefault();
+                $('#search-input').val('')
+                table.setKeyword('');
+                table.ajax.reload();
+            })
+
+
+
         });
     </script>
 </body>
@@ -260,6 +324,22 @@
     #bootstrap-data-table td {
         white-space: nowrap;
     }
+
+    /*
+    .table-fixed tbody {
+        display: block;
+        max-height: (100vh - 1500px);
+        overflow-y: auto;
+    }
+
+    .table-fixed thead,
+    .table-fixed tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+   */
 </style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </html>

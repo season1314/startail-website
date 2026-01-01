@@ -29,7 +29,7 @@ export class ArticlesService {
         }
         const [list, total, lang] = await Promise.all([
             this.tagsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(dto.entries).lean(),
-            this.tagsModel.countDocuments(),
+            this.tagsModel.find(query).countDocuments(),
             this.configModel.findOne({ key: 'languages' }).select('property -_id')
         ])
         const formatList = list.map(item => ({
@@ -133,6 +133,7 @@ export class ArticlesService {
                     title: 'Articles',
                     articleId: id,
                     configLang,
+                    tags:[],
                     data: { categories, os }
                 }
             }

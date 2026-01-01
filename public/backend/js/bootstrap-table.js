@@ -1,7 +1,8 @@
 
 
 
-function initDataTable(tableId, url, columnsConfig, keyword = "") {
+function initDataTable(tableId, url, columnsConfig) {
+    let keyword = ""
     const table = $(tableId).DataTable({
         paging: true,
         searching: false,
@@ -30,9 +31,14 @@ function initDataTable(tableId, url, columnsConfig, keyword = "") {
                     data: response.data,
                 });
             });
+            $('html, body').animate({ scrollTop: 0 });
         },
         columns: columnsConfig,
     });
+
+    table.setKeyword = function (value) {
+        keyword = value;
+    };
     return table
 }
 

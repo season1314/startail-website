@@ -1,5 +1,6 @@
 <div id='subpage' class="subpage">
     <div class="page-view">
+        <!-- tags list -->
         <div class='card'>
             <div class='card-header d-flex justify-content-between align-items-center'>
                 <div class='header-left'>
@@ -9,10 +10,9 @@
                     <button type='button' class='btn btn-danger btn-sm' id='subpage-closeBtn'>&times;</button>
                 </div>
             </div>
-            <!-- tags list -->
             <div id="subpage-tags">
                 <div class='card-body card-block'
-                    style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+                    style='width:50vw;max-height:80vh;min-height 50vh;padding-left:50px;padding-right:50px;'>
                     <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
                         <div class="table-actions mb-3 d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center" id="operation">
@@ -23,14 +23,8 @@
                                 <button id="btn-reset" class="btn btn-secondary btn-sm" style="margin-left:10px;"
                                     id="tags-search-reset">Reset</button>
                             </div>
-                            <button class="btn btn-success btn-sm" style="float:right" id="new-button">
-                                Save
-                            </button>
                         </div>
-                        <div id="subpage-tags-content" class="subpageTagsContent">
-
-
-                        </div>
+                        <div id="subpage-tags-content" class="subpageTagsContent"></div>
                         <div class="subpagePagination">
                             <button type="button" class="btn btn-outline-secondary btn-sm">Previous</button>
                             <div class="subpagePage"><a></a> / <a></a></div>
@@ -38,7 +32,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <!-- tags list end -->

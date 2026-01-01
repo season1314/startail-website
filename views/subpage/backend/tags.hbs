@@ -12,7 +12,7 @@
             <!-- create -->
             <div id="subpage-create">
                 <div class='card-body card-block'
-                    style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;overflow:auto'>
+                    style='width:50vw;max-height:80vh;min-height 50vh;padding-left:50px;padding-right:50px;overflow:auto'>
                     <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
                         <div class='row form-group' id="create">
                             <div class='col col-md-3'><label for='text-input' class='form-control-label'>name<span
@@ -86,87 +86,15 @@
 </div>
 
 <script>
-    var _date;
     $(document).on('focus', 'input', function () {
         const $small = $(this).next('small');
         $small.text('');
-
     })
-    const subpageOpen = () => {
-        return {
-            create: (lang) => {
-                $('#subpage-title').text('Create New');
-                $('#subpage-create').show();
-                lang.map((item) => {
-                    const content = `<div class='row form-group temporary'>
-                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>${Object.values(item)}
-                                ${Object.keys(item) == 'en' ? '<span style="color:red">*</span>' : ''}</label></div>
-                            <div class='col-12 col-md-9'>
-                                <input type='text' name='create-lang'placeholder='display name' class='form-control create-lang' id='create-lang-${Object.keys(item)}' />
-                                <small class="help-block form-text color-red" style="height:12px"></small></div>
-                            </div>`
-                    $('#create').after(content)
-                })
-                $('#subpage-edit').hide();
-                $('#subpage').show();
-            },
-            edit: (data, lang) => {
-                _data = data
-                console.log(_data)
-                $('#subpage-title').text('Edit');
-                $('#subpage-create').hide();
-                $('#subpage-edit').show();
-                lang.map((item) => {
-                    const content = `<div class='row form-group temporary'>
-                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>${Object.values(item)}
-                                ${Object.keys(item) == 'en' ? '<span style="color:red">*</span>' : ''}</label></div>
-                            <div class='col-12 col-md-9'>
-                                <input type='text' name='create-lang'placeholder='display name' class='form-control create-lang' id='edit-lang-${Object.keys(item)}' />
-                                <small class="help-block form-text color-red" style="height:12px"></small></div>
-                            </div>`
-                    $('#edit').after(content).end()
-                })
-                $('#edit-name').data('id', _data._id);
-                $('#edit-name').val(_data.name)
-                $('#edit-type').val(_data.type)
-                data.lang.map((item) => {
-                    const id = '#edit-lang-' + Object.keys(item)
-                    if (id) $(id).val(Object.values(item))
-                })
-                $('#subpage').show();
-            },
-        }
-    }
-
 
     const subpageError = (messages, type) => {
         Object.entries(messages).forEach(([key, value]) => {
             const dom = $('#' + type + '-' + key)
             if (dom) dom.next('small').text(value[0])
         });
-    }
-
-
-    const subpageReset = () => {
-        return {
-            create: () => {
-                $('#subpage')
-                    .find('input')
-                    .val('')
-                    .end()
-                    .find('small')
-                    .text('')
-                    .end()
-            },
-            edit: () => {
-                $('#edit-name').data('id', _data.id);
-                $('#edit-name').val(_data.name)
-                $('#edit-type').val(_data.type)
-                _data.lang.map((item) => {
-                    const id = '#edit-lang-' + Object.keys(item)
-                    if (id) $(id).val(Object.values(item))
-                })
-            }
-        };
     }
 </script>

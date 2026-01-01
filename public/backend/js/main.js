@@ -104,5 +104,6 @@ jQuery(document).ready(function ($) {
 			.hide();
 
 		$('#subpage-tags-content').text('')
+		document.body.style.overflow = '';
 	});
 });
