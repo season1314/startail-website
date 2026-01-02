@@ -34,6 +34,7 @@
         <div class="content" style="min-height:calc(100vh - 240px)">
             <div class="animated fadeIn">
                 <div class="row">
+                    <!-- en -->
                     <div style="width:100%">
                         <div class="card">
                             <div class="card-header">
@@ -46,12 +47,12 @@
                                 style="padding: 0 35px">
                             </div>
                             <div class="card-body" style="padding-top: 0">
-                                <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+                                <form class='form-horizontal'>
                                     <div class='row form-group'>
                                         <div class='col col-md-3'><label for='text-input'
                                                 class='form-control-label'>title<span style="color:red">*</span></label>
                                         </div>
-                                        <div class='col-12 col-md-9'><input type='text' id='title'
+                                        <div class='col-12 col-md-9'><input type='text' id='title-en'
                                                 placeholder='article title' class='form-control' name="title"
                                                 autocomplete="title" /><small class="help-block form-text color-red"
                                                 style="height:12px"></small>
@@ -62,8 +63,9 @@
                                                 class='form-control-label'>introduction<span
                                                     style="color:red">*</span></label>
                                         </div>
-                                        <div class='col-12 col-md-9'> <textarea class="form-control" id="introduction"
-                                                rows="3" placeholder="article description..."></textarea><small
+                                        <div class='col-12 col-md-9'> <textarea class="form-control"
+                                                id="introduction-en" rows="3"
+                                                placeholder="article description..."></textarea><small
                                                 class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
@@ -74,7 +76,7 @@
                                                     style="color:red">*</span></label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <div>{{#each data.categories}}
+                                            <div>{{#each categories}}
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox" />
                                                     {{#each (keys this)}} <label
@@ -93,14 +95,15 @@
                                             <div class='col-12 col-md-9' style="max-width:none" id="cover-image">
                                                 {{#if data.coverImg}}
                                                 <div style="display:flex;width:100%">
-                                                    <div class="coverImgDiv"></div>
+                                                    <div class="coverImgDiv" id="cover-image-en"></div>
                                                     <div class="coverImgOpt">
                                                         <i class="menu-icon fa fa-trash-o"></i>
                                                     </div>
                                                 </div>
                                                 {{else}}
-                                                <button class="btn btn-secondary btn-sm"
-                                                    id="cover-image-add">Add</button>
+                                                <div id="cover-image-add">
+                                                    <i class="fa fa-plus-square"></i>
+                                                </div>
                                                 {{/if}}
                                                 <small class="help-block form-text color-red"
                                                     style="height:12px"></small>
@@ -108,45 +111,60 @@
                                         </div>
                                     </div>
 
-                                    <div class='row form-group' id="tags">
+                                    <div class='row form-group' id="tags-en">
                                         <div class='col col-md-3'><label for='text-input'
                                                 class='form-control-label'>tags</label>
                                         </div>
                                         <div class='col-12 col-md-9'>
                                             <div class="mainTags">
-                                                <button class="btn btn-secondary btn-sm" id="tags-add">choose</button>
+                                                <span id="tags-add">
+                                                    <i class="fa  fa-gear"></i>
+                                                </span>
                                             </div>
                                             <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
 
 
-                                    <div class='row form-group'>
+                                    <div class='row form-group' id="downloads-en">
                                         <div class='col col-md-3'><label for='text-input'
                                                 class='form-control-label'>downloads</label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <button class="btn btn-secondary btn-sm" id="new-button">Add</button>
+                                            <div>
+                                                <div class="mainDownloads">
+                                                    <span  data-lang="en" class="downloads-add"> 
+                                                        <i class="fa  fa-gear"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
                                             <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
 
-                                    <div class='row form-group'>
+                                    <div class='row form-group' id="guides-en">
                                         <div class='col col-md-3'><label for='text-input'
                                                 class='form-control-label'>guides</label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <button class="btn btn-secondary btn-sm" id="new-button">Add</button>
+                                            <div>
+                                                <div class="mainGuides">
+                                                    <span data-lang="en" class="guides-add">
+                                                        <i class="fa  fa-gear"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
                                             <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
 
-                                    <div class='row form-group'>
+                                    <div class='row form-group' id="os-en">
                                         <div class='col col-md-3'><label for='text-input'
-                                                class='form-control-label'>operation system</label>
+                                                class='form-control-label'>operation
+                                                system</label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <div>{{#each data.os}}
+                                            <div>{{#each os}}
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox" />
                                                     {{#each (keys this)}} <label
@@ -160,6 +178,78 @@
                             </div>
                         </div>
                     </div>
+                    <!-- other lang -->
+                    {{#each configLang}}
+                    {{#if (neq this "en")}}
+                    <div style="width:100%">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">{{this}}</strong>
+                                <a style="float:right;height:31px"></a>
+                            </div>
+                            <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
+                                style="padding: 0 35px">
+                            </div>
+                            <div class="card-body" style="padding-top: 0">
+                                <form class='form-horizontal'>
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>title</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'><input type='text' id='title-{{this}}'
+                                                placeholder='article title' class='form-control' name="title"
+                                                autocomplete="title" /><small class="help-block form-text color-red"
+                                                style="height:12px"></small>
+                                        </div>
+                                    </div>
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>introduction</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'> <textarea class="form-control"
+                                                id="introduction-{{this}}" rows="3"
+                                                placeholder="article description..."></textarea><small
+                                                class="help-block form-text color-red" style="height:12px"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group' id="downloads-{{this}}">
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>downloads</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'>
+                                            <div>
+                                                <div class="mainDownloads">
+                                                    <span data-lang="{{this}}" class="downloads-add">
+                                                        <i class="fa  fa-gear"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group' id="guides-{{this}}">
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>guides</label>
+                                        </div>
+                                        <div class='col-12 col-md-9'>
+                                            <div>
+                                                <div class="mainGuides">
+                                                    <span data-lang="{{this}}" class="guides-add">
+                                                        <i class="fa  fa-gear"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{/each}}
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
@@ -193,12 +283,18 @@
     <!--Local Stuff-->
     <script type="text/javascript">
         let TagsPage = 1
+        let currentLang
         let Tags = "{{tags}}" ? "{{tags}}" : []
         let TagsKey = ""
+        let ConfigLang = "{{configLang}}"
+        let Downloads = {{ tojson downloads }}
+        let Guides = {{ tojson guides }}
+        let title = {{ tojson title }}
+        let introduction = {{ tojson introduction }}
         $(document).ready(function () {
-
             $('#subpage-selected').text(Tags.length);
 
+            //cover-image
             $('#cover-image').on('click', '#cover-image-add', function (event) {
                 event.preventDefault();
                 $('#images-file').click();
@@ -206,7 +302,7 @@
 
             $('#cover-image').on('click', '#delete-img', function (event) {
                 event.preventDefault();
-                const content = `<button class="btn btn-secondary btn-sm" id="cover-image-add">Add</button>`
+                const content = `<div id="cover-image-add"><i class="fa fa-plus-square"></i></div>`
                 $('#images-file').val('');
                 $('#cover-image').find('div').remove().end().prepend(content).end();
             });
@@ -218,11 +314,15 @@
                 window.open(backgroundImageUrl, '_blank');
             })
 
-            $('#tags').on('click', '#tags-add', async function (event) {
+
+            //tags
+            $('#tags-en').on('click', '#tags-add', async function (event) {
                 event.preventDefault();
                 fetchTags({ page: TagsPage });
                 $('#subpage-title').text('Tags');
+                $('#subpage-downloads').hide()
                 $('#subpage-tags').show();
+                $('#subpage-guides').hide();
                 $('#subpage').show();
                 document.body.style.overflow = 'hidden';
             })
@@ -251,27 +351,109 @@
             $('#subpage-tags').find('.subpagePagination').find('button').eq(1).on('click', async function (event) {
                 event.preventDefault();
                 TagsPage = TagsPage + 1
-                console.log(TagsPage)
                 fetchTags({ page: TagsPage });
             })
 
             $('#subpage-tags').find('.subpageTagsContent').on('change', 'input[type="checkbox"]', function () {
                 const value = this.value;
-                const name =  $(this).next('div').text()
+                const name = $(this).next('div').text()
                 if (Tags.length >= 5 && this.checked) {
                     showInfo('danger', 'Please select no more than 5 tags.')
                     this.checked = false
                     return
                 }
                 if (this.checked) {
-                    const content = `<span class="badge badge-info" id="${value}">${name}</span>`
+                    const content = `<span class="badge badge-info" id="${value}" style="margin-right:5px">${name}</span>`
                     $('.mainTags').prepend(content)
                     Tags.push(value)
                 } else {
                     Tags = Tags.filter(item => item !== value);
-                    $('#'+ value).remove()
+                    $('#' + value).remove()
                 }
             });
+
+            //downloads
+            $('.downloads-add').on('click', async function (event) {
+                event.preventDefault();
+                currentLang = $(this).data('lang')
+                $('#subpage-title').text('Downloads');
+                $('#subpage-guides').hide();
+                $('#subpage-tags').hide();
+                $('#subpage-downloads').show()
+                Downloads[currentLang].map((item, index) => {
+                    const dom = $('#subpage-downloads').find('#' + (index + 1)).find('input')
+                    if (item && item.des) {
+                        dom.eq(0).val(item.des);
+                        dom.eq(1).val(item.path);
+                    }
+                })
+                $('#subpage').show();
+                document.body.style.overflow = 'hidden';
+            })
+
+            $('#subpage-downloads').on('click', '#subpage-submit', function () {
+                event.preventDefault();
+                $('#downloads-' + currentLang).find('.mainDownloads').find('.badge').remove()
+                Downloads[currentLang] = $('#subpage-downloads .form-group')
+                    .map((index, item) => {
+                        const des = $(item).find('input').eq(0).val()
+                        const path = $(item).find('input').eq(1).val()
+                        if (des && path) {
+                            const content = `<span class="badge badge-info" data-path ="${path}" id="des" style="margin-right:5px">${des}</span>`
+                            $('#downloads-' + currentLang).find('.downloads-add').before(content)
+                        }
+                        return {
+                            des: des,
+                            path: path
+                        };
+                    })
+                    .get();
+                $('#subpage-downloads input').val('').end().hide().end()
+                document.body.style.overflow = '';
+                $('#subpage').hide()
+            })
+
+            //guides
+            $('.guides-add').on('click', async function (event) {
+                event.preventDefault();
+                currentLang = $(this).data('lang')
+                console.log(currentLang)
+                $('#subpage-title').text('Downloads');
+                $('#subpage-guides').show();
+                $('#subpage-tags').hide();
+                $('#subpage-downloads').hide()
+                Guides[currentLang].map((item, index) => {
+                    const dom = $('#subpage-guides').find('#' + (index + 1)).find('input')
+                    if (item && item.des) {
+                        dom.eq(0).val(item.des);
+                        dom.eq(1).val(item.path);
+                    }
+                })
+                $('#subpage').show();
+                document.body.style.overflow = 'hidden';
+            })
+
+            $('#subpage-guides').on('click', '#subpage-submit', function () {
+                event.preventDefault();
+                $('#guides-' + currentLang).find('.mainGuides').find('.badge').remove()
+                Guides[currentLang] = $('#subpage-guides .form-group')
+                    .map((index, item) => {
+                        const des = $(item).find('input').eq(0).val()
+                        const path = $(item).find('input').eq(1).val()
+                        if (des && path) {
+                            const content = `<span class="badge badge-info" data-path ="${path}" id="des" style="margin-right:5px">${des}</span>`
+                            $('#guides-' + currentLang).find('.guides-add').before(content)
+                        }
+                        return {
+                            des: des,
+                            path: path
+                        };
+                    })
+                    .get();
+                $('#subpage-guides input').val('').end().hide().end()
+                document.body.style.overflow = '';
+                $('#subpage').hide()
+            })
         })
 
         //images file
@@ -287,7 +469,7 @@
                                          <div class="coverImgDiv" style="background-image:url(${result.data.url})" data-path="${result.data.path}"/>
                                          <div class="coverImgOpt" id="delete-img"><i class="menu-icon fa fa-trash-o"></i></div>
                                        </div>`
-                    $('#cover-image').find('button').remove().end().prepend(content).end()
+                    $('#cover-image').find('#cover-image-add').remove().end().prepend(content).end()
                 } else {
                     showInfo('danger', result.messages)
                 }
@@ -344,6 +526,20 @@
         align-items: center;
         width: 20px;
         cursor: pointer;
+    }
+
+    .downloads-add,
+    #tags-add,
+    .guides-add,
+    #cover-image-add {
+        cursor: pointer;
+    }
+
+    .mainGuides,
+    .mainDownloads,
+    .mainTags {
+        display: flex;
+        align-items: center;
     }
 </style>
 

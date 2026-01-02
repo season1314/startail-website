@@ -122,19 +122,32 @@ export class ArticlesService {
      */
     async getDetail(id: string | number) {
         try {
-            const configLang = await this.configModel.findOne({ key: 'languages' }).select('property -_id')
+            const lang = await this.configModel.findOne({ key: 'languages' }).select('property -_id')
             const configCategories = await this.configModel.findOne({ key: 'categories' }).select('property -_id')
+            const configLang = lang?.property.map(obj => Object.keys(obj)[0]);
+
+
             if (id == 0) {
                 const categories = configCategories?.property.map((item) => {
                     return { [Object.keys(item)[0]]: false };
                 })
                 const os = [{ 'Window': false }, { 'macOS': false }, { 'iOS': false }, { 'Android': false }, { 'Linux': false }, { 'Web': false }]
+                let guides = {}, downloads = {}, title = {}, introduction = {}
+                configLang.map((item:string) => {
+                    guides[item] = []
+                    downloads[item] = []
+                    title[item] = ""
+                    introduction[item] = ""
+                })
                 return {
                     title: 'Articles',
                     articleId: id,
-                    configLang,
-                    tags:[],
-                    data: { categories, os }
+                    configLang: configLang,
+                    tags: [],
+                    categories,
+                    os,
+                    guides,
+                    downloads
                 }
             }
 

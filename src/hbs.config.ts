@@ -8,9 +8,9 @@ import * as fs from 'fs';
  */
 export function configureHbs(viewsDir: string) {
 
-    hbs.registerPartials(join(viewsDir, '/partials'));
+  hbs.registerPartials(join(viewsDir, '/partials'));
 
-    hbs.registerPartials(join(viewsDir,'/subpage'))
+  hbs.registerPartials(join(viewsDir, '/subpage'))
 
 
   hbs.registerHelper('eq', (a: any, b: any) => {
@@ -28,14 +28,20 @@ hbs.registerHelper('last', function (array) {
 });
 
 
-hbs.registerHelper('containsAny', function(item, ...values) {
+hbs.registerHelper('containsAny', function (item, ...values) {
   return values.includes(item);
 });
 
-hbs.registerHelper('keys', function(obj) {
+hbs.registerHelper('keys', function (obj) {
   return Object.keys(obj);
 });
 
-hbs.registerHelper('values', function(obj) {
+hbs.registerHelper('values', function (obj) {
   return Object.values(obj);
+});
+
+hbs.registerHelper('tojson', function (context) {
+  return new hbs.handlebars.SafeString(
+    JSON.stringify(context)
+  );
 });
