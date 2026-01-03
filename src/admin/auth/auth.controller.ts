@@ -107,7 +107,7 @@ export class AuthController {
  * type:avatar - update avatar
  */
   @Put('auth')
-  async edit(@Body() body, @Session() session: Record<string, any>) {
+  async edit(@Body() body:any, @Session() session: Record<string, any>) {
     if (body.type == "password") {
       const dto = new ResetPasswordDto()
       dto.id = session.user.id

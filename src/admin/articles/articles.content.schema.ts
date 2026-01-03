@@ -3,9 +3,9 @@ import { Document } from 'mongoose';
 
 
 @Schema({ timestamps: true })
-export class articles extends Document {
+export class Articles extends Document {
     @Prop({ type: Object, default: {} })
-    title: Record<string, any>
+    Name: Record<string, any>
 
     @Prop({ type: Object, default: {} })
     categories: Record<string, any>;
@@ -34,11 +34,14 @@ export class articles extends Document {
     @Prop()
     status: number;
 
+    @Prop()
+    createdBy?: string;
+
     createdAt: Date;
     updatedAt: Date
 }
 
-export const ArticlesSchema = SchemaFactory.createForClass(articles);
+export const ArticlesSchema = SchemaFactory.createForClass(Articles);
 
 
 ArticlesSchema.set('toJSON', { virtuals: true });

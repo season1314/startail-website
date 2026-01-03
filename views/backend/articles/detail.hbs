@@ -39,7 +39,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <strong class="card-title">Article</strong>
-                                <button class="btn btn-success btn-sm" style="float:right" id="new-button">
+                                <button class="btn btn-success btn-sm" style="float:right" id="submit">
                                     Save
                                 </button>
                             </div>
@@ -50,11 +50,11 @@
                                 <form class='form-horizontal'>
                                     <div class='row form-group'>
                                         <div class='col col-md-3'><label for='text-input'
-                                                class='form-control-label'>title<span style="color:red">*</span></label>
+                                                class='form-control-label'>name<span style="color:red">*</span></label>
                                         </div>
-                                        <div class='col-12 col-md-9'><input type='text' id='title-en'
-                                                placeholder='article title' class='form-control' name="title"
-                                                autocomplete="title" /><small class="help-block form-text color-red"
+                                        <div class='col-12 col-md-9'><input type='text' id='name-en'
+                                                placeholder='article name' class='form-control' name="name"
+                                                autocomplete="name" /><small class="help-block form-text color-red"
                                                 style="height:12px"></small>
                                         </div>
                                     </div>
@@ -65,8 +65,8 @@
                                         </div>
                                         <div class='col-12 col-md-9'> <textarea class="form-control"
                                                 id="introduction-en" rows="3"
-                                                placeholder="article description..."></textarea><small
-                                                class="help-block form-text color-red" style="height:12px"></small>
+                                                placeholder="article description..."></textarea>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
 
@@ -76,13 +76,14 @@
                                                     style="color:red">*</span></label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <div>{{#each categories}}
+                                            <div id="categories-en">{{#each categories}}
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" />
-                                                    {{#each (keys this)}} <label
-                                                        class="form-check-label">{{this}}</label>{{/each}}
+                                                    {{#each (keys this)}}
+                                                    <input class="form-check-input" type="checkbox" value="{{this}}" />
+                                                    <label class="form-check-label">{{this}}</label>{{/each}}
                                                 </div>{{/each}}
                                             </div>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
 
@@ -105,9 +106,8 @@
                                                     <i class="fa fa-plus-square"></i>
                                                 </div>
                                                 {{/if}}
-                                                <small class="help-block form-text color-red"
-                                                    style="height:12px"></small>
                                             </div>
+                                            <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
 
@@ -133,7 +133,7 @@
                                         <div class='col-12 col-md-9'>
                                             <div>
                                                 <div class="mainDownloads">
-                                                    <span  data-lang="en" class="downloads-add"> 
+                                                    <span data-lang="en" class="downloads-add">
                                                         <i class="fa  fa-gear"></i>
                                                     </span>
                                                 </div>
@@ -158,18 +158,20 @@
                                         </div>
                                     </div>
 
-                                    <div class='row form-group' id="os-en">
+                                    <div class='row form-group'>
                                         <div class='col col-md-3'><label for='text-input'
                                                 class='form-control-label'>operation
                                                 system</label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <div>{{#each os}}
+                                            <div id="os-en">{{#each os}}
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" />
-                                                    {{#each (keys this)}} <label
-                                                        class="form-check-label">{{this}}</label>{{/each}}
+                                                    {{#each (keys this)}}
+                                                    <input class="form-check-input" type="checkbox" value="{{this}}" />
+                                                    <label class="form-check-label">{{this}}</label>{{/each}}
                                                 </div>{{/each}}
+                                                <small class="help-block form-text color-red"
+                                                    style="height:12px"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -194,11 +196,11 @@
                                 <form class='form-horizontal'>
                                     <div class='row form-group'>
                                         <div class='col col-md-3'><label for='text-input'
-                                                class='form-control-label'>title</label>
+                                                class='form-control-label'>name</label>
                                         </div>
-                                        <div class='col-12 col-md-9'><input type='text' id='title-{{this}}'
-                                                placeholder='article title' class='form-control' name="title"
-                                                autocomplete="title" /><small class="help-block form-text color-red"
+                                        <div class='col-12 col-md-9'><input type='text' id='name-{{this}}'
+                                                placeholder='article name' class='form-control' name="name"
+                                                autocomplete="name" /><small class="help-block form-text color-red"
                                                 style="height:12px"></small>
                                         </div>
                                     </div>
@@ -286,17 +288,27 @@
         let currentLang
         let Tags = "{{tags}}" ? "{{tags}}" : []
         let TagsKey = ""
-        let ConfigLang = "{{configLang}}"
+        let ConfigLang = {{ tojson configLang }}
         let Downloads = {{ tojson downloads }}
         let Guides = {{ tojson guides }}
-        let title = {{ tojson title }}
+        let title = {{ tojson name }}
         let introduction = {{ tojson introduction }}
+        $(document).on('focus', 'input,textarea', function () {
+            const $small = $(this).next('small');
+            $small.text('');
+        })
+
+        $(document).on('change', '#categories-en input[type="checkbox"]', function () {
+            $('#categories-en').find('small').first().text('');
+        });
+
         $(document).ready(function () {
             $('#subpage-selected').text(Tags.length);
 
             //cover-image
             $('#cover-image').on('click', '#cover-image-add', function (event) {
                 event.preventDefault();
+                $('#cover-image').next('small').text('')
                 $('#images-file').click();
             })
 
@@ -319,7 +331,7 @@
             $('#tags-en').on('click', '#tags-add', async function (event) {
                 event.preventDefault();
                 fetchTags({ page: TagsPage });
-                $('#subpage-title').text('Tags');
+                $('#subpage-name').text('Tags');
                 $('#subpage-downloads').hide()
                 $('#subpage-tags').show();
                 $('#subpage-guides').hide();
@@ -376,7 +388,7 @@
             $('.downloads-add').on('click', async function (event) {
                 event.preventDefault();
                 currentLang = $(this).data('lang')
-                $('#subpage-title').text('Downloads');
+                $('#subpage-name').text('Downloads');
                 $('#subpage-guides').hide();
                 $('#subpage-tags').hide();
                 $('#subpage-downloads').show()
@@ -417,8 +429,7 @@
             $('.guides-add').on('click', async function (event) {
                 event.preventDefault();
                 currentLang = $(this).data('lang')
-                console.log(currentLang)
-                $('#subpage-title').text('Downloads');
+                $('#subpage-name').text('Downloads');
                 $('#subpage-guides').show();
                 $('#subpage-tags').hide();
                 $('#subpage-downloads').hide()
@@ -454,6 +465,15 @@
                 document.body.style.overflow = '';
                 $('#subpage').hide()
             })
+
+            //save
+            $('#submit').on('click', async function () {
+                event.preventDefault();
+                const data = await disposalData()
+                const result = await fetchData('/admin/articles/content', 'POST', data)
+                console.log(result)
+
+            })
         })
 
         //images file
@@ -466,7 +486,7 @@
                 if (result.code == 0) {
                     showInfo('success', result.messages)
                     const content = `<div style="display:flex;width:100%">
-                                         <div class="coverImgDiv" style="background-image:url(${result.data.url})" data-path="${result.data.path}"/>
+                                         <div class="coverImgDiv" id="cover-image-en" style="background-image:url(${result.data.url})" data-path="${result.data.path}"/>
                                          <div class="coverImgOpt" id="delete-img"><i class="menu-icon fa fa-trash-o"></i></div>
                                        </div>`
                     $('#cover-image').find('#cover-image-add').remove().end().prepend(content).end()
@@ -506,6 +526,44 @@
                 $('#subpage-tags').find('.subpagePagination').find('button').eq(0).prop('disabled', tagsList.data.page == 1)
                 $('#subpage-tags').find('.subpagePagination').find('button').eq(1).prop('disabled', tagsList.data.page == tagsList.data.totalPages)
             }
+        }
+
+        //disposal data
+        async function disposalData() {
+            let data = {
+                name: {},
+                introduction: {},
+                categories: [],
+            }
+            ConfigLang.map((item) => {
+                data.name[item] = $('#name-' + item).val()
+                data.introduction[item] = $('#introduction-' + item).val()
+                if (item == 'en') {
+                    data.categories = ($('#categories-' + item)).find('input[type="checkbox"]:checked').map(function () { return this.value; }).get()
+                    data.coverImg = $('#cover-image-' + item).attr('data-path')
+                    data.tags = Tags
+                    data.os = ($('#os-' + item)).find('input[type="checkbox"]:checked').map(function () { return this.value; }).get()
+                }
+            })
+            data.guides = Guides
+            data.downloads = Downloads
+            if (!data.name.en) {
+                $('#name-en').next('small').text('name is required')
+                return
+            }
+            if (!data.introduction.en) {
+                $('#introduction-en').next('small').text('introduction is required')
+                return
+            }
+            if (data.categories.length <= 0) {
+                $('#categories-en').next('small').text('please select at least one category')
+                return
+            }
+            if (!data.coverImg) {
+                $('#cover-image').next('small').text('cover image is required')
+                return
+            }
+            return data
         }
 
     </script>

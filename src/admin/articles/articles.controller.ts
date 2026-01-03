@@ -119,7 +119,7 @@ export class ArticlesController {
 
 
     /**
-     * 
+     * Init create / edit article page
      * @param id 
      * @returns 
      */
@@ -127,5 +127,17 @@ export class ArticlesController {
     @Render('backend/articles/detail')
     async contentDetail(@Param('id') id: string | number) {
         return await this.articles.getDetail(id)
+    }
+
+
+    @Post('content')
+    async createDetail(@Body() dto: any, @Session() session: Record<string, any>) {
+        try {
+            console.log(dto.name)
+            return await this.articles.createDetail(dto, session.user.name)
+        } catch (error) {
+            return { code: 1, messages: error }
+        }
+        return dto
     }
 }
