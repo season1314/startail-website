@@ -12,4 +12,17 @@ export class CommonMethods {
         const b = [...arr2].sort();
         return a.every((val, index) => val === b[index]);
     }
+
+    /**
+     * find keys for Object[{}] 
+     * @param array 
+     * @returns 
+     */
+    static async getArrayObjectKey(array: Record<string, any> | null | undefined): Promise<string[]> {
+        if (array) {
+            return array.map(obj => Object.keys(obj)[0]);
+        } else {
+            return []
+        }
+    }
 }

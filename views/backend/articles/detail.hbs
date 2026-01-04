@@ -54,8 +54,8 @@
                                         </div>
                                         <div class='col-12 col-md-9'><input type='text' id='name-en'
                                                 placeholder='article name' class='form-control' name="name"
-                                                autocomplete="name" /><small class="help-block form-text color-red"
-                                                style="height:12px"></small>
+                                                autocomplete="name" value="{{name.en}}" /><small
+                                                class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
                                     <div class='row form-group'>
@@ -65,7 +65,7 @@
                                         </div>
                                         <div class='col-12 col-md-9'> <textarea class="form-control"
                                                 id="introduction-en" rows="3"
-                                                placeholder="article description..."></textarea>
+                                                placeholder="article description...">{{introduction.en}}</textarea>
                                             <small class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
@@ -76,11 +76,13 @@
                                                     style="color:red">*</span></label>
                                         </div>
                                         <div class='col-12 col-md-9'>
-                                            <div id="categories-en">{{#each categories}}
+                                            <div id="categories-en">
+                                                {{#each categories}}
                                                 <div class="form-check form-check-inline">
-                                                    {{#each (keys this)}}
-                                                    <input class="form-check-input" type="checkbox" value="{{this}}" />
-                                                    <label class="form-check-label">{{this}}</label>{{/each}}
+                                                    {{#each this}}
+                                                    <input class="form-check-input" type="checkbox" value="{{@key}}"
+                                                        {{#if this}}checked{{/if}} />
+                                                    <label class="form-check-label">{{@key}}</label>{{/each}}
                                                 </div>{{/each}}
                                             </div>
                                             <small class="help-block form-text color-red" style="height:12px"></small>
@@ -94,10 +96,12 @@
                                         </div>
                                         <div class="mb-3">
                                             <div class='col-12 col-md-9' style="max-width:none" id="cover-image">
-                                                {{#if data.coverImg}}
+                                                {{#if coverImg}}
                                                 <div style="display:flex;width:100%">
-                                                    <div class="coverImgDiv" id="cover-image-en"></div>
-                                                    <div class="coverImgOpt">
+                                                    <div class="coverImgDiv" id="cover-image-en"
+                                                        style="background-image:url({{url}})" data-path="{{coverImg}}">
+                                                    </div>
+                                                    <div class="coverImgOpt" id="delete-img">
                                                         <i class="menu-icon fa fa-trash-o"></i>
                                                     </div>
                                                 </div>
@@ -107,7 +111,8 @@
                                                 </div>
                                                 {{/if}}
                                             </div>
-                                            <small class="help-block form-text color-red" style="height:12px"></small>
+                                            <small class="help-block form-text color-red"
+                                                style="height:12px;margin-left:15px"></small>
                                         </div>
                                     </div>
 
@@ -117,6 +122,10 @@
                                         </div>
                                         <div class='col-12 col-md-9'>
                                             <div class="mainTags">
+                                                {{#each matchedTags}}
+                                                <span class="badge badge-info" id="{{this._id}}"
+                                                    style="margin-right:5px">{{this.name}}</span>
+                                                {{/each}}
                                                 <span id="tags-add">
                                                     <i class="fa  fa-gear"></i>
                                                 </span>
@@ -134,6 +143,10 @@
                                             <div>
                                                 <div class="mainDownloads">
                                                     <span data-lang="en" class="downloads-add">
+                                                        {{#each downloads.en}}
+                                                        <span class="badge badge-info" data-path="{{this.des}}"
+                                                            style="margin-right:5px">{{this.des}}</span>
+                                                        {{/each}}
                                                         <i class="fa  fa-gear"></i>
                                                     </span>
                                                 </div>
@@ -150,6 +163,10 @@
                                             <div>
                                                 <div class="mainGuides">
                                                     <span data-lang="en" class="guides-add">
+                                                        {{#each guides.en}}
+                                                        <span class="badge badge-info" data-path="{{this.des}}"
+                                                            style="margin-right:5px">{{this.des}}</span>
+                                                        {{/each}}
                                                         <i class="fa  fa-gear"></i>
                                                     </span>
                                                 </div>
@@ -166,9 +183,10 @@
                                         <div class='col-12 col-md-9'>
                                             <div id="os-en">{{#each os}}
                                                 <div class="form-check form-check-inline">
-                                                    {{#each (keys this)}}
-                                                    <input class="form-check-input" type="checkbox" value="{{this}}" />
-                                                    <label class="form-check-label">{{this}}</label>{{/each}}
+                                                    {{#each this}}
+                                                    <input class="form-check-input" type="checkbox" value="{{@key}}"
+                                                        {{#if this}}checked{{/if}} />
+                                                    <label class="form-check-label">{{@key}}</label>{{/each}}
                                                 </div>{{/each}}
                                                 <small class="help-block form-text color-red"
                                                     style="height:12px"></small>
@@ -200,8 +218,8 @@
                                         </div>
                                         <div class='col-12 col-md-9'><input type='text' id='name-{{this}}'
                                                 placeholder='article name' class='form-control' name="name"
-                                                autocomplete="name" /><small class="help-block form-text color-red"
-                                                style="height:12px"></small>
+                                                autocomplete="name" value="{{lookup ../name this}}" /><small
+                                                class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
                                     <div class='row form-group'>
@@ -210,7 +228,7 @@
                                         </div>
                                         <div class='col-12 col-md-9'> <textarea class="form-control"
                                                 id="introduction-{{this}}" rows="3"
-                                                placeholder="article description..."></textarea><small
+                                                placeholder="article description...">{{lookup ../introduction this}}</textarea><small
                                                 class="help-block form-text color-red" style="height:12px"></small>
                                         </div>
                                     </div>
@@ -222,6 +240,10 @@
                                         <div class='col-12 col-md-9'>
                                             <div>
                                                 <div class="mainDownloads">
+                                                    {{#each (lookup ../downloads this)}}
+                                                    <span class="badge badge-info" data-path="{{this.path}}"
+                                                        style="margin-right:5px">{{this.des}}</span>
+                                                    {{/each}}
                                                     <span data-lang="{{this}}" class="downloads-add">
                                                         <i class="fa  fa-gear"></i>
                                                     </span>
@@ -238,6 +260,10 @@
                                         <div class='col-12 col-md-9'>
                                             <div>
                                                 <div class="mainGuides">
+                                                    {{#each (lookup ../guides this)}}
+                                                    <span class="badge badge-info" data-path="{{this.path}}"
+                                                        style="margin-right:5px">{{this.des}}</span>
+                                                    {{/each}}
                                                     <span data-lang="{{this}}" class="guides-add">
                                                         <i class="fa  fa-gear"></i>
                                                     </span>
@@ -284,9 +310,10 @@
 
     <!--Local Stuff-->
     <script type="text/javascript">
+        let id = "{{articleId}}" || 0
         let TagsPage = 1
         let currentLang
-        let Tags = "{{tags}}" ? "{{tags}}" : []
+        let Tags = {{{ tojson tags }}} || [];
         let TagsKey = ""
         let ConfigLang = {{ tojson configLang }}
         let Downloads = {{ tojson downloads }}
@@ -299,7 +326,7 @@
         })
 
         $(document).on('change', '#categories-en input[type="checkbox"]', function () {
-            $('#categories-en').find('small').first().text('');
+            $('#categories-en').next('small').text('');
         });
 
         $(document).ready(function () {
@@ -411,7 +438,7 @@
                         const des = $(item).find('input').eq(0).val()
                         const path = $(item).find('input').eq(1).val()
                         if (des && path) {
-                            const content = `<span class="badge badge-info" data-path ="${path}" id="des" style="margin-right:5px">${des}</span>`
+                            const content = `<span class="badge badge-info" data-path ="${path}" style="margin-right:5px">${des}</span>`
                             $('#downloads-' + currentLang).find('.downloads-add').before(content)
                         }
                         return {
@@ -452,7 +479,7 @@
                         const des = $(item).find('input').eq(0).val()
                         const path = $(item).find('input').eq(1).val()
                         if (des && path) {
-                            const content = `<span class="badge badge-info" data-path ="${path}" id="des" style="margin-right:5px">${des}</span>`
+                            const content = `<span class="badge badge-info" data-path ="${path}" style="margin-right:5px">${des}</span>`
                             $('#guides-' + currentLang).find('.guides-add').before(content)
                         }
                         return {
@@ -470,9 +497,26 @@
             $('#submit').on('click', async function () {
                 event.preventDefault();
                 const data = await disposalData()
-                const result = await fetchData('/admin/articles/content', 'POST', data)
-                console.log(result)
-
+                if (!data) return
+                data.id = id
+                let result
+                if (data.id == 0) {
+                    result = await fetchData('/admin/articles/detail', 'POST', data)
+                } else {
+                    result = await fetchData('/admin/articles/detail', 'PUT', data)
+                }
+                if (result.code == 1) {
+                    showInfo('danger', result.messages)
+                    return
+                }
+                if (result.code == 2) {
+                    const dom = Object.keys(result.messages)[0] + ''
+                    const value = Object.values(result.messages)[0][0]
+                    $(dom).next('small').text(value)
+                    return
+                }
+                window.history.replaceState(null, '', '/admin/articles/content');
+                window.location.href = '/admin/articles/content';
             })
         })
 
@@ -549,19 +593,19 @@
             data.downloads = Downloads
             if (!data.name.en) {
                 $('#name-en').next('small').text('name is required')
-                return
+                return false
             }
             if (!data.introduction.en) {
                 $('#introduction-en').next('small').text('introduction is required')
-                return
+                return false
             }
             if (data.categories.length <= 0) {
                 $('#categories-en').next('small').text('please select at least one category')
-                return
+                return false
             }
             if (!data.coverImg) {
                 $('#cover-image').next('small').text('cover image is required')
-                return
+                return false
             }
             return data
         }

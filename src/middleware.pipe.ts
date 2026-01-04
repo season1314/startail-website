@@ -2,9 +2,10 @@ import { Injectable, PipeTransform, UnauthorizedException, HttpException, CallHa
 import { ValidationPipe, ValidationError } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express'
 import { ArgumentMetadata } from '@nestjs/common';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './admin/auth/auth.service';
 import * as bcrypt from 'bcrypt';
 import { resolve } from 'path';
+import rateLimit from 'express-rate-limit';
 
 
 @Injectable()
@@ -51,13 +52,29 @@ export class PermissionValidationMiddleware implements NestMiddleware {
       if (url.endsWith('/list')) url = url.slice(0, -5)
       const key = url + ':' + req.method
       if (!permissions.includes('*') && !permissions.includes(key)) {
-        if (req.method == 'GET') { 
-          return res.render('backend/error', { title: 'error', messages: 'You did not have permission to access this page.' }); 
-        }else { 
-          throw new HttpException({ code: 1, messages: 'You did not have permission to this operation' }, HttpStatus.UNAUTHORIZED) 
+        if (req.method == 'GET') {
+          return res.render('backend/error', { title: 'error', messages: 'You did not have permission to access this page.' });
+        } else {
+          throw new HttpException({ code: 1, messages: 'You did not have permission to this operation' }, HttpStatus.UNAUTHORIZED)
         }
       }
     }
     next();
+  }
+}
+
+@Injectable()
+export class RateLimitingMiddleware implements NestMiddleware {
+  private limiter: any;
+  constructor() {
+    this.limiter = rateLimit({
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 200, // Limit each IP to 100 requests per window
+      message: 'Too many requests from this IP, please try again later.',
+    });
+    this.use = this.use.bind(this);
+  }
+  use(req: Request, res: Response, next: NextFunction): void {
+    this.limiter(req,res,next)
   }
 }

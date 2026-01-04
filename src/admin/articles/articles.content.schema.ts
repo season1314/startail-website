@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 @Schema({ timestamps: true })
 export class Articles extends Document {
     @Prop({ type: Object, default: {} })
-    Name: Record<string, any>
+    name: Record<string, any>
 
     @Prop({ type: Object, default: {} })
     categories: Record<string, any>;
@@ -33,6 +33,12 @@ export class Articles extends Document {
 
     @Prop()
     status: number;
+
+    @Prop({ default: 0 })
+    view: number
+
+    @Prop({ type: Object, default: {} })
+    users: Record<string, any>
 
     @Prop()
     createdBy?: string;

@@ -117,27 +117,74 @@ export class ArticlesController {
     }
 
 
-
     /**
      * Init create / edit article page
-     * @param id 
-     * @returns 
+     *
+     * HTTP Method:Get 
+     * Request query:
+     * - id:*(string):article Id
+     *
+     * Description:
+     *
+     * return data base id
+     * id equal 0 return empty structure
+     * base id find data and return
      */
-    @Get('content/:id')
+    @Get('detail/:id')
     @Render('backend/articles/detail')
     async contentDetail(@Param('id') id: string | number) {
         return await this.articles.getDetail(id)
     }
 
 
-    @Post('content')
+    /**
+      * Create new article
+      *
+      * HTTP Method:POST 
+      * Request query:
+      * - article data
+      *
+      * Description:
+      *
+      * valid english name,introduction not null
+      * valid last one category
+      * valid cover image not null 
+      * check the caches avoid duplicate submission by same english name
+      * create new article
+      */
+    @Post('detail')
     async createDetail(@Body() dto: any, @Session() session: Record<string, any>) {
-        try {
-            console.log(dto.name)
-            return await this.articles.createDetail(dto, session.user.name)
-        } catch (error) {
-            return { code: 1, messages: error }
-        }
-        return dto
+        return await this.articles.createDetail(dto, session.user.username)
+    }
+
+
+
+    @Put('detail')
+    async updateDetail(@Body() dto: any) {
+        return await this.articles.updateArticles(dto)
+    }
+
+
+
+
+
+
+
+    /**
+      * Get articles list
+      *
+      * HTTP Method:Get 
+      * Request query:
+      * - page:  * (number): Page number
+      * - entries: (number): entries : default 20
+      * - keyword：(string): username keyword for search
+      * 
+      * Description:
+      *
+      * base the page and keyword get tags list
+      */
+    @Get('content/list')
+    async contentList(@Query() dto: GetListDto) {
+        return await this.articles.contentList(dto)
     }
 }

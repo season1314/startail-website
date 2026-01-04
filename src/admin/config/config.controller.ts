@@ -6,7 +6,7 @@ import { GetListDto } from '../admin_core.dto'
 import { CreatePermissionDto, editPermissionDto } from './config.dto';
 import { ConfigService } from './config.service';
 import { validate } from 'class-validator';
-import { FormValidationPipe } from '../admin.pipe';
+import { FormValidationPipe } from '../../middleware.pipe';
 import session from 'express-session';
 
 @Controller()

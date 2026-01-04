@@ -6,7 +6,7 @@ import hbs from 'hbs';
 import { configureHbs } from './hbs.config';
 import { ValidationPipe,HttpException,Logger  } from '@nestjs/common';
 import {GlobalHttpExceptionFilter} from './admin/Http200ExceptionFilter';
-import {SessionValidationMiddleware,FormValidationPipe,PermissionValidationMiddleware} from './admin/admin.pipe'
+import {SessionValidationMiddleware,FormValidationPipe,PermissionValidationMiddleware,RateLimitingMiddleware} from './middleware.pipe'
 import { request } from 'http';
 const session = require('express-session');
 
@@ -22,6 +22,8 @@ async function bootstrap() {
   app.setViewEngine('hbs');
   configureHbs(viewsDir);
   app.useStaticAssets(join(__dirname, '..', 'public'));
+
+  app.use(new RateLimitingMiddleware().use)
 
   app.use(
     session({

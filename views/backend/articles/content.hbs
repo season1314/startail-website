@@ -37,32 +37,31 @@
                     <div style="width:100%">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Permission List</strong>
+                                <strong class="card-title">Article List</strong>
                             </div>
                             <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
                                 style="padding: 0 35px;height:80px;margin-bottom:0 !important">
-                                <!-- 左边搜索框 -->
+                                <!-- -->
                                 <div class="d-flex align-items-center">
                                     <input type="text" id="search-input" class="form-control form-control-sm me-2"
-                                        placeholder="Permission Name" style="width:180px">
+                                        placeholder="Article name" style="width:180px">
                                     <button id="btn-search" class="btn btn-primary btn-sm"
                                         style="margin-left:10px;">Search</button>
                                     <button id="btn-reset" class="btn btn-secondary btn-sm"
                                         style="margin-left:10px;">Reset</button>
                                 </div>
-                                <!-- 右边新增按钮 -->
+                                <!--  -->
                                 <button id="btn-add" class="btn btn-success btn-sm">New</button>
                             </div>
 
                             <div class="card-body" style="padding-top">
                                 <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
-                                    <table id="bootstrap-data-table" class="table table-striped table-bordered"
-                                        style="width:100%">
+                                    <table id="bootstrap-data-table" class="table table-striped" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Tag Name</th>
-                                                <th>Display Name</th>
-                                                <th>Type</th>
+                                                <th>Article Name</th>
+                                                <th>Cover Image</th>
+                                                <th>status</th>
                                                 <th>CreateBy</th>
                                                 <th>CreateAt</th>
                                                 <th>Opt</th>
@@ -111,32 +110,70 @@
 
             //Init table by bootstrap-table.js
             const columns = [
-                { data: "name" },
-                { data: "display" },
-                { data: "type" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const name = row.name.en.length > 20
+                            ? row.name.en.slice(0, 20) + '...'
+                            : row.name.en;
+                        return name
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<img src="${row.coverImg}" style="width:25px;height:25px"/>`
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const content = row.status == 0 ? `<button class="btn btn-sm btn-success btn-status" data-item="${row._id}">Online</button>` : `<button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Offline</button>`
+                        return content
+                    }
+                },
                 { data: "createdBy" },
                 { data: "createdAt" },
                 {
                     data: null,
                     render: function (data, type, row) {
                         const itemStr = JSON.stringify(row).replace(/"/g, '&quot;');
-                        return `<button class="btn btn-sm btn-primary btn-edit" data-item="${itemStr}">Edit</button>
+                        return ` <button class="btn btn-sm btn-info btn-info" data-item="${row._id}">view</button>
+                        <button class="btn btn-sm btn-primary btn-edit" data-item="${row._id}">Edit</button>
                         <button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Delete</button>`;
                     }
                 }
             ];
 
-            const table = initDataTable('#bootstrap-data-table', '/admin/articles/tags/list', columns);
+            const table = initDataTable('#bootstrap-data-table', '/admin/articles/content/list', columns);
 
 
             //Handle new button
             $('#btn-add').on('click', function (event) {
-                window.location.href = "/admin/articles/content/0"
+                window.location.href = "/admin/articles/detail/0"
             })
 
             //Handle edit button
             $('#bootstrap-data-table').on('click', '.btn-edit', function () {
+                const id = $(this).attr('data-item')
+                window.location.href = "/admin/articles/detail/" + id
             });
+
+            //Handle search
+            $('#btn-search').on('click', async function () {
+                event.preventDefault();
+                const kw = $('#search-input').val()
+                table.setKeyword(kw);
+                table.ajax.reload();
+            })
+
+            //Clear search
+            $('#btn-reset').on('click', async function () {
+                event.preventDefault();
+                $('#search-input').val('')
+                table.setKeyword('');
+                table.ajax.reload();
+            })
         });
     </script>
 </body>
