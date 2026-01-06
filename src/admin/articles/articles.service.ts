@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import type { response } from '../admin_interface'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Tags } from './articles.tags.schema'
-import { Config } from '../config/config.common.schema'
-import { Articles } from './articles.content.schema'
+import { Tags } from '../../schema/articles.tags.schema'
+import { Config } from '../../schema/config.common.schema'
+import { Articles } from '../../schema/articles.content.schema'
 import dayjs from 'dayjs';
 import { GetListDto } from '../admin_core.dto';
 import { TagsDto } from '../articles/articles.dto'
@@ -147,13 +147,13 @@ export class ArticlesService {
                 configCategories = await CommonMethods.getArrayObjectKey(categories?.property)
                 await this.memoryStorageService.set('categories', configCategories)
             }
-
             const configOs = [{ 'Window': false }, { 'macOS': false }, { 'iOS': false }, { 'Android': false }, { 'Linux': false }, { 'Web': false }]
 
             if (id == 0) {
                 const categories = configCategories.map((item) => {
                     return { [item]: false };
                 })
+
                 let guides = {}, downloads = {}, title = {}, introduction = {}
                 configLang.map((item: string) => {
                     guides[item] = []
@@ -162,14 +162,19 @@ export class ArticlesService {
                     introduction[item] = ""
                 })
                 return {
-                    title: 'Articles',
+                    title: 'Articles Create',
                     articleId: id,
                     configLang: configLang,
                     tags: [],
                     categories,
                     os: configOs,
                     guides,
-                    downloads
+                    downloads,
+                    bc: [
+                        { url: '/admin', name: 'Dashboard' },
+                        { url: '/admin/articles/content', name: 'Articles' },
+                        { url: '#', name: 'Create' },
+                    ],
                 }
             }
 
@@ -192,7 +197,7 @@ export class ArticlesService {
                 }
             })
             return {
-                title: 'Article Details',
+                title: 'Article Update',
                 articleId: data._id,
                 configLang: configLang,
                 tags: data.tags,
@@ -205,6 +210,11 @@ export class ArticlesService {
                 downloads: data.downloads,
                 coverImg: data.coverImg,
                 url: this.configService.get<string>('IMG_URL') + data.coverImg,
+                bc: [
+                    { url: '/admin', name: 'Dashboard' },
+                    { url: '/admin/articles/content', name: 'Articles' },
+                    { url: '#', name: 'Update' },
+                ],
             }
         } catch (error) {
             return { code: 1, messages: error }
@@ -244,7 +254,13 @@ export class ArticlesService {
         }
     }
 
-    async updateArticles(dto: any) {
+
+    /**
+     * Update current article
+     * @param dto 
+     * @returns 
+     */
+    async updateDetail(dto: any) {
         try {
             if (!dto.id) return { code: 1, messages: 'System error: Id is missing' }
             const verifyParameter = await this.checkArticle(dto)
@@ -260,7 +276,51 @@ export class ArticlesService {
             article.guides = dto.guides
             article.downloads = dto.downloads
             await article.save()
+            await this.memoryStorageService.delete('indexList') //delete the index List key in caches
             return { code: 0, messages: 'Successfully updated article' }
+        } catch (error) {
+            return { code: 1, messages: error }
+        }
+    }
+
+    /**
+     * Update article status 
+     * @param id 
+     * @returns 
+     */
+    async statusDetail(id: string | number) {
+        try {
+            if (!id) return { code: 1, messages: 'System error: Id is missing' }
+            const article = await this.contentModel.findOne({ _id: id })
+            if (!article) return { code: 1, messages: 'The article is not existed' }
+            if (article.status != 0) {
+                article.status = 0
+            } else {
+                article.status = 1
+            }
+            await article.save()
+            await this.memoryStorageService.delete('indexList') //delete the index List key in caches
+            return { code: 0, messages: 'Successfully updated article status' }
+
+        } catch (error) {
+            return { code: 1, messages: error }
+        }
+    }
+
+    /**
+     * Delete article
+     * @param id 
+     * @returns 
+     */
+
+    async deleteDetail(id: string | number) {
+        try {
+            if (!id) return { code: 1, messages: 'System error: Id is missing' }
+            const article = await this.contentModel.findOne({ _id: id })
+            if (!article) return { code: 1, messages: 'The article is not existed' }
+            await this.contentModel.deleteOne({ _id: id });
+            await this.memoryStorageService.delete('indexList') //delete the index List key in caches
+            return { code: 0, messages: 'Successfully deleted article' }
         } catch (error) {
             return { code: 1, messages: error }
         }

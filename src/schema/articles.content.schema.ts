@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document,Types} from 'mongoose';
 
 
 @Schema({ timestamps: true })
@@ -13,8 +13,8 @@ export class Articles extends Document {
     @Prop({ type: Object, default: {} })
     introduction: Record<string, any>
 
-    @Prop({ type: Object, default: {} })
-    tags: Record<string, any>
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Tags' }] })
+    tags: Types.ObjectId[] | any[]
 
     @Prop({ type: Object, default: {} })
     downloads: Record<string, any>

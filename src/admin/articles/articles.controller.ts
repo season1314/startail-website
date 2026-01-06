@@ -12,7 +12,7 @@ import { GetListDto } from '../admin_core.dto';
 
 @Controller()
 export class ArticlesController {
-    constructor(private readonly articles: ArticlesService) { }
+    constructor(private readonly articlesService: ArticlesService) { }
 
     /**
      *  Render tags page
@@ -22,6 +22,10 @@ export class ArticlesController {
     index() {
         return {
             title: 'Tags',
+            bc: [
+                { url: '/admin', name: 'Dashboard' },
+                { url: '#', name: 'Tags' },
+            ],
         };
     }
 
@@ -41,7 +45,7 @@ export class ArticlesController {
 
     @Get('tags/list')
     async list(@Query() dto: GetListDto) {
-        return this.articles.getTags(dto);
+        return this.articlesService.getTags(dto);
     }
 
 
@@ -63,7 +67,7 @@ export class ArticlesController {
 
     @Post('tags')
     async create(@Body() dto: TagsDto, @Session() session: Record<string, any>) {
-        return this.articles.createTag(dto, session.user.username)
+        return this.articlesService.createTag(dto, session.user.username)
     }
 
     /**
@@ -85,7 +89,7 @@ export class ArticlesController {
 
     @Put('tags')
     async update(@Body() dto: TagsDto) {
-        return this.articles.updateTag(dto)
+        return this.articlesService.updateTag(dto)
     }
 
     /**
@@ -102,7 +106,7 @@ export class ArticlesController {
      */
     @Delete('tags')
     async delete(@Query() body: any) {
-        return this.articles.deleteTag(body.id)
+        return this.articlesService.deleteTag(body.id)
     }
 
     /**
@@ -113,6 +117,10 @@ export class ArticlesController {
     contentIndex() {
         return {
             title: 'Articles',
+            bc: [
+                { url: '/admin', name: 'Dashboard' },
+                { url: '#', name: 'Articles' },
+            ],
         };
     }
 
@@ -133,7 +141,7 @@ export class ArticlesController {
     @Get('detail/:id')
     @Render('backend/articles/detail')
     async contentDetail(@Param('id') id: string | number) {
-        return await this.articles.getDetail(id)
+        return await this.articlesService.getDetail(id)
     }
 
 
@@ -154,20 +162,65 @@ export class ArticlesController {
       */
     @Post('detail')
     async createDetail(@Body() dto: any, @Session() session: Record<string, any>) {
-        return await this.articles.createDetail(dto, session.user.username)
+        return await this.articlesService.createDetail(dto, session.user.username)
     }
 
 
-
+    /**
+    * Update article info
+    *
+    * HTTP Method:PUT
+    * Request query:
+    * - article data
+    *
+    * Description:
+    *
+    * valid english name,introduction not null
+    * valid last one category
+    * valid cover image not null 
+    * updata article
+    */
     @Put('detail')
     async updateDetail(@Body() dto: any) {
-        return await this.articles.updateArticles(dto)
+        return await this.articlesService.updateDetail(dto)
     }
 
+    /**
+    * Update article status
+    *
+    * HTTP Method:PUT
+    * Request param:
+    * - article id
+    *
+    * Description:
+    *
+    * valid  article existed
+    * switch status
+    * delete cache by key
+    */
+    @Put('detail/:id')
+    async statusDetail(@Param('id') id: string | number) {
+        return await this.articlesService.statusDetail(id)
+    }
 
+    /**
+     * Delete article status
+     *
+     * HTTP Method:DELETE
+     * Request param:
+     * - article id
+     *
+     * Description:
+     *
+     * valid  article existed
+     * delete article
+     * delete cache by key
+     */
 
-
-
+    @Delete('detail')
+    async deleteDetail(@Query() dto: any) {
+        return await this.articlesService.deleteDetail(dto.id)
+    }
 
 
     /**
@@ -185,6 +238,6 @@ export class ArticlesController {
       */
     @Get('content/list')
     async contentList(@Query() dto: GetListDto) {
-        return await this.articles.contentList(dto)
+        return await this.articlesService.contentList(dto)
     }
 }

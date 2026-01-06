@@ -42,7 +42,7 @@
                             </div>
                             <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
                                 style="padding: 0 35px;height:80px">
-                                
+
                                 <div class="d-flex align-items-center">
                                     <input type="text" id="search-input" class="form-control form-control-sm me-2"
                                         placeholder="Username /Email / Name" style="width:180px">
@@ -51,13 +51,14 @@
                                     <button id="btn-reset" class="btn btn-secondary btn-sm"
                                         style="margin-left:10px;">Reset</button>
                                 </div>
-               
+
                                 <button id="btn-add" class="btn btn-success btn-sm">New</button>
                             </div>
 
                             <div class="card-body" style="padding-top: 0">
                                 <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
-                                    <table id="bootstrap-data-table" class="table table-striped table-bordered" style="width:100%">
+                                    <table id="bootstrap-data-table" class="table table-striped"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>Username</th>
@@ -66,8 +67,8 @@
                                                 <th>Status</th>
                                                 <th>Password</th>
                                                 <th>Permissions</th>
-                                                <th>CreateTime</th>
-                                                <th>CreateBy</th>
+                                                <th>CreatedTime</th>
+                                                <th>CreatedBy</th>
                                                 <th>Opt</th>
                                             </tr>
                                         </thead>
@@ -78,8 +79,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
@@ -106,22 +105,69 @@
     <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
     <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
     <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
-    <script src="/backend/js/init/datatables-init.js"></script>
+    <script src="/backend/js/bootstrap-table.js"></script>
 
     <!--Local Stuff-->
     <script type="text/javascript">
-        window.addEventListener('DOMContentLoaded', async () => {
-            var page = 1
-            //Init data
-            fetchList(page)
+        let _date;
+        $(document).ready(function () {
+            //Init table by bootstrap-table.js
+            const columns = [
+                { data: 'username' },
+                { data: 'nickname' },
+                { data: 'email' },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const isOnline = row.status === 0;
+                        const btnClass = isOnline ? 'success' : 'secondary';
+                        const btnText = isOnline ? 'On' : 'Off';
+                        return `<button class="btn btn-${btnClass} btn-sm btn-status" data-item="${row._id}">${btnText}</button>`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const item = JSON.stringify(row).replace(/"/g, '&quot;');
+                        return `<button class="btn btn-sm btn-danger btn-password" data-item="${item}">Reset</button>`
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<button class="btn btn-sm btn-primary btn-permissions" data-item="${row._id}">Set</button`
+                    }
+                },
+                { data: "createdAt" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const createdBy = row.createdBy ? row.createdBy : 'System'
+                        return createdBy
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const itemStr = JSON.stringify(row).replace(/"/g, '&quot;');
+                        return `<button class="btn btn-sm btn-primary btn-edit" data-item="${itemStr}">Edit</button>
+                        <button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Delete</button>`;
+                    }
+                }
+            ];
+            const table = initDataTable('#bootstrap-data-table', '/admin/admin/list', columns);
 
-            //Handle new button
+            //Create
             $('#btn-add').on('click', function (event) {
                 event.preventDefault();
-                subpageOpen().create()
+                $('#subpage-title').text('Create New');
+                $('#subpage-create').show();
+                $('#subpage-edit').hide();
+                $('#subpage-password').hide();
+                $('#subpage-permissions').hide()
+                $('#subpage').show();
             })
 
-            //Handle subpage create submit
             $('#subpage-create-submit').on('click', async function (event) {
                 event.preventDefault();
                 const username = $('#create-username').val();
@@ -142,17 +188,43 @@
                     showInfo('danger', result.messages)
                 } else {
                     showInfo('success', result.messages)
+                    table.setKeyword('');
+                    table.ajax.reload()
                     $('#subpage').find('input').val('').end().find('small').text('').end().hide();
-                    page = 1
-                    fetchList(page)
                 }
             })
+
             $('#subpage-create-submit').next('button').on('click', async function (event) {
                 event.preventDefault();
-                subpageReset().create()
+                $('#subpage')
+                    .find('input')
+                    .val('')
+                    .end()
+                    .find('small')
+                    .text('')
+                    .end()
             });
 
-            //Handle subpage editInfo submit
+
+            //Edit
+            $('#bootstrap-data-table').on('click', '.btn-edit', function () {
+                const item = JSON.parse($(this).attr('data-item'));
+                _data = item
+                Object.entries(_data).forEach(([key, value]) => {
+                    if (key == '_id') $('#edit-username').data('id', value);
+                    const dom = $('#edit-' + key)
+                    if (!dom) return
+                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+                })
+                $('#subpage-title').text('Edit Info');
+                $('#subpage-create').hide();
+                $('#subpage-password').hide();
+                $('#subpage-edit').show();
+                $('#subpage-permissions').hide()
+                $('#subpage').show();
+            });
+
+
             $('#subpage-edit-submit').on('click', async function (event) {
                 event.preventDefault();
                 const id = $('#edit-username').data('id');
@@ -172,17 +244,38 @@
                     subpageError(result.messages, 'edit')
                 } else {
                     showInfo('success', result.messages)
+                    table.ajax.reload(null, false)
                     $('#subpage').find('input').val('').end().find('small').text('').end().hide();
-                    fetchList(page)
                 }
             })
 
             $('#subpage-edit-submit').next('button').on('click', async function (event) {
                 event.preventDefault();
-                subpageReset().edit()
+                Object.entries(_data).forEach(([key, value]) => {
+                    const dom = $('#edit-' + key)
+                    if (!dom) return
+                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+                })
             });
 
-            //update password
+            //Rest password
+            $('#bootstrap-data-table').on('click', '.btn-password', function () {
+                const item = JSON.parse($(this).attr('data-item'));
+                _data = item
+                Object.entries(_data).forEach(([key, value]) => {
+                    if (key == '_id') $('#password-username').data('id', value);
+                    const dom = $('#password-' + key)
+                    if (!dom) return
+                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+                })
+                $('#subpage-title').text('Rest Password');
+                $('#subpage-create').hide();
+                $('#subpage-edit').hide();
+                $('#subpage-password').show();
+                $('#subpage-permissions').hide()
+                $('#subpage').show();
+            });
+
             $('#subpage-password-submit').on('click', async function (event) {
                 event.preventDefault();
                 const id = $('#password-username').data('id');
@@ -206,72 +299,77 @@
 
             $('#subpage-password-submit').next('button').on('click', async function (event) {
                 event.preventDefault();
-                subpageReset().create()
+                $('#subpage')
+                    .find('input')
+                    .val('')
+                    .end()
+                    .find('small')
+                    .text('')
+                    .end()
             });
-        });
 
-
-        //FetchData
-        async function fetchList(page) {
-            const getData = await fetchData('/admin/admin/list', 'GET', { page });
-            const html = getData.data.list.map(item => {
-                const itemStr = JSON.stringify(item).replace(/"/g, '&quot;');
-                return `<tr>
-                      <td>${item.username}</td>
-                      <td>${item.nickname ? item.nickname : ''}</td>
-                      <td>${item.email}</td>
-                      <td>${item.status === 0 || item.status === 2? `<button class="btn btn-success btn-sm">On</button>` : `<button class="btn btn-secondary btn-sm">Off</button>`}</td>
-                      <td><button class="btn btn-sm btn-danger btn-password" data-item="${itemStr}">Reset</button></td>
-                      <td><button class="btn btn-sm btn-primary btn-permissions" data-item="${item._id}">Set</button></td>
-                      <td>${item.createdAt}</td>
-                      <td>${item.createdBy ? item.createdBy : 'System'}</td>
-                      <td>
-                        <button class="btn btn-sm btn-primary btn-edit" data-item="${itemStr}">Edit</button>
-                        <button class="btn btn-sm btn-danger btn-delete" data-item="${item._id}">Delete</button>
-                      </td>
-                      </tr>`}).join('');
-            $('#bootstrap-data-table tbody').html(html);
-        }
-
-        //Handle edit button
-        $(document).on('click', '.btn-edit', function () {
-            const item = JSON.parse($(this).attr('data-item'));
-            subpageOpen().edit(item)
-        });
-
-        //Handle reset password button
-        $(document).on('click', '.btn-password', function () {
-            const item = JSON.parse($(this).attr('data-item'));
-            subpageOpen().password(item)
-        });
-        //Handle delete button
-        $(document).on('click', '.btn-delete', function () {
-            const id = $(this).attr('data-item');
-            openConfirm({
-                title: 'Confirm Delete',
-                context: 'Once the admin is deleted,it cannot be undone. Are you sure you?',
-                onConfirm: async () => {
-                    loading().show()
-                    const result = await fetchData('/admin/admin', 'DELETE', {
-                        id,
-                    })
-                    if (result.code !== 0) {
-                        showInfo('danger', result.messages)
-                    } else {
-                        showInfo('success', result.messages)
-                        $(this).closest('tr').remove();
+            //Delete
+            $(document).on('click', '.btn-delete', function () {
+                const id = $(this).attr('data-item');
+                openConfirm({
+                    title: 'Confirm Delete',
+                    context: 'Once the admin is deleted,it cannot be undone. Are you sure you?',
+                    onConfirm: async () => {
+                        loading().show()
+                        const result = await fetchData('/admin/admin', 'DELETE', {
+                            id,
+                        })
+                        if (result.code !== 0) {
+                            showInfo('danger', result.messages)
+                        } else {
+                            showInfo('success', result.messages)
+                            table.ajax.reload()
+                        }
+                        loading().hide()
                     }
-                    loading().hide()
+                })
+            });
+
+            //Permission
+            $('#bootstrap-data-table').on('click', '.btn-permissions', function () {
+                const id = $(this).attr('data-item');
+                window.location.href = "/admin/admin/permissions?id=" + id
+            });
+
+            //Switch
+            $('#bootstrap-data-table').on('click', '.btn-status', async function () {
+                const id = $(this).attr('data-item');
+                loading().show()
+                const result = await fetchData('/admin/admin', 'PUT', {
+                    id,
+                    type: 'switchStatus'
+                })
+                if (result.code !== 0) {
+                    showInfo('danger', result.messages)
+                } else {
+                    showInfo('success', result.messages)
+                    table.ajax.reload()
                 }
+                loading().hide()
             })
-        });
+            //Handle search
+            $('#btn-search').on('click', async function () {
+                event.preventDefault();
+                const kw = $('#search-input').val()
+                table.setKeyword(kw);
+                table.ajax.reload();
+            })
 
-        //Handle permission set button
-        $(document).on('click', '.btn-permissions', function () {
-            const id = $(this).attr('data-item');
-            window.location.href = "/admin/admin/permissions?id=" + id 
-        });
 
+            //Clear search
+            $('#btn-reset').on('click', async function () {
+                event.preventDefault();
+                $('#search-input').val('')
+                table.setKeyword('');
+                table.ajax.reload();
+            })
+
+        })
     </script>
 </body>
 <style>

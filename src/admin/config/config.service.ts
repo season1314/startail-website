@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { PermissionsSchema } from './config.permissions.schema';
+import { PermissionsSchema } from '../../schema/config.permissions.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreatePermissionDto, editPermissionDto, configDto } from './config.dto'
-import { Permissions } from './config.permissions.schema';
-import { Config } from './config.common.schema'
+import { Permissions } from '../../schema/config.permissions.schema';
+import { Config } from '../../schema/config.common.schema'
 import type { response } from '../admin_interface'
 import dayjs from 'dayjs';
 import { GetListDto } from '../admin_core.dto'

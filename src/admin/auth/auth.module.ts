@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { Admin, AdminSchema } from '../admin/admin.schema';
+import { Admin, AdminSchema } from '../../schema/admin.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({

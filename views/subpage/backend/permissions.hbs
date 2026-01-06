@@ -147,60 +147,10 @@
         $small.text('');
     })
     
-    const subpageOpen = () => {
-        return {
-            create: () => {
-                $('#subpage-title').text('Create New');
-                $('#subpage-create').show();
-                $('#subpage-edit').hide();
-                $('#subpage').show();
-            },
-            edit: (data) => {
-                _data = data
-                Object.entries(_data).forEach(([key, value]) => {
-                    if (key == '_id') $('#edit-id').data('id', value).text(value);
-                    const dom = $('#edit-' + key)
-                    if (!dom) return
-                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
-                })
-                $('#subpage-title').text('Edit Info');
-                $('#subpage-create').hide();
-                $('#subpage-edit').show();
-                $('#subpage').show();
-            },
-        }
-    }
-
-
     const subpageError = (messages, type) => {
         Object.entries(messages).forEach(([key, value]) => {
             const dom = $('#' + type + '-' + key)
             if (dom) dom.next('small').text(value[0])
         });
-    }
-
-
-    const subpageReset = () => {
-        return {
-            create: () => {
-                $('#subpage')
-                    .find('input:not([type="radio"])')
-                    .val('')
-                    .find('input[type="radio"]')
-                    .prop('checked', false)
-                    .end()
-                    .find('small')
-                    .text('')
-                    .end()
-            },
-            edit: (data) => {
-                Object.entries(_data).forEach(([key, value]) => {
-                    if (key == '_id') $('#edit-id').data('id', value).val(value);
-                    const dom = $('#edit-' + key)
-                    if (!dom) return
-                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
-                })
-            }
-        };
     }
 </script>

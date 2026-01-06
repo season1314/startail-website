@@ -154,84 +154,16 @@
 </div>
 
 <script>
-  var _date;
   $(document).on('focus', 'input', function () {
     const $small = $(this).next('small');
     $small.text('');
 
   })
 
-  const subpageOpen = () => {
-    return {
-      create: () => {
-        $('#subpage-title').text('Create New');
-        $('#subpage-create').show();
-        $('#subpage-edit').hide();
-        $('#subpage-password').hide();
-        $('#subpage-permissions').hide()
-        $('#subpage').show();
-      },
-      edit: (data) => {
-        _data = data
-        Object.entries(_data).forEach(([key, value]) => {
-          if (key == '_id') $('#edit-username').data('id', value);
-          const dom = $('#edit-' + key)
-          if (!dom) return
-          dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
-        })
-        $('#subpage-title').text('Edit Info');
-        $('#subpage-create').hide();
-        $('#subpage-password').hide();
-        $('#subpage-edit').show();
-        $('#subpage-permissions').hide()
-        $('#subpage').show();
-      },
-
-      password: (data) => {
-        _data = data
-        Object.entries(_data).forEach(([key, value]) => {
-          if (key == '_id') $('#password-username').data('id', value);
-          const dom = $('#password-' + key)
-          if (!dom) return
-          dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
-        })
-        $('#subpage-title').text('Rest Password');
-        $('#subpage-create').hide();
-        $('#subpage-edit').hide();
-        $('#subpage-password').show();
-        $('#subpage-permissions').hide()
-        $('#subpage').show();
-      }
-    }
-  }
-
-
   const subpageError = (messages, type) => {
     Object.entries(messages).forEach(([key, value]) => {
       const dom = $('#' + type + '-' + key)
       if (dom) dom.next('small').text(value[0])
     });
-  }
-
-
-  const subpageReset = () => {
-    return {
-      create: () => {
-        $('#subpage')
-          .find('input')
-          .val('')
-          .end()
-          .find('small')
-          .text('')
-          .end()
-      },
-      edit: (data) => {
-        Object.entries(_data).forEach(([key, value]) => {
-          const dom = $('#edit-' + key)
-          if (!dom) return
-          dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
-        })
-      }
-    };
   }
 </script>

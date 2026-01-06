@@ -37,7 +37,7 @@ export class AdminController {
     return {
       title: 'Administrator',
       bc: [
-        { url: '#', name: 'Dashboard' },
+        { url: '/admin', name: 'Dashboard' },
         { url: '#', name: 'Administrator' },
       ],
     };
@@ -173,16 +173,14 @@ export class AdminController {
       *
       */
 
-
-
   @Get('permissions')
   @Render('backend/admin/permissions')
   permissionsIndex() {
     return {
       title: 'Administrator',
       bc: [
-        { url: '#', name: 'Dashboard' },
-        { url: '#', name: 'Administrator' },
+        { url: '/admin', name: 'Dashboard' },
+        { url: '/admin/admin', name: 'Administrator' },
         { url: '#', name: 'Permission' },
       ],
     };

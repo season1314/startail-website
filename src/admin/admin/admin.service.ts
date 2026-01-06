@@ -2,13 +2,13 @@
 import { Injectable, BadRequestException, UsePipes } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Admin } from './admin.schema';
+import { Admin } from '../../schema/admin.schema';
 import { CreateAdminDto, ResetPasswordDto, UpdateInfoAdminDto } from './admin.dto';
 import { GetListDto } from '../admin_core.dto';
 import * as bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
 import type { response } from '../admin_interface'
-import { Permissions } from '../config/config.permissions.schema';
+import { Permissions } from '../../schema/config.permissions.schema';
 import { CommonMethods } from '../admin.common.method';
 
 @Injectable()
@@ -69,13 +69,13 @@ export class AdminService {
     }
     const [list, total] = await Promise.all([
       this.adminModel
-        .find()
+        .find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(dto.entries)
         .select('-password -sessionID')
         .lean(),
-      this.adminModel.countDocuments(),
+      this.adminModel.find(query).countDocuments(),
     ]);
 
     const formatList = list.map(item => ({

@@ -3,7 +3,7 @@ import type { response } from '../admin_interface'
 import { ValidateAdminDto, ResetPasswordDto } from '../admin/admin.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Admin } from '../admin/admin.schema';
+import { Admin } from '../../schema/admin.schema';
 import * as bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';

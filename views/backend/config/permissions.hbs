@@ -57,7 +57,7 @@
 
                             <div class="card-body" style="padding-top: 0">
                                 <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
-                                    <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                    <table id="bootstrap-data-table" class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th>Permission Name</th>
@@ -108,8 +108,8 @@
 
     <!--Local Stuff-->
     <script type="text/javascript">
+        let _data;
         $(document).ready(function () {
-
             //Init table by bootstrap-table.js
             const columns = [
                 { data: "name" },
@@ -131,13 +131,15 @@
             const table = initDataTable('#bootstrap-data-table', '/admin/config/permissions/list', columns);
 
 
-            //Handle new button
+            //Create
             $('#btn-add').on('click', function (event) {
                 event.preventDefault();
-                subpageOpen().create()
+                $('#subpage-title').text('Create New');
+                $('#subpage-create').show();
+                $('#subpage-edit').hide();
+                $('#subpage').show();
             })
 
-            //Handle subpage create submit
             $('#subpage-create-submit').on('click', async function (event) {
                 event.preventDefault();
                 const name = $('#create-name').val();
@@ -169,12 +171,34 @@
                     table.ajax.reload()
                 }
             })
+
             $('#subpage-create-submit').next('button').on('click', async function (event) {
                 event.preventDefault();
-                subpageReset().create()
+                $('#subpage').find('input:not([type="radio"])').val('').find('input[type="radio"]')
+                    .prop('checked', false)
+                    .end()
+                    .find('small')
+                    .text('')
+                    .end()
             });
 
-            //Handle subpage editInfo submit
+            //Edit
+            $('#bootstrap-data-table').on('click', '.btn-edit', function () {
+                const item = JSON.parse($(this).attr('data-item'));
+                _data = item
+                Object.entries(_data).forEach(([key, value]) => {
+                    if (key == '_id') $('#edit-id').data('id', value).text(value);
+                    const dom = $('#edit-' + key)
+                    if (!dom) return
+                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+                })
+                $('#subpage-title').text('Edit Info');
+                $('#subpage-create').hide();
+                $('#subpage-edit').show();
+                $('#subpage').show();
+            });
+
+
             $('#subpage-edit-submit').on('click', async function (event) {
                 event.preventDefault();
                 const id = $('#edit-id').data('id');
@@ -198,16 +222,15 @@
 
             $('#subpage-edit-submit').next('button').on('click', async function (event) {
                 event.preventDefault();
-                subpageReset().edit()
+                Object.entries(_data).forEach(([key, value]) => {
+                    if (key == '_id') $('#edit-id').data('id', value).val(value);
+                    const dom = $('#edit-' + key)
+                    if (!dom) return
+                    dom.prop('tagName') == 'P' ? dom.text(value) : dom.val(value)
+                })
             });
 
-            //Handle edit button
-            $('#bootstrap-data-table').on('click', '.btn-edit', function () {
-                const item = JSON.parse($(this).attr('data-item'));
-                subpageOpen().edit(item)
-            });
-
-            //Handle delete button
+            //Delete
             $('#bootstrap-data-table').on('click', '.btn-delete', function () {
                 const id = $(this).attr('data-item');
                 openConfirm({
@@ -228,7 +251,6 @@
                     }
                 })
             });
-
         });
     </script>
 </body>

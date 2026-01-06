@@ -107,7 +107,6 @@
     <!--Local Stuff-->
     <script type="text/javascript">
         $(document).ready(function () {
-
             //Init table by bootstrap-table.js
             const columns = [
                 {
@@ -128,7 +127,10 @@
                 {
                     data: null,
                     render: function (data, type, row) {
-                        const content = row.status == 0 ? `<button class="btn btn-sm btn-success btn-status" data-item="${row._id}">Online</button>` : `<button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Offline</button>`
+                        const isOnline = row.status === 0;
+                        const btnClass = isOnline ? 'btn-success btn-status' : 'btn-danger btn-status';
+                        const btnText = isOnline ? 'Online' : 'Offline';
+                        const content = `<button class="btn btn-sm ${btnClass} btn-status" data-item="${row._id}">${btnText}</button>`;
                         return content
                     }
                 },
@@ -173,6 +175,48 @@
                 $('#search-input').val('')
                 table.setKeyword('');
                 table.ajax.reload();
+            })
+
+            //Handle updateStatus
+            $('#bootstrap-data-table').on('click', '.btn-status', async function () {
+                const id = $(this).attr('data-item')
+                if (!id) {
+                    showInfo('danger', 'System error: id is null')
+                    return
+                }
+                const result = await fetchData('/admin/articles/detail/' + id, 'PUT')
+                if (result.code == 0) {
+                    showInfo('success', result.messages)
+                    table.ajax.reload(null, false)
+                } else {
+                    showInfo('danger', result.messages)
+                }
+            });
+
+            //Handle delete
+            $('#bootstrap-data-table').on('click', '.btn-delete', async function () {
+                const id = $(this).attr('data-item')
+                if (!id) {
+                    showInfo('danger', 'System error: id is null')
+                    return
+                }
+                openConfirm({
+                    title: 'Confirm Delete',
+                    context: 'Once the article is deleted,it cannot be undone. Are you sure you?',
+                    onConfirm: async () => {
+                        loading().show()
+                        const result = await fetchData('/admin/articles/detail/', 'DELETE', {
+                            id,
+                        })
+                        if (result.code !== 0) {
+                            showInfo('danger', result.messages)
+                        } else {
+                            showInfo('success', result.messages)
+                            table.ajax.reload()
+                        }
+                        loading().hide()
+                    }
+                })
             })
         });
     </script>

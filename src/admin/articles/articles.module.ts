@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ArticlesController } from './articles.controller';
 import { ArticlesService } from './articles.service';
-import { Tags, TagsSchema } from './articles.tags.schema';
+import { Tags, TagsSchema } from '../../schema/articles.tags.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigSchema, Config } from '../config/config.common.schema'
-import { Articles, ArticlesSchema } from './articles.content.schema';
+import { ConfigSchema, Config } from '../../schema/config.common.schema'
+import { Articles, ArticlesSchema } from '../../schema/articles.content.schema';
 import { MemoryStorageService } from '../../memory-storage.service'
 
 @Module({
