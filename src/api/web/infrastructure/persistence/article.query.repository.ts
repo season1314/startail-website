@@ -24,4 +24,9 @@ export class ArticlesQueryRepository implements IArticlesQueryRepository {
             .exec();
         return (rawData as any[]).map(item => new ArticlesModel(item));
     }
+
+    async searchPublishedList(page: number, limit: number, keyword: string,category:string) {
+        const skip = (page - 1) * limit;
+
+    }
 }

@@ -4,9 +4,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import hbs from 'hbs';
 import { configureHbs } from './hbs.config';
-import { ValidationPipe,HttpException,Logger  } from '@nestjs/common';
-import {GlobalHttpExceptionFilter} from './admin/Http200ExceptionFilter';
-import {SessionValidationMiddleware,FormValidationPipe,PermissionValidationMiddleware,RateLimitingMiddleware} from './middleware.pipe'
+import { ValidationPipe, HttpException, Logger } from '@nestjs/common';
+import { GlobalHttpExceptionFilter } from './admin/Http200ExceptionFilter';
+import { SessionValidationMiddleware, FormValidationPipe, PermissionValidationMiddleware, RateLimitingMiddleware } from './middleware.pipe'
 import { request } from 'http';
 const session = require('express-session');
 
@@ -16,7 +16,13 @@ async function bootstrap() {
 
 
   const viewsDir = join(__dirname, '..', 'views');
-
+  
+  //CORS
+  app.enableCors({
+    origin: 'http://localhost:3000', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, 
+  });
 
   app.setBaseViewsDir(viewsDir);
   app.setViewEngine('hbs');
@@ -31,9 +37,9 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 259200000, 
+        maxAge: 259200000,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',  
+        secure: process.env.NODE_ENV === 'production',
       },
     }),
   );

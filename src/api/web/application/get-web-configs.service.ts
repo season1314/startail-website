@@ -14,6 +14,7 @@ export class GetWebConfigsService {
 
   async menu(lang: string = 'en') {
     const menu = await this.configQuery.getConfigItem('categories')
+    console.log(menu)
     return menu.toConfigDto(lang);
   }
 }

@@ -1,16 +1,17 @@
 import dayjs from 'dayjs';
 export class ArticlesModel {
     private readonly _id: string;
-    private readonly _name: Record<string, string>;
-    private readonly _introduction: Record<string, string>;
+    private readonly _name: Record<string, any>;
+    private readonly _introduction: Record<string, any>;
     private readonly _coverImg: string;
     private readonly _view: number;
     private readonly _createdAt: Date;
     private readonly _downloads: Record<string, any>
     private readonly _tags: any[]
-    private readonly _createdInfo: Record<string, string>
+    private readonly _createdInfo: Record<string, any>
     private readonly _guides: Record<string, any>
-    private readonly _os: Record<string, string>
+    private readonly _os: Record<string, any>
+    private readonly _categories: Record<string, any>
 
     constructor(data: any) {
         this._id = data._id?.toString();
@@ -23,15 +24,25 @@ export class ArticlesModel {
         this._downloads = data.downloads || {};
         this._guides = data.guides || {};
         this._os = data.os || []
+        this._createdInfo = data.createdInfo
     }
 
+    getFiles(lang: string = 'en'): any[] {
 
-    getGuides(lang: string = 'en'): any[] {
-        return this._guides[lang] || this._guides['en']
-    }
+        let downloads = this._downloads[lang] || this._downloads['en']
+        let guides = this._guides[lang] || this._guides['en']
 
-    getDownloads(lang: string = 'en'): any[] {
-        return this._downloads[lang] || this._downloads['en']
+        if (downloads) {
+            downloads = downloads.filter((item: { des: string; path: string }) =>
+                item.des?.trim() && item.path?.trim()
+            );
+        }
+        if (guides) {
+            guides = guides.filter((item: { des: string; path: string }) =>
+                item.des?.trim() && item.path?.trim()
+            );
+        }
+        return [...downloads, ...guides]
     }
 
     getTitle(lang: string = 'en'): string {
@@ -72,8 +83,8 @@ export class ArticlesModel {
             views: this._view,
             createdAt: this.getFormattedTime(this._createdAt),
             tags: this.getFormattedTags(lang),
-            downloads: this.getDownloads(lang),
-            guides: this.getGuides(lang)
+            files: this.getFiles(lang),
+            createdInfo: this._createdInfo
         };
     }
 }

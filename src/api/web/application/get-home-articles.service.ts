@@ -19,9 +19,7 @@ export class GetHomeArticlesService {
     const limit = 20;
     const cdnBase = this.configService.get<string>('IMG_URL') || '';
     const articles = await this.articleQuery.getPublishedList(page, limit);
-    const menu = await this.configQuery.getConfigItem('categories')
-    const articlesList = articles.map(article => article.toArticlesDto(lang, cdnBase));
-    const menuList = menu.toConfigDto(lang);
-    return { articlesList, menuList }
+    const articlesList = articles.map(article => article.toArticlesDto(lang, cdnBase));;
+    return articlesList
   }
 }
