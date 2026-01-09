@@ -11,7 +11,6 @@ export class ArticlesQueryRepository implements IArticlesQueryRepository {
         @InjectModel(Articles.name) private readonly articlesModel: Model<Articles>,
     ) { }
 
-
     async getPublishedList(page: number, limit: number) {
         const skip = (page - 1) * limit;
         const rawData = await this.articlesModel
@@ -25,8 +24,20 @@ export class ArticlesQueryRepository implements IArticlesQueryRepository {
         return (rawData as any[]).map(item => new ArticlesModel(item));
     }
 
-    async searchPublishedList(page: number, limit: number, keyword: string,category:string) {
+    async categoryPublishedList(page: number, limit: number, category: string) {
         const skip = (page - 1) * limit;
-
+        const query: any = {
+            status: 0,
+            categories: { $regex: `^${category}$`, $options: 'i' }
+        }
+        const rawData = await this.articlesModel
+            .find(query)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .populate('tags')
+            .lean()
+            .exec();
+        return (rawData as any[]).map(item => new ArticlesModel(item));
     }
 }

@@ -8,3 +8,7 @@ export interface ArticleItem {
     summary: string,
     files:{des:string,path:string}[]
 }
+
+export interface PageProps {
+    params: Promise<{ slug: string }>;
+  }

@@ -8,8 +8,7 @@ export class ConfigsController {
     ) { }
 
     @Get('menu')
-    async menu(@Query() page: number = 1) {
-        const data = await this.getWebConfigsService.menu();
-        return { code: 0, data }
+    async menu() {
+        return await this.getWebConfigsService.menu();
     }
 }

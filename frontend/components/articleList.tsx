@@ -6,7 +6,6 @@ import { ArticleItem } from "@/interface"
 import { useState, useRef, useEffect } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
 
-
 export default function ArticlesList({ initialData, path}: { initialData: ArticleItem[], path: string}) {
     const [articles, setArticles] = useState(initialData);
     const [page, setPage] = useState(1);
@@ -21,6 +20,7 @@ export default function ArticlesList({ initialData, path}: { initialData: Articl
         try {
             const nextPage = page + 1;
             const res = await http.get<any>(path + nextPage);
+            console.log(res)
             if (res.length === 0) { setHasMore(false); } else {
                 setArticles(prev => [...prev, ...res]);
                 setPage(nextPage);
@@ -51,8 +51,7 @@ export default function ArticlesList({ initialData, path}: { initialData: Articl
 
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-zinc-50 font-sans dark:bg-black pt-2">
-            <div className="rounded-sm border border-slate-200 bg-white px-6 py-0 w-[700]">
+            <div className="rounded-[2px] border border-slate-200 bg-white px-6 py-0 w-[700]">
                 {articles.map((item: ArticleItem) => {
                     return <Articles key={item.id} article={item} />
                 })}
@@ -66,6 +65,5 @@ export default function ArticlesList({ initialData, path}: { initialData: Articl
                     </div>
                 </div>) : (<></>)}
             </div>
-        </div>
     );
 }

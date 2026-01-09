@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import http from "@/lib/http"
+import Login from "@/components/login"
+import { sendRegisterEmail } from "@/server/sendMail"
 
 
 const geistSans = Geist({
@@ -21,18 +23,24 @@ export const metadata: Metadata = {
 };
 
 //Get menu
-const result = await http.get<any>('menu');
-const menu = result.data || [];
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const menu = await http.get<any>('menu');
   return (
     <html lang="en">
-      <body>
+      <body className="select-none">
         <Header menu={menu} />
-        {children}
+        <div className="flex min-h-[calc(100vh-65px)] bg-zinc-50 font-sans dark:bg-black pt-[10px] justify-center">
+          <div>
+            {children}
+          </div>
+          <div>
+            <Login />
+          </div>
+        </div>
       </body>
     </html>
   );

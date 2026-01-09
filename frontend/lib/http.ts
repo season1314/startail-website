@@ -14,7 +14,8 @@ export async function request(url: string, method = 'GET', body = {}) {
         throw new Error(errorData.message || `请求失败，状态码: ${response.status}`);
     }
 
-    return response.json();
+    const result = await response.json()
+    return result.data;
 }
 
 
@@ -22,7 +23,7 @@ const http = {
     get: async <T>(url: string, options?: RequestInit): Promise<T> => {
         return await request(url, 'GET');
     },
-
+    
     post: async <T>(url: string, body?: any, options?: RequestInit): Promise<T> => {
         return await request(url, 'POST', body = body ? JSON.stringify(body) : undefined);
     },

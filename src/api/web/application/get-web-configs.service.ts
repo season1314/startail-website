@@ -12,9 +12,14 @@ export class GetWebConfigsService {
     private readonly configQuery: IConfigsQueryRepository
   ) { }
 
+
+  /**
+   * Get menu(categories)
+   * @param lang 
+   * @returns 
+   */
   async menu(lang: string = 'en') {
     const menu = await this.configQuery.getConfigItem('categories')
-    console.log(menu)
-    return menu.toConfigDto(lang);
+    return { code: 0, data: menu.toConfigDto(lang) };
   }
 }

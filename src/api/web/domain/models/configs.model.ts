@@ -20,7 +20,18 @@ export class ConfigsModel {
         });
     }
 
+    getConfigObjectKeys() {
+        return this._properties.map(item => {
+            const keys = Object.keys(item)[0];
+            return keys
+        })
+    }
+
     toConfigDto(lang: string = 'en') {
         return this.getFormattedProperty(lang);
+    }
+
+    toConfigObjectKeys() {
+        return this.getConfigObjectKeys()
     }
 }

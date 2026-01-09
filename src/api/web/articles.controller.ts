@@ -11,4 +11,10 @@ export class ArticlesController {
     async findAll(@Query('page', new ParseIntPipe()) page: number = 1) {
         return await this.getHomeArticlesService.execute(page);
     }
+
+    @Get('articles/category/:category')
+    async findAllByCategory(@Param('category') category: string, @Query('page', new ParseIntPipe()) page: number = 1
+    ) {
+        return await this.getHomeArticlesService.category(page, 'en', category)
+    }
 }
