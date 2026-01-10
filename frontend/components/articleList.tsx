@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
-import http from "@/lib/http"
+import http from "@/server/config/http"
 import Articles from "@/components/article"
-import { ArticleItem } from "@/interface"
+import type { ArticleProps } from '@/app/page'
 import { useState, useRef, useEffect } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
+import { getArticleList } from "@/server/article";
 
-export default function ArticlesList({ initialData, path}: { initialData: ArticleItem[], path: string}) {
+export default function ArticlesList({ initialData, path}: { initialData: ArticleProps[], path: string}) {
     const [articles, setArticles] = useState(initialData);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -19,8 +20,7 @@ export default function ArticlesList({ initialData, path}: { initialData: Articl
         setLoading(true);
         try {
             const nextPage = page + 1;
-            const res = await http.get<any>(path + nextPage);
-            console.log(res)
+            const res = await getArticleList(path + nextPage);
             if (res.length === 0) { setHasMore(false); } else {
                 setArticles(prev => [...prev, ...res]);
                 setPage(nextPage);
@@ -52,7 +52,7 @@ export default function ArticlesList({ initialData, path}: { initialData: Articl
 
     return (
             <div className="rounded-[2px] border border-slate-200 bg-white px-6 py-0 w-[700]">
-                {articles.map((item: ArticleItem) => {
+                {articles.map((item: ArticleProps) => {
                     return <Articles key={item.id} article={item} />
                 })}
                 {hasMore ? (<div className="flex items-center justify-center space-x-4 h-[320px]" ref={bottomRef}>

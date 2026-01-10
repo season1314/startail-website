@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ArticlesController } from './articles.controller';
 import { ArticlesQueryRepository } from './infrastructure/persistence/article.query.repository';
 import { ConfigsQueryRepository } from './infrastructure/persistence/config.query.repository'
+import { TagsQueryRepository } from './infrastructure/persistence/tags.query.repository'
 import { UsersQueryRepository } from './infrastructure/persistence/user.query.repository'
 import { Articles, ArticlesSchema } from '@schema/articles.content.schema';
 import { Config, ConfigSchema } from '@schema/config.common.schema'
@@ -41,6 +42,10 @@ import { OptUserAuthService } from './application/opt-user-auth.service'
         {
             provide: 'IUsersQueryRepository',
             useClass: UsersQueryRepository,
+        },
+        {
+            provide: 'ITagsQueryRepository',
+            useClass: TagsQueryRepository,
         },
     ],
 })

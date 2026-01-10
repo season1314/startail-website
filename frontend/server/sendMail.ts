@@ -1,7 +1,7 @@
 "use server";
 import { setCache, getCache, clearCache } from "@/server/config/cache"
 import type { RegistrationRecord } from "@/server/interface/cacheInterface"
-import http from "@/lib/http"
+import http from "@/server/config/http"
 import { hash } from "@/server/config/hash"
 import { mail } from "@/server/config/mail"
 import { Html } from "next/document";
@@ -14,19 +14,14 @@ export async function sendRegisterEmail(email: string, key: string) {
   const cacheKey = key + email
   let cachedData = await getCache<RegistrationRecord>(cacheKey) || { email: email, count: 0, reg: "", hash: "" };
 
-  if (cachedData && cachedData.count >= 10) {
-    return { code: 1, messages: 'Daily email limit reached. Please try again after 24 hours.' }
-  }
-  if (cachedData && cachedData.reg == 'existed') {
-    return { code: 1, messages: 'This email is already registered. Please log in.' }
-  }
+
+  if (cachedData && cachedData.count >= 10) { return { code: 1, messages: 'Daily email limit reached. Please try again after 24 hours.' }}
+  if (cachedData && cachedData.reg == 'existed') { return { code: 1, messages: 'This email is already registered. Please log in.' }}
 
   //check db by request nestJs server 
-  const user = await http.get('user/email/' + email)
-  if (user) {
-    cachedData.reg = 'existed'
-    return { code: 1, messages: 'This email is already registered. Please log in.' }
-  }
+  const user = await http.get<any>('user/email/' + email)
+  console.log(user)
+  if (user.data) { cachedData.reg = 'existed'; return { code: 1, messages: 'This email is already registered. Please log in' }}
 
   //create hash
   cachedData.hash = await hash(email)

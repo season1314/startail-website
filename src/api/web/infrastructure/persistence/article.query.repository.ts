@@ -40,4 +40,22 @@ export class ArticlesQueryRepository implements IArticlesQueryRepository {
             .exec();
         return (rawData as any[]).map(item => new ArticlesModel(item));
     }
+
+    async tagsPublishedList(page: number, limit: number, tagId: string) {
+        const skip = (page - 1) * limit;
+        const query: any = {
+            status: 0,
+            tags: { $in: tagId }
+        }
+        const rawData = await this.articlesModel
+            .find(query)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .populate('tags')
+            .lean()
+            .exec();
+        return (rawData as any[]).map(item => new ArticlesModel(item));
+
+    }
 }

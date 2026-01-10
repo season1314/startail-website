@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react";
 import { valid } from "@/lib/validation";
 import Link from "next/link"
+import { cn } from "@/lib/utils";
+import { errorLabelVariants } from "@/lib/style"
 
 export default function SendMail({ title, introduction, sendKey }: { title: string, introduction: string, sendKey: string }) {
     const [email, setEmail] = useState("");
@@ -25,20 +27,19 @@ export default function SendMail({ title, introduction, sendKey }: { title: stri
             setPending(false)
             return
         }
-        const result = await sendRegisterEmail(email,sendKey)
+        const result = await sendRegisterEmail(email, sendKey)
         if (result.code == 0) {
             setInfo(true)
             setLabel(result.messages)
             const _email = result.email || ""
             setEmail(_email)
-            setPending(false)
         } else {
             setInfo(true)
             setLabel(result.messages)
             const _email = result.email || ""
             setEmail(_email)
-            setPending(false)
         }
+        setPending(false)
         return
     };
     return (
@@ -68,7 +69,7 @@ export default function SendMail({ title, introduction, sendKey }: { title: stri
                                         disabled={pending}
                                         required
                                     />
-                                    <div className="text-[10px] text-destructive font-medium tracking-tight uppercase h-[8px] px-[5px]">
+                                    <div className={cn({ errorLabelVariants })}>
                                         {emailError}
                                     </div> </>) : (<><Label htmlFor="email">{label}</Label><a href={`mailto:${email}`} className="text-[14px] text-slate-500 truncate transition-colors hover:text-blue-600 hover:underline underline-offset-4 cursor-pointer">{email}</a></>)}
                         </div>

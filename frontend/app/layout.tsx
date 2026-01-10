@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
-import http from "@/lib/http"
+import http from "@/server/config/http"
 import Login from "@/components/login"
 import { sendRegisterEmail } from "@/server/sendMail"
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +31,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="select-none">
-        <Header menu={menu} />
+        <Header menu={menu.data} />
         <div className="flex min-h-[calc(100vh-65px)] bg-zinc-50 font-sans dark:bg-black pt-[10px] justify-center">
           <div>
             {children}

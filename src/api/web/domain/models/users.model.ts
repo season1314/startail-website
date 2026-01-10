@@ -14,6 +14,13 @@ export class UsersModel {
         this._password = data.password;
         this._email = data.email;
     }
+    
+    get id() { return this._id; }
+    get nickname() { return this._nickname; }
+    get email() { return this._email; }
+    get password() { return this._password; }
+    get avatar() { return this._avatar; }
+    get status() { return this._status; }
 
     toUserDto() {
         return {

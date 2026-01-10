@@ -7,14 +7,14 @@ export interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
-export default async function CategoryPage({ params }: PageProps) {
+export default async function TagsPage({ params }: PageProps) {
     const { slug } = await params;
     try {
-        const articleList = await getArticleList(`articles/category/${slug}?page=1`);
+        const articleList = await getArticleList(`articles/tags/${slug}?page=1`);
         return (
             <ArticlesList
                 initialData={articleList}
-                path={`articles/category/${slug}?page=`}
+                path={`articles/tags/${slug}?page=`}
             />
         );
     } catch (error: any) {

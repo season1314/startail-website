@@ -1,7 +1,7 @@
 "use server";
-import type { Mail } from "@/server/interface/commonInterface"
+import type { MailProps } from "@/server/interface/commonInterface"
 import nodemailer from "nodemailer";
-export async function mail(data: Mail) {
+export async function mail(data: MailProps) {
     const { email, from, subject, html } = data
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',

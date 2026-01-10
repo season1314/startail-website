@@ -1,11 +1,12 @@
 "use client";
-import { ArticleItem } from "@/interface"
 import { Badge } from "@/components/ui/badge"
 import { ListChevronsUpDown, ListChevronsDownUp, Download } from 'lucide-react';
 import { useState } from 'react';
+import type { ArticleProps } from '@/app/page'
 
 
-export default function Articles({ article }: { article: ArticleItem }) {
+
+export default function Articles({ article }: { article: ArticleProps }) {
     const [isExpanded, setIsExpanded] = useState(false);
     return (
         <div className="py-6 border-b border-slate-200">
