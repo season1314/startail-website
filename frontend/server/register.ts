@@ -15,7 +15,6 @@ export interface UserProps {
 export async function checkCache(code: string, key: string) {
     const email = await decodeData(code)
     const cacheData: RegistrationRecord | undefined = await getCache('reg:' + email)
-    console.log(cacheData)
     if (!cacheData) return false
     if (cacheData.hash != key) return false
     return await verify(cacheData.email, cacheData.hash)

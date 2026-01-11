@@ -16,5 +16,6 @@ export interface UserProps {
 
 export async function getArticleList(url: string) {
     const res = (await http.get(url)) as { data: ArticleProps[] };
+    console.log(res)
     return res.data
 }

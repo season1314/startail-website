@@ -35,7 +35,7 @@ export default function signUp() {
 
         async function load() {
             const isExpired = await checkCache(urlCode, urlKey);
-            if (!isExpired) { setChild("showExpired") }
+            if (!isExpired) { setChild("showExpired"); return }
             setChild("showReg")
         }
     }, []);

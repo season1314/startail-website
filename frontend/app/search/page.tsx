@@ -1,3 +1,4 @@
+"use client";
 import { notFound } from 'next/navigation';
 import http from "@/server/config/http";
 import ArticlesList from "@/components/articleList";
@@ -7,8 +8,6 @@ export interface PageProps {
     params: Promise<{ tagId: string }>;
 }
 
-export default async function TagsPage({ params }: PageProps) {
+export default async function SearchPage({ params }: PageProps) {
     const { tagId } = await params;
-    const articleList = await getArticleList(`articles/tag/${tagId}?page=1`);
-    return ( <ArticlesList initialData={articleList} path={`articles/tag/${tagId}?page=`} tagId={tagId}/>);
 }

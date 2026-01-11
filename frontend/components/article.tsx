@@ -3,11 +3,15 @@ import { Badge } from "@/components/ui/badge"
 import { ListChevronsUpDown, ListChevronsDownUp, Download } from 'lucide-react';
 import { useState } from 'react';
 import type { ArticleProps } from '@/app/page'
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { articleTags } from "@/lib/style"
 
 
 
-export default function Articles({ article }: { article: ArticleProps }) {
+export default function Articles({ article, tagId }: { article: ArticleProps, tagId?: string }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const params = useParams();
     return (
         <div className="py-6 border-b border-slate-200">
             <h3 className="text-lg font-bold">{article.title}</h3>
@@ -50,9 +54,11 @@ export default function Articles({ article }: { article: ArticleProps }) {
             <div className="mt-2">
                 {article.tags.map((tag) => {
                     return (
-                        <Badge className="h-5 rounded-full px-1.5 font-mono tabular-nums mr-3 mt-3" key={tag.id}>
-                            {tag.name}
-                        </Badge>
+                        <Link href={`/tags/${tag.name}/${tag.id}`} className={`w-full cursor-pointer mr-3 mt-3`} key={tag.id}>
+                            <Badge className={articleTags} variant={(tagId != tag.id) ? `outline` : 'default'}>
+                                {tag.name}
+                            </Badge>
+                        </Link>
                     )
                 })}
             </div>

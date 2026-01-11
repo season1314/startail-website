@@ -20,7 +20,6 @@ export async function sendRegisterEmail(email: string, key: string) {
 
   //check db by request nestJs server 
   const user = await http.get<any>('user/email/' + email)
-  console.log(user)
   if (user.data) { cachedData.reg = 'existed'; return { code: 1, messages: 'This email is already registered. Please log in' }}
 
   //create hash
