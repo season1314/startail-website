@@ -5,7 +5,7 @@ type CacheValue = any;
 const globalForCache = global as unknown as { serverCache: LRUCache<string, CacheValue> };
 
 const options = {
-    max: 2000,
+    max: 10000,
     ttl: 0,
 };
 

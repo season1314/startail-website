@@ -1,11 +1,11 @@
 "use server";
-import { setCache, getCache, clearCache } from "@/server/config/cache"
+import { setCache, getCache, clearCache } from "@/server/methods/cache"
 import type { RegistrationRecord } from "@/server/interface/cacheInterface"
-import http from "@/server/config/http"
-import { hash } from "@/server/config/hash"
-import { mail } from "@/server/config/mail"
+import http from "@/server/methods/http"
+import { hash } from "@/server/methods/hash"
+import { mail } from "@/server/methods/mail"
 import { Html } from "next/document";
-import { encodeData } from "@/server/config/crypto"
+import { encodeData } from "@/server/methods/crypto"
 
 export async function sendRegisterEmail(email: string, key: string) {
 

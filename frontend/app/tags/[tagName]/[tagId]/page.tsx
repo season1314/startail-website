@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
-import http from "@/server/config/http";
+import http from "@/server/methods/http";
 import ArticlesList from "@/components/articleList";
-import { getArticleList } from "@/server/article";
+import { getArticleList } from "@/server/controller/article";
 
 export interface PageProps {
     params: Promise<{ tagId: string }>;

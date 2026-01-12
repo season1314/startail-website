@@ -4,3 +4,11 @@ export interface RegistrationRecord {
     count: number;
     hash: string;
 }
+
+export interface UserData {
+    email: string;
+    avatar?: string;
+    nickname: string;
+    id: string;
+    key: string
+}

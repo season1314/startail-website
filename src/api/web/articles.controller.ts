@@ -21,7 +21,6 @@ export class ArticlesController {
     @Get('articles/tag/:tag')
     async findAllByTags(@Param('tag') tagId: string, @Query('page', new ParseIntPipe()) page: number = 1
     ) {
-        console.log('11111111111')
         return await this.getHomeArticlesService.tags(page, 'en', tagId)
     }
 }

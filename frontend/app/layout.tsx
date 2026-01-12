@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
-import http from "@/server/config/http"
-import Login from "@/components/login"
-import { sendRegisterEmail } from "@/server/sendMail"
+import http from "@/server/methods/http"
+import { sendRegisterEmail } from "@/server/controller/sendMail"
+import Sidebar from "@/components/sidebar"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +37,7 @@ export default async function RootLayout({
             {children}
           </div>
           <div>
-            <Login />
+            <Sidebar menu={menu.data}/>
           </div>
         </div>
       </body>

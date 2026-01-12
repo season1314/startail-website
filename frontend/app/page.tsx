@@ -1,10 +1,11 @@
 
 import Image from "next/image";
-import http from "@/server/config/http"
+import http from "@/server/methods/http"
 import Articles from "@/components/article"
 import ArticlesList from "@/components/articleList";
 import Header from "@/components/header";
-import { getArticleList } from "@/server/article";
+import { getArticleList } from "@/server/controller/article";
+import { EmptyOutline } from "@/components/empty"
 
 
 export interface ArticleProps {
@@ -21,7 +22,8 @@ export interface ArticleProps {
 
 export default async function Home() {
   const articleList = await getArticleList('articles?page=1');
-  return (
-    <ArticlesList initialData={articleList} path="articles?page=" />
-  );
+  if (articleList && articleList.length > 0) {
+    return (<ArticlesList initialData={articleList} path="articles?page=" />);
+  }
+  return (<EmptyOutline />);
 }

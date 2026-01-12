@@ -63,4 +63,16 @@ export class OptUserAuthService {
     user.nickname = user.nickname ? user.nickname : isUserExisted.nickname
     const result = await this.userQuery.updateUser(user)
   }
+
+
+  /**
+   * Get user with password(email)
+   * @param email 
+   * @returns 
+   */
+  async userByEmailWithPass(email: string) {
+    const user = await this.userQuery.getUserInfoByEmail(email)
+    if (user) return { code: 0, data: user.toUserDtoWithPass() }
+    return { code: 0, data: null }
+  }
 }

@@ -75,6 +75,11 @@ export class RateLimitingMiddleware implements NestMiddleware {
     this.use = this.use.bind(this);
   }
   use(req: Request, res: Response, next: NextFunction): void {
-    this.limiter(req,res,next)
+    const clientIp = req.ip || req.socket.remoteAddress;
+    const isLocal = clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === 'localhost';
+    if (isLocal) {
+      return next();
+    }
+    this.limiter(req, res, next)
   }
 }

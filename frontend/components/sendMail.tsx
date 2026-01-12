@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button"
 import { LoaderCircle } from 'lucide-react';
-import { sendRegisterEmail } from "@/server/sendMail"
+import { sendRegisterEmail } from "@/server/controller/sendMail"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -69,7 +69,7 @@ export default function SendMail({ title, introduction, sendKey }: { title: stri
                                         disabled={pending}
                                         required
                                     />
-                                    <div className={cn({ errorLabelVariants })}>
+                                    <div className={cn(errorLabelVariants)}>
                                         {emailError}
                                     </div> </>) : (<><Label htmlFor="email">{label}</Label><a href={`mailto:${email}`} className="text-[14px] text-slate-500 truncate transition-colors hover:text-blue-600 hover:underline underline-offset-4 cursor-pointer">{email}</a></>)}
                         </div>

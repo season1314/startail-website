@@ -1,11 +1,11 @@
 "use client";
 import SendMail from "@/components/sendMail"
 import { useState, useEffect } from "react";
-import { checkCache, createUser } from "@/server/register"
+import { checkCache, createUser } from "@/server/controller/auth"
 import { useSearchParams, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LoaderCircle } from 'lucide-react';
-import { sendRegisterEmail } from "@/server/sendMail"
+import { sendRegisterEmail } from "@/server/controller/sendMail"
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { valid } from "@/lib/validation";
@@ -45,6 +45,12 @@ export default function signUp() {
         const { id, value: inputValue } = e.target;
         setValue((prev) => ({ ...prev, [id]: inputValue, }));
     };
+
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        const { id } = e.target;
+        setError((prev) => ({ ...prev, [id]: "" }))
+    }
 
     const submit = async () => {
         setPending(true)
@@ -96,6 +102,7 @@ export default function signUp() {
                                             value={value.nickname}
                                             disabled={pending}
                                             onChange={handleChange}
+                                            onFocus={handleFocus}
                                             required
                                         />
                                         <div className={cn(errorLabelVariants)}>
@@ -110,6 +117,7 @@ export default function signUp() {
                                             value={value.password}
                                             disabled={pending}
                                             onChange={handleChange}
+                                            onFocus={handleFocus}
                                             required
                                         />
                                         <div className={cn(errorLabelVariants)}>
@@ -124,6 +132,7 @@ export default function signUp() {
                                             value={value.confirmPwd}
                                             disabled={pending}
                                             onChange={handleChange}
+                                            onFocus={handleFocus}
                                             required
                                         />
                                         <div className={cn(errorLabelVariants)}>

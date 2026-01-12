@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, ParseIntPipe, HttpStatus, HttpCode, Post, Body,Put } from '@nestjs/common';
+import { Controller, Get, Query, Param, ParseIntPipe, HttpStatus, HttpCode, Post, Body, Put } from '@nestjs/common';
 import { OptUserAuthService } from './application/opt-user-auth.service';
 
 @Controller('/api/v1/web')
@@ -14,13 +14,18 @@ export class UsersController {
 
     @Post('user')
     async createUser(@Body() user: any) {
-        const aa =  await this.optUserAuthService.createUser(user)
+        const aa = await this.optUserAuthService.createUser(user)
         console.log(aa)
         return aa
     }
 
     @Put('user')
-    async updateUser(@Body() user:any){
+    async updateUser(@Body() user: any) {
         return await this.optUserAuthService.updataUser(user)
+    }
+
+    @Get('user/password/:email')
+    async getUserInfoWithPsd(@Param('email') email: string) {
+        return await this.optUserAuthService.userByEmailWithPass(email);
     }
 }

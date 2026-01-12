@@ -15,6 +15,8 @@ import { GetWebConfigsService } from './application/get-web-configs.service';
 import { ConfigsController } from './configs.controller'
 import { UsersController } from './user.controller'
 import { OptUserAuthService } from './application/opt-user-auth.service'
+import { SearchController } from './search.controller'
+import { OptPropertiesSearchService } from '@app/opt-properties-search.service';
 
 @Module({
     imports: [
@@ -25,11 +27,12 @@ import { OptUserAuthService } from './application/opt-user-auth.service'
             { name: User.name, schema: UserSchema }
         ]),
     ],
-    controllers: [ArticlesController, ConfigsController, UsersController],
+    controllers: [ArticlesController, ConfigsController, UsersController, SearchController],
     providers: [
         GetHomeArticlesService,
         GetWebConfigsService,
         OptUserAuthService,
+        OptPropertiesSearchService,
 
         {
             provide: 'IArticlesQueryRepository',

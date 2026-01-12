@@ -1,17 +1,19 @@
 "use client";
 import Image from "next/image";
-import http from "@/server/config/http"
+import http from "@/server/methods/http"
 import Articles from "@/components/article"
 import type { ArticleProps } from '@/app/page'
 import { useState, useRef, useEffect } from 'react';
 import { Skeleton } from "@/components/ui/skeleton"
-import { getArticleList } from "@/server/article";
+import { getArticleList } from "@/server/controller/article";
+import { RefreshCcwIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function ArticlesList({ initialData, path, tagId }: { initialData: ArticleProps[], path: string, tagId?: string }) {
     const [articles, setArticles] = useState(initialData);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMore, setHasMore] = useState(initialData.length > 5 ? true : false);
 
     const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -50,10 +52,13 @@ export default function ArticlesList({ initialData, path, tagId }: { initialData
     }, [page, hasMore, loading]);
 
 
+    
+
+
     return (
         <div className="rounded-[2px] border border-slate-200 bg-white px-6 py-0 w-[700]">
             {articles.map((item: ArticleProps) => {
-                return <Articles key={item.id} article={item} tagId={tagId}/>
+                return <Articles key={item.id} article={item} tagId={tagId} />
             })}
             {hasMore ? (<div className="flex items-center justify-center space-x-4 h-[320px]" ref={bottomRef}>
                 <Skeleton className="h-12 w-12 rounded-full" />

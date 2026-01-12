@@ -56,6 +56,27 @@ export class ArticlesQueryRepository implements IArticlesQueryRepository {
             .lean()
             .exec();
         return (rawData as any[]).map(item => new ArticlesModel(item));
+    }
 
+    async searchPublishedList(page: number, limit: number, keyword: string, category: string, langs: string[]) {
+        const skip = (page - 1) * limit;
+        const regex = new RegExp(keyword, 'i')
+        const fields = ['name', 'introduction'];
+        //search all languages in name or introductions
+        const orConditions = fields.flatMap(field =>
+            langs.map(lang => ({
+                [`${field}.${lang}`]: regex
+            }))
+        );
+        const query: any = {
+            status: 0,
+            $or: orConditions
+        }
+        //if category not null
+        if (category) { query.categories = category; }
+
+        const rawData = await this.articlesModel.find(query).skip(skip).limit(limit).populate('tags').lean().exec()
+
+        return (rawData as any[]).map(item => new ArticlesModel(item))
     }
 }
