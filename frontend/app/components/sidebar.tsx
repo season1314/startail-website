@@ -1,11 +1,11 @@
 "use client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
+import { Label } from "@/app/components/ui/label"
 import { usePathname } from "next/navigation"
-import Login from "@/components/login"
+import Login from "@/app/components/login"
 import Link from "next/link"
-import SearchMenu from "@/components/searchMenu"
+import SearchMenu from "@/app/components/searchMenu"
 import type { HeaderProps } from "./header"
 
 

@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import http from "@/server/methods/http";
-import ArticlesList from "@/components/articleList";
+import ArticlesList from "@/app/components/articleList";
 import { getArticleList } from "@/server/controller/article";
-import { EmptyOutline } from "@/components/empty"
+import { EmptyOutline } from "@/app/components/empty"
 
 export interface PageProps {
     searchParams: Promise<{ keyword: string, category: string, type: string }>;

@@ -1,5 +1,5 @@
 "use client";
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/app/components/ui/badge"
 import { ListChevronsUpDown, ListChevronsDownUp, Download } from 'lucide-react';
 import { useState } from 'react';
 import type { ArticleProps } from '@/app/page'

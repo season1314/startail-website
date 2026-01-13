@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
 import http from "@/server/methods/http"
-import Articles from "@/components/article"
+import Articles from "@/app/components/article"
 import type { ArticleProps } from '@/app/page'
 import { useState, useRef, useEffect } from 'react';
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/app/components/ui/skeleton"
 import { getArticleList } from "@/server/controller/article";
 import { RefreshCcwIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 
 export default function ArticlesList({ initialData, path, tagId }: { initialData: ArticleProps[], path: string, tagId?: string }) {
     const [articles, setArticles] = useState(initialData);

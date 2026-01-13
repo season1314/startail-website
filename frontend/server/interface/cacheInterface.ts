@@ -10,5 +10,5 @@ export interface UserData {
     avatar?: string;
     nickname: string;
     id: string;
-    key: string
+    key?: string
 }

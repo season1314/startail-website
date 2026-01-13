@@ -5,7 +5,7 @@ import {
     EmptyHeader,
     EmptyMedia,
     EmptyTitle,
-} from "@/components/ui/empty"
+} from "@/app/components/ui/empty"
 import { SquareDashedKanban } from 'lucide-react';
 import { SearchX } from 'lucide-react';
 

@@ -13,3 +13,8 @@ export async function getSession(sessionId: string) {
     return getCache(sessionId)
 }
 
+export async function deleteSession(sessionId: string) {
+    deleteCache(sessionId)
+    return true
+}
+

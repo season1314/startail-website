@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import http from "@/server/methods/http";
-import ArticlesList from "@/components/articleList";
+import ArticlesList from "@/app/components/articleList";
 import { getArticleList } from "@/server/controller/article";
 
 export interface PageProps {

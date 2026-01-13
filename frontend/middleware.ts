@@ -8,14 +8,23 @@ export async function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
   const { pathname } = request.nextUrl;
 
-  const count = Number( await getCache(ip) || 0);
+  const count = Number(await getCache(ip) || 0);
+
+  const ttl = 1000 * 60 * 5
 
   if (count >= 100) {
-    return new NextResponse('11111111', { status: 429 });
+    return new NextResponse('Request too frequent. Please wait 5 minutes.', { status: 429 });
   }
 
-  await setCache(ip, count + 1)
+  if (!count) {
 
+    await setCache(ip, 1, ttl);
+
+  } else {
+
+    await setCache(ip, count + 1);
+
+  }
 
   return NextResponse.next();
 }

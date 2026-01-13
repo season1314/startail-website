@@ -14,7 +14,19 @@ if (process.env.NODE_ENV !== 'production') globalForCache.serverCache = serverCa
 
 
 export async function setCache<T>(key: string, value: T, ttl?: number): Promise<void> {
-    serverCache.set(key, value, { ttl });
+    if (ttl !== undefined) {
+        serverCache.set(key, value, { ttl });
+        return
+    }
+    const remaining = serverCache.getRemainingTTL(key);
+    const exists = serverCache.has(key);
+
+    if (exists && remaining > 0) {
+        serverCache.set(key, value, { ttl: remaining });
+        return
+    }
+    serverCache.set(key, value, { ttl: 0 });
+
 }
 
 export async function getCache<T>(key: string): Promise<T | undefined> {

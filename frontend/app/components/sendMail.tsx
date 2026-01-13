@@ -1,10 +1,10 @@
 "use client";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 import { LoaderCircle } from 'lucide-react';
 import { sendRegisterEmail } from "@/server/controller/sendMail"
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/app/components/ui/card"
+import { Input } from "@/app/components/ui/input"
+import { Label } from "@/app/components/ui/label"
 import { useState } from "react";
 import { valid } from "@/lib/validation";
 import Link from "next/link"

@@ -2,8 +2,8 @@
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import clsx from 'clsx'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/app/components/ui/input"
+import { Button } from "@/app/components/ui/button"
 import { Search } from "lucide-react"
 import { useRouter } from "next/navigation";
 import {
@@ -11,7 +11,7 @@ import {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
+} from "@/app/components/ui/input-group"
 import { useEffect, useState } from "react"
 import { activeStyle, inactiveStyle } from "@/lib/style"
 

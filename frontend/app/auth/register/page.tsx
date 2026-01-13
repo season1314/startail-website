@@ -1,16 +1,16 @@
 "use client";
-import SendMail from "@/components/sendMail"
+import SendMail from "@/app/components/sendMail"
 import { useState, useEffect } from "react";
 import { checkCache, createUser } from "@/server/controller/auth"
 import { useSearchParams, useParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 import { LoaderCircle } from 'lucide-react';
 import { sendRegisterEmail } from "@/server/controller/sendMail"
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/app/components/ui/card"
+import { Input } from "@/app/components/ui/input"
 import { valid } from "@/lib/validation";
 import Link from "next/link"
-import { Label } from "@/components/ui/label"
+import { Label } from "@/app/components/ui/label"
 import { cn } from "@/lib/utils";
 import { errorLabelVariants } from "@/lib/style"
 import { useManualCountdown } from "@/lib/countdown";

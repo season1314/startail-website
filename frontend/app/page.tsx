@@ -1,11 +1,11 @@
 
 import Image from "next/image";
 import http from "@/server/methods/http"
-import Articles from "@/components/article"
-import ArticlesList from "@/components/articleList";
-import Header from "@/components/header";
+import Articles from "@/app/components/article"
+import ArticlesList from "@/app/components/articleList";
+import Header from "@/app/components/header";
 import { getArticleList } from "@/server/controller/article";
-import { EmptyOutline } from "@/components/empty"
+import { EmptyOutline } from "@/app/components/empty"
 
 
 export interface ArticleProps {

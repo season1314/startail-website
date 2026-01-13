@@ -4,7 +4,7 @@ import type { RegistrationRecord } from "@/server/interface/cacheInterface"
 import { decodeData } from "@/server/methods/crypto"
 import http from "@/server/methods/http"
 import { verify, hash } from "@/server/methods/hash"
-import { setSession, getSession } from "@/server/methods/session"
+import { setSession, getSession, deleteSession } from "@/server/methods/session"
 import { cookies } from "next/headers";
 
 export interface UserProps {
@@ -95,6 +95,7 @@ export async function signUp(email: string, password: string) {
             sameSite: "lax",
             path: "/",
         });
+        await deleteCache('login:' + email)
         return { code: 0, data: user.data }
 
     } catch (error) {
@@ -106,8 +107,15 @@ export async function userData() {
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session-id");
     if (!sessionCookie || !sessionCookie.value) return null;
-    console.log(sessionCookie)
     const result = await getSession(sessionCookie.value)
     if (!result) return null
     return result
+}
+
+export async function userLogout() {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session-id");
+    const sessionId = sessionCookie?.value;
+    if (sessionId) await deleteSession(sessionId)
+    return true
 }

@@ -1,6 +1,6 @@
 "use client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
 import Link from "next/link"
 import type { HeaderProps } from "./header"
 import { activeStyle, inactiveStyle } from "@/lib/style"
