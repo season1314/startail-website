@@ -8,6 +8,9 @@ import { resolve } from 'path';
 import rateLimit from 'express-rate-limit';
 
 
+/**
+ * MiddleWare to admin login status
+ */
 @Injectable()
 export class SessionValidationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction): void {
@@ -23,7 +26,7 @@ export class SessionValidationMiddleware implements NestMiddleware {
   }
 }
 
-
+//Pip:convert dto error as HTTP error to  custom error
 @Injectable()
 export class FormValidationPipe extends ValidationPipe {
   constructor() {
@@ -43,6 +46,7 @@ export class FormValidationPipe extends ValidationPipe {
   }
 }
 
+//Middleware:handle admin permission
 @Injectable()
 export class PermissionValidationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -63,23 +67,24 @@ export class PermissionValidationMiddleware implements NestMiddleware {
   }
 }
 
+
+
+//Middleware:security for repeatedly calling an API
 @Injectable()
 export class RateLimitingMiddleware implements NestMiddleware {
   private limiter: any;
   constructor() {
     this.limiter = rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 200, // Limit each IP to 100 requests per window
+      windowMs: 15 * 60 * 1000,
+      max: 200,
       message: 'Too many requests from this IP, please try again later.',
+      standardHeaders: true,
+      legacyHeaders: false,
     });
+
     this.use = this.use.bind(this);
   }
   use(req: Request, res: Response, next: NextFunction): void {
-    const clientIp = req.ip || req.socket.remoteAddress;
-    const isLocal = clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === 'localhost';
-    if (isLocal) {
-      return next();
-    }
-    this.limiter(req, res, next)
+    this.limiter(req, res, next);
   }
 }

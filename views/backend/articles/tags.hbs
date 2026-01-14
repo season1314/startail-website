@@ -55,9 +55,9 @@
                                 <button id="btn-add" class="btn btn-success btn-sm">New</button>
                             </div>
 
-                            <div class="card-body" style="padding-top">
+                            <div class="card-body" style="padding-top:0">
                                 <div class="table-responsive">
-                                    <table id="bootstrap-data-table" class="table table-striped table-fixed"
+                                    <table id="bootstrap-data-table" class="table table-striped"
                                         style="width:100%">
                                         <thead>
                                             <tr>
@@ -84,7 +84,6 @@
 
         <!-- /.content -->
         <div class="clearfix"></div>
-        {{> backend/footer}}
     </div>
     <!-- /#right-panel -->
 
@@ -310,36 +309,6 @@
     </script>
 </body>
 <style>
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-    }
-
-    #bootstrap-data-table {
-        table-layout: auto;
-        width: 100%;
-    }
-
-    #bootstrap-data-table th,
-    #bootstrap-data-table td {
-        white-space: nowrap;
-    }
-
-    /*
-    .table-fixed tbody {
-        display: block;
-        max-height: (100vh - 1500px);
-        overflow-y: auto;
-    }
-
-    .table-fixed thead,
-    .table-fixed tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-    }
-   */
 </style>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 

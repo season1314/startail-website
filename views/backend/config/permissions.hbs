@@ -55,9 +55,9 @@
                                 <button id="btn-add" class="btn btn-success btn-sm">New</button>
                             </div>
 
-                            <div class="card-body" style="padding-top: 0">
-                                <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
-                                    <table id="bootstrap-data-table" class="table table-striped">
+                            <div class="card-body" style="padding-top:0">
+                                <div class="table-responsive">
+                                    <table id="bootstrap-data-table" class="table table-striped" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>Permission Name</th>
@@ -85,7 +85,6 @@
         <!-- /.content -->
         <div class="clearfix"></div>
         <!-- Footer -->
-        {{> backend/footer}}
         <!-- /.site-footer -->
     </div>
     <!-- /#right-panel -->
@@ -254,22 +253,4 @@
         });
     </script>
 </body>
-<style>
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-    }
-
-    #bootstrap-data-table {
-        table-layout: auto;
-        width: 100%;
-    }
-
-    #bootstrap-data-table th,
-    #bootstrap-data-table td {
-        white-space: nowrap;
-    }
-</style>
-
 </html>

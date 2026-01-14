@@ -8,10 +8,9 @@ import { RouterModule } from '@nestjs/core';
   imports: [
     AdminCoreModule.forRoot(),
     ApiServiceModule,
-    ConfigModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      envFilePath: `.env.${process.env.NODE_ENV ||'development'}`,
     }),
 
     MongooseModule.forRootAsync({

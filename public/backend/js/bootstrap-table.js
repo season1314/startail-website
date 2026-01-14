@@ -9,6 +9,10 @@ function initDataTable(tableId, url, columnsConfig) {
         ordering: true,
         info: true,
         pageLength: 20,
+        "scrollY": "calc(100vh - 500px)",        // 这里设置你想要的表格内容高度
+        "scrollCollapse": true,    // 如果数据不足 20 条，高度会自动缩小
+        "scrollX": true,           // 开启横向滚动防止错位
+        dom: '<"table-inner-wrapper"tip>',
         language: {
             lengthMenu: "",
             info: "Showing _START_ to _END_ of _TOTAL_ entries",
