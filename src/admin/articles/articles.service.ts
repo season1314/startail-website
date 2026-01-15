@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import { GetListDto } from '../admin_core.dto';
 import { TagsDto } from '../articles/articles.dto'
 import { MemoryStorageService } from '../../memory-storage.service';
-import { CommonMethods } from '../admin.common.method'
+import { CommonMethods } from '../../common.method'
 import { ConfigService } from '@nestjs/config';
 
 

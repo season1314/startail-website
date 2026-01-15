@@ -4,7 +4,7 @@ import { AdminModule } from './admin/admin.module';
 import { DashboardModule } from './dashboard/dashboard.module'
 import { RouterModule } from '@nestjs/core';
 import { ConfigModule } from './config/config.module'
-import { FilesController } from './update.controller';
+import { FilesController } from '../update.controller';
 import {ArticlesModule} from './articles/articles.module'
 
 @Global()

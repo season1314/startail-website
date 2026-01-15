@@ -25,4 +25,20 @@ export class CommonMethods {
             return []
         }
     }
+
+    /**
+     * config property format as lang
+     * @param config 
+     * @param lang 
+     * @returns 
+     */
+    static async configFormatByLang(config: Record<string, any> | null | undefined, lang: string): Promise<Record<string, any> | null | undefined> {
+        if (!config) return config
+        return config.map((item: any) => {
+            const obj = item as Record<string, Record<string, string>>;
+            const key = Object.keys(obj)[0];
+            const value = Object.values(obj)[0][lang];
+            return { [key]: value };
+        })
+    }
 }

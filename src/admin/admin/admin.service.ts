@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
 import type { response } from '../admin_interface'
 import { Permissions } from '../../schema/config.permissions.schema';
-import { CommonMethods } from '../admin.common.method';
+import { CommonMethods } from '../../common.method';
 
 @Injectable()
 export class AdminService {
