@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -6,8 +6,9 @@ import hbs from 'hbs';
 import { configureHbs } from './hbs.config';
 import { ValidationPipe, HttpException, Logger } from '@nestjs/common';
 import { GlobalHttpExceptionFilter } from './Http200ExceptionFilter';
-import { SessionValidationMiddleware, FormValidationPipe, PermissionValidationMiddleware, RateLimitingMiddleware } from './middleware.pipe'
+import { SessionValidationMiddleware, FormValidationPipe, PermissionValidationMiddleware, RateLimitingMiddleware, JwtAuthGuard } from './middleware.pipe.guard'
 import { request } from 'http';
+
 const session = require('express-session');
 
 
@@ -16,7 +17,7 @@ async function bootstrap() {
 
 
   const viewsDir = join(__dirname, '..', 'views');
-  
+
   app.setBaseViewsDir(viewsDir);
   app.setViewEngine('hbs');
   configureHbs(viewsDir);
@@ -56,6 +57,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new FormValidationPipe())
 
+  
+  const reflector = app.get(Reflector);
+  app.useGlobalGuards(new JwtAuthGuard(reflector));
 
 
   await app.listen(3001);

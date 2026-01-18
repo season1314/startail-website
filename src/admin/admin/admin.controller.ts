@@ -13,7 +13,7 @@ import {
   HttpException,
   HttpStatus
 } from '@nestjs/common';
-import { FormValidationPipe } from '../../middleware.pipe';
+import { FormValidationPipe } from '../../middleware.pipe.guard';
 import type { Response, Request } from 'express';
 import { AdminService } from './admin.service';
 import { CreateAdminDto, UpdateInfoAdminDto, ResetPasswordDto } from './admin.dto';

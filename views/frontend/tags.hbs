@@ -1,0 +1,91 @@
+<div class="list">
+    <div id="article-list">
+        {{> frontend/article articleList=articleList}}
+    </div>
+    {{#if (lengthHigh articleList 5)}}
+    <div class="skeleton">
+        <div class="line short"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line short"></div>
+        <div class="line"></div>
+    </div>
+    {{/if}}
+</div>
+<script>
+    let page = 1
+    const path = window.location.pathname;
+    const parts = path.split('/');
+    const tagId = parts[parts.length - 1];
+
+    window.addEventListener('beforeunload', function () {
+        window.scrollTo(0, 0);
+    });
+
+
+    //Handle loadMore
+    $(window).on('scroll', async function () {
+        var $lastSkeleton = $('.skeleton').last();
+        if ($lastSkeleton.length && $lastSkeleton.isInViewport(50)) {
+            if (!$lastSkeleton.data('loading')) {
+                $lastSkeleton.data('loading', true);
+                const html = await fetchList(tagId)
+                console.log(html)
+                if (!html) {
+                    $('.skeleton').remove()
+                }
+                $('#article-list').append(html)
+                $lastSkeleton.data('loading', false)
+            }
+        }
+    });
+
+
+    $.fn.isInViewport = function (offset) {
+        offset = offset || 0;
+        if (!this.length) return false;
+        var elementTop = this.offset().top;
+        var elementBottom = elementTop + this.outerHeight();
+        var viewportTop = $(window).scrollTop();
+        var viewportBottom = viewportTop + $(window).height();
+        return elementBottom > viewportTop + offset && elementTop < viewportBottom - offset;
+    };
+
+    //Handle expend
+    $(document).on('click', '.svg', function () {
+        const id = $(this).data('id');
+        const $article = $('#' + id)
+        const expendDisplay = $article.find('.expend').css('display')
+        if (expendDisplay == 'block') {
+            $article.find('.non-expend').css('display', 'flex').end()
+                .find('.expend').css('display', 'none').end()
+
+            $article.find('.svg').eq(0).css('display', 'block');
+            $article.find('.svg').eq(1).css('display', 'none');
+        } else {
+            $article.find('.non-expend')
+                .css('display', 'none').end()
+                .find('.expend').css('display', 'block').end()
+            $article.find('.svg').eq(0).css('display', 'none');
+            $article.find('.svg').eq(1).css('display', 'block');
+        }
+    })
+
+    async function fetchList(tagId) {
+        page = page + 1
+        const url = `/tags/${tagId}/list`
+        const res = await fetchData(url, 'GET', { page }, false)
+        return await res.text();
+    }
+</script>
+<style>
+    .list {
+        min-height: calc(100vh - 84px);
+        width: 700px;
+        background-color: rgba(255, 255, 255);
+        border-radius: 2px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        padding: 0 1.5rem;
+    }
+</style>

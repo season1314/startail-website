@@ -32,14 +32,11 @@ export class EmailService {
             });
 
             if (info && info.messageId) {
-                console.log(`Email sent successfully to ${to}: ${info.messageId}`);
                 return true;
             } else {
-                console.warn(`Email sent to ${to} but no messageId returned.`);
                 return false;
             }
         } catch (error) {
-            console.error(`Failed to send email to ${to}:`, error);
             return false;
         }
     }

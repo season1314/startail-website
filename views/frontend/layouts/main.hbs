@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/frontend/css/style.css">
+    <link rel="stylesheet" href="/frontend/css/article.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="/frontend/js/request.js"></script>
+    <title></title>
+</head>
+
+<body>
+    {{> frontend/header menu=categories active=menuActivated tag=tag}}
+    <div class="page">
+        {{{body}}}
+    </div>
+</body>
+<style>
+    .page {
+        display: flex;
+        padding-top: 10px;
+        justify-content: center;
+        font-family: sans-serif;
+        background-color: #FAFAFA;
+        width: 100%;
+    }
+</style>
+
+</html>

@@ -7,14 +7,20 @@ import { ArticlesModule } from '../admin/articles/articles.module'
 import { MemoryStorageService } from '../memory-storage.service'
 import { ConfigClientService } from './service/config.service'
 import { EmailService } from '../mail.service'
+import { User, UserSchema } from '../schema/user.schema'
+import { UserController } from './controller/user.controller'
+import { CryptoService } from '../crypto.service'
+import { UserClientService } from '../client/service/user.service'
+import { userModule } from './module.ts/user.module'
 
 @Module({
     imports: [
         ConfigModule,
+        userModule,
         ArticlesModule,
     ],
-    controllers: [HomeController],
-    providers: [ArticlesClientService, MemoryStorageService, ConfigClientService, EmailService],
+    controllers: [HomeController, UserController],
+    providers: [ArticlesClientService, MemoryStorageService, ConfigClientService, EmailService, CryptoService],
     exports: [ArticlesClientService],
 })
 export class ClientCoreModule { }

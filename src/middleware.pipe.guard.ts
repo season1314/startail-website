@@ -6,6 +6,8 @@ import { AuthService } from './admin/auth/auth.service';
 import * as bcrypt from 'bcrypt';
 import { resolve } from 'path';
 import rateLimit from 'express-rate-limit';
+import { AuthGuard } from '@nestjs/passport';
+import { Reflector } from '@nestjs/core';
 
 
 /**
@@ -69,14 +71,14 @@ export class PermissionValidationMiddleware implements NestMiddleware {
 
 
 
-//Middleware:security for repeatedly calling an API
+//Middleware:security for repeatedly calling
 @Injectable()
 export class RateLimitingMiddleware implements NestMiddleware {
   private limiter: any;
   constructor() {
     this.limiter = rateLimit({
       windowMs: 15 * 60 * 1000,
-      max: 200,
+      max: 2000,
       message: 'Too many requests from this IP, please try again later.',
       standardHeaders: true,
       legacyHeaders: false,
@@ -86,5 +88,26 @@ export class RateLimitingMiddleware implements NestMiddleware {
   }
   use(req: Request, res: Response, next: NextFunction): void {
     this.limiter(req, res, next);
+  }
+}
+
+
+//Guard:User 
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(private reflector: Reflector) {
+    super();
+  }
+
+  canActivate(context: ExecutionContext) {
+    const requireAuth = this.reflector.getAllAndOverride<boolean>('isPrivate', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (!requireAuth) {
+      return true; 
+    }
+    return super.canActivate(context);
   }
 }

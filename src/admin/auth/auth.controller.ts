@@ -6,7 +6,7 @@ import { ValidateAdminDto, ResetPasswordDto } from '../admin/admin.dto'
 import * as session from 'express-session';
 import { validate } from 'class-validator';
 const { promisify } = require('util');
-import { FormValidationPipe } from '../../middleware.pipe';
+import { FormValidationPipe } from '../../middleware.pipe.guard';
 
 @Controller()
 export class AuthController {

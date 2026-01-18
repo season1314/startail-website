@@ -1,0 +1,54 @@
+{{#each articleList}}
+<div class="article" id="{{this._id}}">
+    <h3 class="title">{{this.title}}</h3>
+    <div class="non-expend">
+        <div class="img" style="background-image: url('{{this.coverImg}}');"></div>
+        <div class="content">
+            <p class="text">
+                {{this.des}}
+            </p>
+        </div>
+    </div>
+    <div class="expend">
+        <img class="img" src="{{this.coverImg}}" />
+        <div class="content">
+            {{this.des}}
+        </div>
+        {{#if article.files}}
+        <div class="files">
+            {{#each this.files}}
+            {{#if this.des}}
+            {{#if this.path}}
+            <div>
+                <a class="label">{{this.des}} : </a>
+                <a href={{this.path}} target="_blank" rel="noopener noreferrer" class="link">
+                    {{this.path}}
+                </a>
+            </div>
+            {{/if}}
+            {{/if}}
+            {{/each}}
+        </div>
+        {{/if}}
+    </div>
+    <div class="tags">
+        {{#each this.tags}}
+        <a href="/tags/{{this.id}}" class="badge {{this.active}}">{{this.name}}</a>
+        {{/each}}
+    </div>
+    <div class="create">
+        <a>Created By {{this.createdInfo.name}} {{this.createdAt}}</a>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="svg" data-id="{{this._id}}">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="svg" style="display:none" data-id="{{this._id}}">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12" />
+        </svg>
+
+    </div>
+</div>
+{{/each}}

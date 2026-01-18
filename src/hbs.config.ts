@@ -45,3 +45,7 @@ hbs.registerHelper('tojson', function (context) {
     JSON.stringify(context)
   );
 });
+
+hbs.registerHelper('lengthHigh', function (array, num) {
+  return array.length >= num
+})
