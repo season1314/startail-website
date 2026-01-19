@@ -22,9 +22,9 @@ async function fetchData(url, method = 'GET', params = {}, type = true) {
             if (params instanceof FormData) { options.body = params } // if post upload file
             else { options.body = JSON.stringify(params); options.headers = { 'Content-Type': 'application/json' } }
         }
-        const result = await fetch(fullUrl, options);
+        let result = await fetch(fullUrl, options);
         if (type) {
-            result = await response.json();
+            result = await result.json();
         }
         if (result.code == 3) { window.location.href = '/admin/login' }
         return result;

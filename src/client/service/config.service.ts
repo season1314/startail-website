@@ -28,12 +28,12 @@ export class ConfigClientService {
      * @returns 
      */
     async getConfigCategory(lang: string = 'en'): Promise<response> {
-        let categories = await this.memoryStorageService.get(`${lang}_categories`)
+        let categories = this.memoryStorageService.get(`${lang}_categories`)
         if (categories) return { code: 0, data: categories }
         const rawData = await this.configModel.findOne({ key: 'categories' })
         if (!rawData?.property) return { code: 1, messages: 'Can not found property in categories config' }
-        categories = await CommonMethods.configFormatByLang(rawData?.property, 'en')
-        await this.memoryStorageService.set(`${lang}_categories`, categories)
+        categories = CommonMethods.configFormatByLang(rawData?.property, 'en')
+        this.memoryStorageService.set(`${lang}_categories`, categories)
         return { code: 0, data: categories }
     }
 }

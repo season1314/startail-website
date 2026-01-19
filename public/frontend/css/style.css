@@ -12,8 +12,13 @@ a {
     text-decoration: none;
 }
 
-body{
+body {
     min-width: 1180px;
+    background-color: #FAFAFA;
+}
+
+body.loading {
+    visibility: hidden;
 }
 
 button {
@@ -63,4 +68,26 @@ button {
 ul {
     list-style-type: none;
     padding-left: 0;
+}
+
+
+
+.spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid oklch(1 0 0 / 0.4);
+    border-top-color: oklch(1 0 0);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.spinner.is-show {
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

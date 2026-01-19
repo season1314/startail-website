@@ -19,6 +19,9 @@ export class User extends Document {
   @Prop()
   status: number;
 
+  @Prop()
+  key:string
+
   createdAt: Date;
   updatedAt: Date
 }

@@ -4,14 +4,15 @@ export class sendMailDto {
     @IsEmail()
     @IsNotEmpty()
     email: string;
+
+    @IsOptional()
+    type: string
 }
 
 
 export class userRegDto {
-    @IsEmail()
     @IsNotEmpty()
-    email: string;
-
+    code: string;
 
     @IsNotEmpty()
     @MinLength(6)
@@ -45,7 +46,7 @@ export class userResetPwd {
     confirmPassword: string;
 }
 
-export class userLoginDto{
+export class userLoginDto {
     @IsEmail()
     @IsNotEmpty()
     email: string;

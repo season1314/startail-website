@@ -31,32 +31,9 @@ export class ArticlesClientService {
     async getArticleList(dto: GetListDto, lang: string = 'en'): Promise<response> {
         const skip = (dto.page - 1) * dto.entries;
         const query: any = { status: 0 };
-        let configCategories = await this.memoryStorageService.get('categories') // first get categories config from cache
+        let configCategories = this.memoryStorageService.get('categories') // first get categories config from cache
         const list = await this.contentModel.find(query).sort({ createdAt: -1, view: -1 }).skip(skip).limit(dto.entries).populate('tags').lean()
-        const formatList = list.map(item => {
-            const { name, introduction, guides, downloads, ...rest } = item
-            const _guides = item.guides[lang] ? item.guides[lang] : item.guides['en']
-            const _downloads = item.downloads[lang] ? item.downloads[lang] : item.introduction['en']
-            return {
-                ...rest,
-                tags: item.tags.map(tag => {
-                    const id = tag._id?.toString();
-                    const langObj = Array.isArray(tag.lang)
-                        ? tag.lang.find(l => l.hasOwnProperty(lang))
-                        : null;
-                    return {
-                        id: id,
-                        name: langObj ? langObj[lang] : langObj['en'],
-                        active:""
-                    }
-                }),
-                coverImg: this.imgUrl + item.coverImg,
-                title: item.name[lang] ? item.name[lang] : item.name['en'],
-                des: item.introduction[lang] ? item.introduction[lang] : item.introduction['en'],
-                createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
-                files: _guides.concat(_downloads)
-            }
-        });
+        const formatList = this.formatArticleData(list, lang)
         return {
             code: 0,
             data: {
@@ -77,38 +54,17 @@ export class ArticlesClientService {
         const skip = (dto.page - 1) * dto.entries;
         const query: any = { status: 0 };
         if (!category) return { code: 1, messages: 'Category key cannot be null' }
-        let configCategories = await this.memoryStorageService.get('categories') // first get categories config from cache
+        let configCategories = this.memoryStorageService.get('categories') // first get categories config from cache
         if (!configCategories) {
             const categories = await this.configModel.findOne({ key: 'categories' }).select('property -_id')
-            configCategories = await CommonMethods.getArrayObjectKey(categories?.property)
-            await this.memoryStorageService.set('categories', configCategories)
+            configCategories = CommonMethods.getArrayObjectKey(categories?.property)
+            this.memoryStorageService.set('categories', configCategories)
         }
         const isCategoryExisted = configCategories.includes(category)
         if (!isCategoryExisted) return { code: 1, messages: 'System error : Can not find this category in config' }
         query.categories = category
         const list = await this.contentModel.find(query).sort({ createdAt: -1, view: -1 }).skip(skip).limit(dto.entries).populate('tags').lean()
-        const formatList = list.map(item => {
-            const { name, introduction, guides, downloads, ...rest } = item
-            const _guides = item.guides[lang] ? item.guides[lang] : item.guides['en']
-            const _downloads = item.downloads[lang] ? item.downloads[lang] : item.introduction['en']
-            return {
-                ...rest,
-                tags: item.tags.map(tag => {
-                    const id = tag._id?.toString();
-                    const langObj = Array.isArray(tag.lang) ? tag.lang.find(l => l.hasOwnProperty(lang)) : null;
-                    return {
-                        id: id,
-                        name: langObj ? langObj[lang] : langObj['en'],
-                        active:""
-                    }
-                }),
-                coverImg: this.imgUrl + item.coverImg,
-                title: item.name[lang] ? item.name[lang] : item.name['en'],
-                des: item.introduction[lang] ? item.introduction[lang] : item.introduction['en'],
-                createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
-                files: _guides.concat(_downloads)
-            }
-        });
+        const formatList = this.formatArticleData(list, lang)
         return {
             code: 0,
             data: {
@@ -129,39 +85,16 @@ export class ArticlesClientService {
         const skip = (dto.page - 1) * dto.entries;
         const query: any = { status: 0 };
         if (!tagId) return { code: 1, messages: 'Tag id cannot be null' }
-
-
+        
         const isTagExisted = await this.tagsModel.findOne({ _id: tagId }).lean()
         if (!isTagExisted) return { code: 1, messages: 'System error : Can not find this tag' }
         const tagObj = isTagExisted.lang.find(item => Object.keys(item)[0] === lang);
         const tagName = tagObj ? Object.values(tagObj)[0] : null;
         const tags = { _id: isTagExisted._id, name: tagName }
-
         query.tags = tagId
 
         const list = await this.contentModel.find(query).sort({ createdAt: -1, view: -1 }).skip(skip).limit(dto.entries).populate('tags').lean()
-        const formatList = list.map(item => {
-            const { name, introduction, guides, downloads, ...rest } = item
-            const _guides = item.guides[lang] ? item.guides[lang] : item.guides['en']
-            const _downloads = item.downloads[lang] ? item.downloads[lang] : item.introduction['en']
-            return {
-                ...rest,
-                tags: item.tags.map(tag => {
-                    const id = tag._id?.toString();
-                    const langObj = Array.isArray(tag.lang) ? tag.lang.find(l => l.hasOwnProperty(lang)) : null;
-                    return {
-                        id: id,
-                        name: langObj ? langObj[lang] : langObj['en'],
-                        active: id == tagId ? "active" : ""
-                    }
-                }),
-                coverImg: this.imgUrl + item.coverImg,
-                title: item.name[lang] ? item.name[lang] : item.name['en'],
-                des: item.introduction[lang] ? item.introduction[lang] : item.introduction['en'],
-                createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
-                files: _guides.concat(_downloads)
-            }
-        });
+        const formatList = this.formatArticleData(list, lang, tagId)
         return {
             code: 0,
             data: {
@@ -186,11 +119,11 @@ export class ArticlesClientService {
         const regex = new RegExp(keyword, 'i')
         const fields = ['name', 'introduction'];
 
-        let configLang = await this.memoryStorageService.get('languages')//cache first
+        let configLang = this.memoryStorageService.get('languages')//cache first
         if (!configLang) {
             const lang = await this.configModel.findOne({ key: 'languages' }).select('property -_id')
-            configLang = await CommonMethods.getArrayObjectKey(lang?.property)
-            await this.memoryStorageService.set('languages', configLang)
+            configLang = CommonMethods.getArrayObjectKey(lang?.property)
+            this.memoryStorageService.set('languages', configLang)
         }
         //search all languages in name or introductions
         const orConditions = fields.flatMap(field =>
@@ -205,24 +138,7 @@ export class ArticlesClientService {
         //if category not null
         if (category) { query.categories = category; }
         const list = await this.contentModel.find(query).sort({ createdAt: -1, view: -1 }).skip(skip).limit(dto.entries).populate('tags').lean()
-        const formatList = list.map(item => ({
-            ...item,
-            tags: item.tags.map(tag => {
-                const id = tag._id?.toString();
-                const langObj = Array.isArray(tag.lang)
-                    ? tag.lang.find(l => l.hasOwnProperty(lang))
-                    : null;
-                return {
-                    id: id,
-                    name: langObj ? langObj[lang] : langObj['en']
-                }
-            }),
-            title: item.name[lang] ? { lang: lang, name: item.name[lang] } : { lang: 'en', name: item.name['en'] },
-            des: item.introduction[lang] ? { lang: lang, content: item.introduction[lang] } : { lang: lang, content: item.introduction['en'] },
-            downloads: item.downloads[lang] ? item.downloads[lang] : item.introduction['en'],
-            createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
-            guides: item.guides[lang] ? item.guides[lang] : item.guides['en']
-        }));
+        const formatList = this.formatArticleData(list, lang)
         return {
             code: 0,
             data: {
@@ -249,5 +165,29 @@ export class ArticlesClientService {
         } catch (error) {
             return { code: 1, messages: error }
         }
+    }
+
+
+    /**
+     * Common function:format article list
+     * @param list 
+     * @param lang 
+     * @returns 
+     */
+    formatArticleData(list: any[], lang: string, tagId: string = "") {
+        return list.map(item => {
+            const { name, introduction, guides, downloads, ...rest } = item
+            const _guides = item.guides[lang] ? item.guides[lang] : item.guides['en']
+            const _downloads = item.downloads[lang] ? item.downloads[lang] : item.introduction['en']
+            return {
+                ...rest,
+                tags: CommonMethods.tagsFormatByLang(item.tags, lang, tagId),
+                coverImg: this.imgUrl + item.coverImg,
+                title: item.name[lang] ? item.name[lang] : item.name['en'],
+                des: item.introduction[lang] ? item.introduction[lang] : item.introduction['en'],
+                createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
+                files: _guides.concat(_downloads)
+            }
+        });
     }
 }

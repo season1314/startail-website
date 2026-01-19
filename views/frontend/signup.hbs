@@ -1,0 +1,182 @@
+<link rel="stylesheet" href="/frontend/css/form.css">
+<div>
+    <div class="form" style="width:460px;margin-top:15%;display:{{#if (eq type 'mail')}}block{{else}}none{{/if}}"
+        id="send">
+        <a class="title">Sign up</a>
+        <div class="des">Welcome to STARTAII! Enter your email below to start your journey.</div>
+        <div id="mail">
+            <form>
+                <div class="column" id="email">
+                    <label>Email</label>
+                    <input type="text" placeholder="m@example.com"></input>
+                    <a></a>
+                </div>
+            </form>
+            <button class="dark" style="margin-top:30px" id="login">
+                <span class="spinner"></span>
+                <a>Submit</a>
+            </button>
+            <div class="link">
+                <a href="/">Login</a>
+                <a href="/auth/register">Forget Password?</a>
+            </div>
+        </div>
+        <div id="mail-result" style="display:none">
+            <div class="resultBox">
+            </div>
+            <button class="dark" style="margin-top:30px" id="back">
+                <a>Back</a>
+            </button>
+        </div>
+    </div>
+
+    <div style="display:{{#if (eq type 'error')}}block{{else}}none{{/if}}" id="error">
+        <div class="form" style="margin-top:15%">
+            <div>{{messages}}</div>
+            <button class="dark" style="margin-top:30px" id="resend">
+                <a>Back</a>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="form" style="width:460px;margin-top:15%;display:{{#if (eq type 'step')}}block{{else}}none{{/if}}"
+        id="step">
+        <a class="title">Complete sign up</a>
+        <div class="des">Please complete the final steps of your registration to activate your account.</div>
+        <div id="mail">
+            <form>
+                <div class="column" id="nickname">
+                    <label>Nickname</label>
+                    <input type="text" placeholder="Enter Your NickName"></input>
+                    <a></a>
+                </div>
+                <div class="column" id="password">
+                    <label>Password</label>
+                    <input type="text" placeholder="Enter Your Password"></input>
+                    <a></a>
+                </div>
+                <div class="column" id="confirmPassword">
+                    <label>Confirm Password</label>
+                    <input type="text" placeholder="Re-Enter Your Password"></input>
+                    <a></a>
+                </div>
+            </form>
+            <button class="dark" style="margin-top:30px" id="register">
+                <span class="spinner"></span>
+                <a>Submit</a>
+            </button>
+            <div class="link">
+                <a href="/">Login</a>
+                <a href="/auth/register">Forget Password?</a>
+            </div>
+        </div>
+        <div id="mail-result" style="display:none">
+            <div class="resultBox">
+            </div>
+            <button class="dark" style="margin-top:30px" id="back">
+                <a>Back</a>
+            </button>
+            <div class="link">
+                <a href="/">Login</a>
+                <a href="/auth/register">Forget Password?</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //Handle submit
+    $(document).on('click', '#login', async function () {
+        $(this).find('.spinner').addClass('is-show')
+        $(this).find('a').css('display', 'none')
+        const $email = $('#email').find('input')
+        const email = $email.val()
+        $email.prop('disabled', true);
+
+        if (!$email.val()) {
+            $email.next('a').text('Email is required')
+            $(this).find('.spinner').removeClass('is-show')
+            $(this).find('a').css('display', 'block')
+            $email.prop('disabled', false);
+            return
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test($email.val())) {
+            $email.next('a').text('Invalid email format')
+            $(this).find('.spinner').removeClass('is-show')
+            $(this).find('a').css('display', 'block')
+            $email.prop('disabled', false);
+            return
+        }
+
+        const result = await fetchData('/auth/email', 'GET', { type: 'reg', email })
+        if (result.code == 2) {
+            Object.entries(result.messages).forEach(([key, value]) => {
+                $('#' + key).find('a').text(value[0])
+            });
+        } else if (result.code == 1) {
+            $('#mail').css('display', 'none')
+            $('#mail-result').find('div').css('color', 'red').text(result.messages)
+            $('#mail-result').css('display', 'block')
+        } else if (result.code == 0) {
+            $('#mail').css('display', 'none')
+            $('#mail-result').find('div').css('color', 'green').text(result.messages)
+            $('#mail-result').css('display', 'block')
+        }
+
+        $(this).find('.spinner').removeClass('is-show')
+        $(this).find('a').css('display', 'block')
+        $email.prop('disabled', false);
+        return
+    })
+
+
+    //Handle error back
+    $(document).on('click', '#back', function () {
+        $('#mail').css('display', 'block')
+        $('#mail-result').find('div').text('')
+        $('#mail-result').css('display', 'none')
+    })
+
+    //Handle resend back
+    $(document).on('click', '#resend', function () {
+        $('#mail').css('display', 'block')
+        $('#mail-result').find('div').text('')
+        $('#mail-result').css('display', 'none')
+        $('#error').css('display', 'none')
+        $('#send').css('display', 'block')
+
+    })
+
+    //Handle register button
+    $(document).on('click', '#register', async function () {
+        $(this).find('.spinner').addClass('is-show')
+        $(this).find('a').css('display', 'none')
+        const $nickname = $('#nickname').find('input')
+        const $password = $('#password').find('input')
+        const $confirmPassword = $('#confirmPassword').find('input')
+        const nickname = $nickname.val()
+        const password = $password.val()
+        const confirmPassword = $confirmPassword.val()
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get('code');
+        const res = await fetchData('')
+
+    })
+
+    //Clear error info
+    $('input').focus(function () {
+        const $small = $(this).next('a');
+        $small.text('');
+    });
+
+</script>
+<style>
+    .resultBox {
+        margin-top: 20px;
+        height: 94px;
+        word-break: break-all;
+        font-size: 14px;
+    }
+</style>

@@ -4,9 +4,8 @@ import { Injectable } from '@nestjs/common';
 export class MemoryStorageService {
     private store: Map<string, any> = new Map();
 
-    async set(key: string, value: any, ttl: number = 0): Promise<void> {
+    set(key: string, value: any, ttl: number = 0) {
         this.store.set(key, value);
-
         if (ttl > 0) {
             setTimeout(() => {
                 this.store.delete(key);
@@ -14,15 +13,15 @@ export class MemoryStorageService {
         }
     }
 
-    async get(key: string): Promise<any> {
+    get(key: string) {
         return this.store.get(key);
     }
 
-    async delete(key: string): Promise<void> {
+    delete(key: string) {
         this.store.delete(key);
     }
 
-    async clear(): Promise<void> {
+    clear() {
         this.store.clear();
     }
 }

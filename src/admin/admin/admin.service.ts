@@ -265,7 +265,7 @@ export class AdminService {
       if (!existingUser) return { code: 1, messages: 'Administrator is not exists' }
       if (existingUser.permissions.includes('*')) return { code: 1, messages: 'Super Administrator permission can not be changed' }
 
-      const isPermissionEquality = await CommonMethods.arraysEqualIgnoreOrder(existingUser.permissions, permissions)
+      const isPermissionEquality = CommonMethods.arraysEqualIgnoreOrder(existingUser.permissions, permissions)
       if (isPermissionEquality) {
         return { code: 0, messages: 'Successful update permissions' }// Avoid user mis-touch submit button return a fake success
       }

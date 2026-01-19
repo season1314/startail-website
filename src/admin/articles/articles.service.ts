@@ -135,17 +135,17 @@ export class ArticlesService {
      */
     async getDetail(id: string | number) {
         try {
-            let configLang = await this.memoryStorageService.get('languages')//look up supported languages from memory first to build the multi-language query
+            let configLang = this.memoryStorageService.get('languages')//look up supported languages from memory first to build the multi-language query
             if (!configLang) {
                 const lang = await this.configModel.findOne({ key: 'languages' }).select('property -_id')
-                configLang = await CommonMethods.getArrayObjectKey(lang?.property)
-                await this.memoryStorageService.set('languages', configLang)
+                configLang = CommonMethods.getArrayObjectKey(lang?.property)
+                this.memoryStorageService.set('languages', configLang)
             }
-            let configCategories = await this.memoryStorageService.get('categories')//look up supported categories from memory first to build the multi-categories query
+            let configCategories = this.memoryStorageService.get('categories')//look up supported categories from memory first to build the multi-categories query
             if (!configCategories) {
                 const categories = await this.configModel.findOne({ key: 'categories' }).select('property -_id')
-                configCategories = await CommonMethods.getArrayObjectKey(categories?.property)
-                await this.memoryStorageService.set('categories', configCategories)
+                configCategories = CommonMethods.getArrayObjectKey(categories?.property)
+                this.memoryStorageService.set('categories', configCategories)
             }
             const configOs = [{ 'Window': false }, { 'macOS': false }, { 'iOS': false }, { 'Android': false }, { 'Linux': false }, { 'Web': false }]
 
@@ -232,9 +232,9 @@ export class ArticlesService {
             const verifyParameter = await this.checkArticle(dto)
             if (verifyParameter) return verifyParameter
             const cacheKey = 'article:' + dto.name.en + createdBy
-            const exists = await this.memoryStorageService.get(cacheKey);//use cache for debouncing
+            const exists = this.memoryStorageService.get(cacheKey);//use cache for debouncing
             if (exists) return { code: 1, messages: "Article submitted.Please wait 120 seconds before resubmitting same name article." }
-            await this.memoryStorageService.set(cacheKey, true, 120)
+            this.memoryStorageService.set(cacheKey, true, 120)
             const created = new this.contentModel({
                 name: dto.name,
                 introduction: dto.introduction,
@@ -276,7 +276,7 @@ export class ArticlesService {
             article.guides = dto.guides
             article.downloads = dto.downloads
             await article.save()
-            await this.memoryStorageService.delete('indexList') //delete the index List key in caches
+            this.memoryStorageService.delete('indexList') //delete the index List key in caches
             return { code: 0, messages: 'Successfully updated article' }
         } catch (error) {
             return { code: 1, messages: error }
@@ -299,7 +299,7 @@ export class ArticlesService {
                 article.status = 1
             }
             await article.save()
-            await this.memoryStorageService.delete('indexList') //delete the index List key in caches
+            this.memoryStorageService.delete('indexList') //delete the index List key in caches
             return { code: 0, messages: 'Successfully updated article status' }
 
         } catch (error) {
@@ -319,7 +319,7 @@ export class ArticlesService {
             const article = await this.contentModel.findOne({ _id: id })
             if (!article) return { code: 1, messages: 'The article is not existed' }
             await this.contentModel.deleteOne({ _id: id });
-            await this.memoryStorageService.delete('indexList') //delete the index List key in caches
+            this.memoryStorageService.delete('indexList') //delete the index List key in caches
             return { code: 0, messages: 'Successfully deleted article' }
         } catch (error) {
             return { code: 1, messages: error }
@@ -333,11 +333,11 @@ export class ArticlesService {
      */
     async contentList(dto: GetListDto): Promise<response> {
         const skip = (dto.page - 1) * dto.entries;
-        let configLang = await this.memoryStorageService.get('languages')//look up supported languages from memory first to build the multi-language query
+        let configLang = this.memoryStorageService.get('languages')//look up supported languages from memory first to build the multi-language query
         if (!configLang) {
             const lang = await this.configModel.findOne({ key: 'languages' }).select('property -_id')
-            configLang = await CommonMethods.getArrayObjectKey(lang?.property)
-            await this.memoryStorageService.set('languages', configLang)
+            configLang = CommonMethods.getArrayObjectKey(lang?.property)
+            this.memoryStorageService.set('languages', configLang)
         }
 
         const query: any = {};

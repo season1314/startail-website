@@ -20,12 +20,15 @@ export class HomeController {
     async index() {
         const articleList = await this.articlesClientService.getArticleList({ page: 1, entries: 20 })
         const categories = await this.configClientService.getConfigCategory()
+        console.log(categories.data)
         return {
             title: 'home',
             articleList: articleList.data.list,
             categories: categories.data,
             layout: 'frontend/layouts/main',
-            menuActivated: "/"
+            menuActivated: "/",
+            sidebar:{login:true},
+            search:true,
         };
     }
 
@@ -57,7 +60,9 @@ export class HomeController {
             articleList: articleList.data.list,
             categories: categories.data,
             layout: 'frontend/layouts/main',
-            menuActivated: category
+            menuActivated: category,
+            sidebar:{login:true},
+            search:true,
         };
     }
 
@@ -82,14 +87,14 @@ export class HomeController {
     async tagsPage(@Param('tagId') tagId: string) {
         const articleList = await this.articlesClientService.getArticleListByTagId({ page: 1, entries: 20 }, 'en', tagId)
         const categories = await this.configClientService.getConfigCategory()
-        console.log(categories)
-        console.log(articleList.data.tag)
         return {
             articleList: articleList.data.list,
             categories: categories.data,
             tag: articleList.data.tag,
             menuActivated: "tag",
             layout: 'frontend/layouts/main',
+            sidebar:{login:true},
+            search:true,
         }
     }
 

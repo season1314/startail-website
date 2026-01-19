@@ -6,7 +6,7 @@ export class CommonMethods {
  * @param arr2 
  * @returns 
  */
-    static async arraysEqualIgnoreOrder(arr1: any[], arr2: any[]) {
+    static arraysEqualIgnoreOrder(arr1: any[], arr2: any[]) {
         if (arr1.length !== arr2.length) return false;
         const a = [...arr1].sort();
         const b = [...arr2].sort();
@@ -14,11 +14,12 @@ export class CommonMethods {
     }
 
     /**
-     * find keys for Object[{}] 
+     * Find keys for Object[{}] 
+     * [{a:1}{b:2}] =>  [a,b]
      * @param array 
      * @returns 
      */
-    static async getArrayObjectKey(array: Record<string, any> | null | undefined): Promise<string[]> {
+    static getArrayObjectKey(array: Record<string, any> | null | undefined) {
         if (array) {
             return array.map(obj => Object.keys(obj)[0]);
         } else {
@@ -27,18 +28,39 @@ export class CommonMethods {
     }
 
     /**
-     * config property format as lang
+     * Config property format as lang
+     * [a:{en:1,fr:2},b:{en:3,fr:4}] => [{a:1},{b:3}]
      * @param config 
      * @param lang 
      * @returns 
      */
-    static async configFormatByLang(config: Record<string, any> | null | undefined, lang: string): Promise<Record<string, any> | null | undefined> {
+    static configFormatByLang(config: Record<string, any> | null | undefined, lang: string) {
         if (!config) return config
         return config.map((item: any) => {
             const obj = item as Record<string, Record<string, string>>;
             const key = Object.keys(obj)[0];
             const value = Object.values(obj)[0][lang];
             return { [key]: value };
+        })
+    }
+
+    /**
+     * Tags format by lang
+     * [{_id:xxxxxxx,lang:{cn:a,fr:b}}] => [{id:xxxxxx,lang:a}]
+     * @param tags 
+     * @param lang 
+     * @returns 
+     */
+    static tagsFormatByLang(tags: Record<string, any> | null | undefined, lang: string, tagId: string) {
+        if (!tags) return tags
+        return tags.map(tag => {
+            const id = tag._id?.toString();
+            const langObj = Array.isArray(tag.lang) ? tag.lang.find(l => l.hasOwnProperty(lang)) : null;
+            return {
+                id: id,
+                name: langObj ? langObj[lang] : langObj['en'],
+                active: id == tagId ? "active" : ""
+            }
         })
     }
 }
