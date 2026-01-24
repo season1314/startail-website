@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { response } from 'src/admin/admin_interface';
+import { response } from 'src/interface';
 import { MemoryStorageService } from '../../memory-storage.service'
 import { CommonMethods } from '../../common.method'
 import { EmailService } from '../../mail.service';
-import { sendMailDto, userRegDto, userResetPwd, userLoginDto } from '../dto/user.dto';
+import { sendMailDto, userRegDto, userResetPwd, userLoginDto, updateUserDto } from '../dto/user.dto';
 import { User } from '../../schema/user.schema'
 import { CryptoService } from '../../crypto.service'
 import { ConfigService } from '@nestjs/config';
@@ -96,7 +96,7 @@ export class UserClientService {
                 "Verify your email",
                 'Hello! This is a verify email.',
                 `<b>Welcome to Strataii!</b><p>Please click the link below to complete reset password:</p>
-                <a href=http://www.startaii.com/auth/register?code=${emailCachedData.key}>http://www.startaii.com/auth/register?code=${emailCachedData.key}</a>`);
+                <a href=${this.domain}/auth/reset/step?code=${emailCachedData.key}>${this.domain}/auth/reset/step?code=${emailCachedData.key}</a>`);
 
             if (!successSendEmail) return { code: 1, messages: 'Failed to send email. Please try again later.' }
             emailCachedData.count = emailCachedData.count + 1
@@ -112,7 +112,7 @@ export class UserClientService {
 
 
     /**
-     * 
+     * User register
      * @param dto 
      * @returns 
      */
@@ -121,7 +121,6 @@ export class UserClientService {
             const { code, password, confirmPassword, nickname } = dto
             const email = this.cryptoService.decrypt(code)
             if (!email) return { code: 1, messages: 'The verification link is invalid. Please check the link or request a new one.' }
-            if (password !== confirmPassword) return { code: 1, messages: 'Passwords do not match' }
             const isEmailExisted = await this.userModel.findOne({ email: email }).lean().exec();
             if (isEmailExisted) return { code: 1, messages: 'This email is already registered. Please log in.' }
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -141,14 +140,16 @@ export class UserClientService {
     }
 
     /**
-     * 
+     * User reset password
      * @param dto 
      * @returns 
      */
     async userResetPwd(dto: userResetPwd): Promise<response> {
         try {
-            const { email, password, confirmPassword } = dto
+            const { code, password, confirmPassword } = dto
             if (password !== confirmPassword) return { code: 1, messages: 'Passwords do not match' }
+            const email = this.cryptoService.decrypt(code)
+            if (!email) return { code: 1, messages: 'The verification link is invalid. Please check the link or request a new one.' }
             const isEmailExisted = await this.userModel.findOne({ email: email });
             if (!isEmailExisted) return { code: 1, messages: "This email is not existed. Please sign up." }
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -162,7 +163,7 @@ export class UserClientService {
     }
 
     /**
-     * 
+     * User Login
      * @param dto 
      * @returns 
      */
@@ -171,40 +172,73 @@ export class UserClientService {
             const TTL_24H = 60 * 60 * 24;
             const { email, password } = dto
             let cachedData = this.memoryStorageService.get('login:' + email) || 10;
-            if (cachedData <= 0) return { code: 1, messages: 'Too many login attempts. Please try late.' }
+            if (cachedData <= 0) return { code: 2, messages: { email: ['Too many login attempts. Please try late.'] } }
 
             const user = await this.userModel.findOne({ email: email }).lean().exec();
-            if (!user) return { code: 1, messages: 'This email address is not signed up yet' }
-            if (user.status != 0) return { code: 1, messages: "This account has been suspended" }
+            if (!user) return { code: 2, messages: { email: ['This email address is not signed up yet.'] } }
+            if (user.status != 0) return { code: 2, messages: { email: ['This account has been suspended'] } }
 
             const verifyResult = await bcrypt.compare(password, user.password)
             if (!verifyResult) {
                 this.memoryStorageService.set('login:' + email, cachedData - 1, TTL_24H)
-                return { code: 1, messages: `Incorrect password ${cachedData - 1} attempt remaining.` }
+                return { code: 2, messages: { password: [`Incorrect password ${cachedData - 1} attempt remaining.`] } }
             }
             const payload = {
                 sub: user._id,
+                id: user._id,
                 nickname: user.nickname,
                 email: user.email,
+                avatar: user.avatar,
+                key: user.key
             }
-            return { code: 0, data: { access_token: this.jwtService.sign(payload) } }
 
+            return { code: 0, data: { access_token: this.jwtService.sign(payload), user: payload } }
         } catch (error) {
+            console.log(error)
             return { code: 1, messages: error }
         }
     }
 
     /**
-     * 
-     * @param code 
+     * Verify email code of email link
+     * @param code
+     * @param type  
      * @returns 
      */
-    async checkValidEmail(code: string): Promise<response> {
+    async checkValidEmail(code: string, type: string): Promise<response> {
         const email = this.cryptoService.decrypt(code)
         if (!email) return { code: 1, messages: 'The verification link is invalid. Please check the link or request a new one.' }
-        const cachedData = this.memoryStorageService.get(`reg:${email}`)
+        const cachedData = this.memoryStorageService.get(`${type}:${email}`)
         if (!cachedData) return { code: 1, messages: 'Your verification email has expired. Please request a new one.' }
         if (code !== cachedData.key) return { code: 1, messages: 'Your verification email has expired. Please request a new one.' }
         return { code: 0 }
+    }
+
+    /**
+     * Update user
+     * @param dto 
+     * @param id 
+     * @returns 
+     */
+    async updateProfile(dto: updateUserDto, id: string): Promise<response> {
+        try {
+            const { avatar, nickname } = dto || {}
+            const user = await this.userModel.findById(id)
+            if (!user) return { code: 3, messages: "Please log in to continue." }
+            user.avatar = avatar
+            user.nickname = nickname
+            const res = await user.save()
+            const payload = {
+                sub: user._id,
+                id: user._id,
+                nickname: user.nickname,
+                email: user.email,
+                avatar: user.avatar,
+                key: user.key
+            }
+            return { code: 0, data: { user: payload, access_token: this.jwtService.sign(payload) } }
+        } catch (error) {
+            return { code: 1, messages: error }
+        }
     }
 }

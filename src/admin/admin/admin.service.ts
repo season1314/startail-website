@@ -7,7 +7,7 @@ import { CreateAdminDto, ResetPasswordDto, UpdateInfoAdminDto } from './admin.dt
 import { GetListDto } from '../admin_core.dto';
 import * as bcrypt from 'bcrypt';
 import dayjs from 'dayjs';
-import type { response } from '../admin_interface'
+import type { response } from '../../interface'
 import { Permissions } from '../../schema/config.permissions.schema';
 import { CommonMethods } from '../../common.method';
 
@@ -74,7 +74,7 @@ export class AdminService {
         .skip(skip)
         .limit(dto.entries)
         .select('-password -sessionID')
-        .lean(),
+        .lean().exec(),
       this.adminModel.find(query).countDocuments(),
     ]);
 

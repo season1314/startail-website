@@ -1,0 +1,71 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/frontend/css/style.css">
+  <link rel="stylesheet" href="/frontend/css/article.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="/frontend/js/request.js"></script>
+  <title></title>
+</head>
+
+<body>
+  <div class="error">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" style="margin-top:10%">
+      <circle cx="12" cy="12" r="10" fill="#FF4D4F" />
+      <path d="M8 8L16 16M16 8L8 16" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <a>
+      {{messages}}
+    </a>
+    <button id="error-button">Back to Home</button>
+
+  </div>
+</body>
+<style>
+  .error {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+  }
+
+  .error a {
+    color: var(--muted-foreground);
+    margin-top: 20px
+  }
+
+  .error button {
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    height: 2.25rem;
+    width: 200px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    background-color: var(--primary);
+    border-color: var(--color-ring);
+    color: var(--secondary);
+  }
+
+  button:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  button:hover {
+    background-color: oklch(0.35 0 0)
+  }
+</style>
+<script>
+  $(document).on('click', '#error-button', function(){
+    history.replaceState(null, '', '/');
+    location.reload();
+  })
+</script>

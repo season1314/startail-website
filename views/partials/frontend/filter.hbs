@@ -1,0 +1,52 @@
+<link rel="stylesheet" href="/frontend/css/form.css">
+<link rel="stylesheet" href="/frontend/css/profile.css">
+<div class="form">
+    <a class="title">Favorite Filter</a>
+    <div class="filter">
+        <a class="filter-nav-item  {{#if (eq active 'all')}}active{{/if}}" data-category="">All Categories</a>
+        {{#each menu}}
+        {{#each this}}
+        <a class="filter-nav-item  {{#if (eq ../../active @key)}}active{{/if}}" data-category="{{@key}}">
+            {{this}}
+        </a>
+        {{/each}}
+        {{/each}}
+    </div>
+</div>
+<style>
+    .filter {
+        display: flex;
+        flex-direction: column;
+        margin-top: 12px;
+    }
+
+    .filter .filter-nav-item {
+        margin-top: 20px;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        height: 22px;
+        cursor: pointer;
+        border-color: transparent;
+        transition:
+            color 150ms ease,
+            background-color 150ms ease,
+            border-color 150ms ease;
+        color: var(--muted-foreground);
+    }
+
+    .filter .filter-nav-item:hover {
+        color: var(--primary);
+    }
+
+    .filter .filter-nav-item.active {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+        cursor: default;
+        pointer-events: none;
+        transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+    }
+</style>

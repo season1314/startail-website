@@ -1,7 +1,11 @@
+<script src="/frontend/js/article.js"></script>
 <div class="list">
     <div id="article-list">
         {{> frontend/article articleList=articleList}}
     </div>
+    {{#if (isEmpty articleList)}}
+    {{> frontend/empty title="Nothing here yet" des="Content will appear here once it becomes available."}}
+    {{/if}}
     {{#if (lengthHigh articleList 5)}}
     <div class="skeleton">
         <div class="line short"></div>
@@ -11,6 +15,7 @@
         <div class="line"></div>
     </div>
     {{/if}}
+    {{> frontend/footer}}
 </div>
 <script>
     let page = 1
@@ -30,7 +35,6 @@
             if (!$lastSkeleton.data('loading')) {
                 $lastSkeleton.data('loading', true);
                 const html = await fetchList(tagId)
-                console.log(html)
                 if (!html) {
                     $('.skeleton').remove()
                 }
@@ -50,26 +54,6 @@
         var viewportBottom = viewportTop + $(window).height();
         return elementBottom > viewportTop + offset && elementTop < viewportBottom - offset;
     };
-
-    //Handle expend
-    $(document).on('click', '.svg', function () {
-        const id = $(this).data('id');
-        const $article = $('#' + id)
-        const expendDisplay = $article.find('.expend').css('display')
-        if (expendDisplay == 'block') {
-            $article.find('.non-expend').css('display', 'flex').end()
-                .find('.expend').css('display', 'none').end()
-
-            $article.find('.svg').eq(0).css('display', 'block');
-            $article.find('.svg').eq(1).css('display', 'none');
-        } else {
-            $article.find('.non-expend')
-                .css('display', 'none').end()
-                .find('.expend').css('display', 'block').end()
-            $article.find('.svg').eq(0).css('display', 'none');
-            $article.find('.svg').eq(1).css('display', 'block');
-        }
-    })
 
     async function fetchList(tagId) {
         page = page + 1

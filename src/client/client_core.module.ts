@@ -11,16 +11,35 @@ import { User, UserSchema } from '../schema/user.schema'
 import { UserController } from './controller/user.controller'
 import { CryptoService } from '../crypto.service'
 import { UserClientService } from '../client/service/user.service'
-import { userModule } from './module.ts/user.module'
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from '../jwt.strategy';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService as NextConfigService, ConfigModule as NextConfigModule } from '@nestjs/config';
+import { Favorite, FavoriteSchema } from '../schema/user.favorite.schema'
+import {ArticleController} from './controller/article.controller'
 
 @Module({
     imports: [
         ConfigModule,
-        userModule,
         ArticlesModule,
+        NextConfigModule,
+        PassportModule,
+        JwtModule.registerAsync({
+            imports: [NextConfigModule],
+            inject: [NextConfigService],
+            useFactory: (configService: NextConfigService) => ({
+                secret: configService.get<string>('JWT_SECRET') || 'default_secret_here',
+                signOptions: { expiresIn: '920h' },
+            }),
+        }),
+        MongooseModule.forFeature([
+            { name: User.name, schema: UserSchema },
+            { name: Favorite.name, schema: FavoriteSchema }
+
+        ]),
     ],
-    controllers: [HomeController, UserController],
-    providers: [ArticlesClientService, MemoryStorageService, ConfigClientService, EmailService, CryptoService],
+    controllers: [HomeController, UserController,ArticleController],
+    providers: [ArticlesClientService, MemoryStorageService, ConfigClientService, EmailService, CryptoService, UserClientService, JwtStrategy],
     exports: [ArticlesClientService],
 })
 export class ClientCoreModule { }

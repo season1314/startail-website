@@ -62,6 +62,59 @@
     line-height: 1.625;
 }
 
+.article .expend .article-operations {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px 20%;
+}
+
+.article .expend .article-operations .operation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.article .expend .article-operations .operation:hover {
+    background-color: #000;
+    color: #FAFAFA
+}
+
+.article .expend .article-operations .operation.favorite.active {
+    opacity: 1;
+    color: #007AFF
+}
+
+.article .expend .article-operations .operation.favorite {
+    opacity: 0.6
+}
+
+.article .expend .article-operations .operation.favorite.active:hover {
+    opacity: 1;
+    background-color: #fff;
+    color: #007AFF;
+}
+
+
+.article .expend .article-operations .operation.view:hover {
+    color: inherit;
+    background-color: #fff;
+}
+
+
+.article .expend .article-operations .operation .operation-svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    display: block
+}
+
+
 .article .expend .files {
     width: 100%;
     border-radius: 0.125rem;
@@ -157,7 +210,7 @@
     padding: 40px 20px;
     border-radius: 8px;
     background: #fff;
-    
+
 }
 
 .skeleton div {
@@ -206,4 +259,112 @@
     100% {
         left: 100%;
     }
+}
+
+
+.article .mini-article {
+    width: 650px;
+    height: 120px;
+    display: flex;
+}
+
+.article .mini-article .mini-img {
+    width: 200px;
+    height: 120px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 2px;
+    border: 1px solid #f1f5f9;
+}
+
+.article .mini-article .mini-content {
+    width: 430px;
+    height: 120px;
+    padding-left: 20px;
+}
+
+.article .mini-article .mini-content .mini-title {
+    padding: 0;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.article .mini-article .mini-content .mini-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 25px;
+    word-break: break-word;
+    white-space: normal;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 5px;
+}
+
+.article .mini-article .mini-content .mini-more {
+    color: #2563EB;
+    font-size: 0.775rem;
+    font-weight: 500;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.article .mini-article .mini-content .mini-more:hover {
+    color: #1D4ED8;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+}
+
+
+.article .mini-create {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 30px
+}
+
+.article .mini-create .mini-operation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+
+.article .mini-create .mini-operation.inactive,
+.article .mini-create .mini-operation.active {
+
+}
+
+.article .mini-create .mini-operation.inactive:hover {
+    color: #C2410C
+}
+
+
+
+.article .mini-create .mini-operation.active:hover {
+    color: #007AFF
+}
+
+
+.article .mini-create .mini-operation .mini-operation-svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+    margin-right: 5px;
 }

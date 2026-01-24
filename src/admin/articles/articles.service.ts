@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { response } from '../admin_interface'
+import type { response } from '../../interface'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Tags } from '../../schema/articles.tags.schema'
@@ -39,7 +39,7 @@ export class ArticlesService {
             ];
         }
         const [list, total, lang] = await Promise.all([
-            this.tagsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(dto.entries).lean(),
+            this.tagsModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(dto.entries).lean().exec(),
             this.tagsModel.find(query).countDocuments(),
             this.configModel.findOne({ key: 'languages' }).select('property -_id')
         ])
@@ -180,7 +180,7 @@ export class ArticlesService {
 
             const data = await this.contentModel.findOne({ _id: id })
             if (!data) return false
-            const matchedTags = await this.tagsModel.find({ _id: { $in: data.tags } }).select('_id name').lean();
+            const matchedTags = await this.tagsModel.find({ _id: { $in: data.tags } }).select('_id name').lean().exec();
 
             const categories = configCategories.map((item) => {//format categories data
                 if (data.categories.includes(item)) {
@@ -347,7 +347,7 @@ export class ArticlesService {
             }));
         }
         const [list, total] = await Promise.all([
-            this.contentModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(dto.entries).lean(),
+            this.contentModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(dto.entries).lean().exec(),
             this.contentModel.find(query).countDocuments(),
         ])
         const imgUrl = this.configService.get<string>('IMG_URL')

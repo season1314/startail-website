@@ -3,8 +3,8 @@
     <!-- send form -->
     <div class="form" style="width:460px;margin-top:15%;display:{{#if (eq type 'mail')}}block{{else}}none{{/if}}"
         id="send">
-        <a class="title">Sign up</a>
-        <div class="des">Welcome to STARTAII! Enter your email below to start your journey.</div>
+        <a class="title">Reset password</a>
+        <div class="des">Enter your email below and we'll send you a link to set a new password.</div>
         <div id="sendContainer">
             <form>
                 <div class="column" id="email">
@@ -19,7 +19,7 @@
             </button>
             <div class="link">
                 <a href="/">Login</a>
-                <a href="#" onclick="window.location.replace('/auth/reset')">Forget Password?</a>
+                <a href="#" onclick="window.location.replace('/auth/register')">Sign up</a>
             </div>
         </div>
         <div id="sendResult" style="display:none">
@@ -49,15 +49,10 @@
     <!-- step form -->
     <div class="form" style="width:460px;margin-top:15%;display:{{#if (eq type 'step')}}block{{else}}none{{/if}}"
         id="step">
-        <a class="title">Complete sign up</a>
-        <div class="des">Please complete the final steps of your registration to activate your account.</div>
+        <a class="title">Complete reset password</a>
+        <div class="des">Please complete the final steps to reset your password.</div>
         <div id="stepContainer">
             <form>
-                <div class="column" id="nickname">
-                    <label>Nickname</label>
-                    <input type="text" placeholder="Enter Your NickName"></input>
-                    <a></a>
-                </div>
                 <div class="column" id="password">
                     <label>Password</label>
                     <input type="password" placeholder="Enter Your Password"></input>
@@ -69,13 +64,13 @@
                     <a></a>
                 </div>
             </form>
-            <button class="dark" style="margin-top:30px" id="register">
+            <button class="dark" style="margin-top:30px" id="reset">
                 <span class="spinner"></span>
                 <a>Submit</a>
             </button>
             <div class="link">
                 <a href="/">Login</a>
-                <a href="#" onclick="window.location.replace('/auth/register')">Forget Password?</a>
+                <a href="#" onclick="window.location.replace('/auth/reset)">Forget Password?</a>
             </div>
         </div>
         <div id="stepResult" style="display:none">
@@ -89,18 +84,18 @@
     <!-- step form end -->
 
 
-    <!-- successful register -->
+    <!-- successful reset -->
     <div style="display:none" id="success">
         <div class="form" style="margin-top:15%">
-            <a class="title" style="color:green">Registration completed successfully.</a>
+            <a class="title" style="color:green">Reset password completed successfully.</a>
             <div class="des">You will be redirected to the login page in <a id="countdown">5</a> seconds.</div>
             <button class="dark" style="margin-top:30px" id="goHome">
-                <a>Go to Login</a>
+                <a >Go to Login</a>
             </button>
         </div>
     </div>
 
-    <!-- successful register end -->
+    <!-- successful reset end -->
 
 </div>
 <script>
@@ -133,7 +128,7 @@
             return
         }
 
-        const result = await fetchData('/auth/email', 'GET', { type: 'reg', email })
+        const result = await fetchData('/auth/email', 'GET', { type: 'reset', email })
         if (result.code == 2) {
             Object.entries(result.messages).forEach(([key, value]) => {
                 $('#' + key).find('a').text(value[0])
@@ -177,26 +172,24 @@
 
     //Handle go home
     $(document).on('click', '#goHome', function () {
-        window.location.replace("/");
+       window.location.replace("/");
     })
 
 
 
-    //Handle register button
-    $(document).on('click', '#register', async function () {
+    //Handle reset button
+    $(document).on('click', '#reset', async function () {
         $(this).find('.spinner').addClass('is-show')
         $(this).find('a').css('display', 'none')
         $(this).prop('disabled', true)
         $('#stepContainer').find('input').prop('disabled', true)
-        const $nickname = $('#nickname').find('input')
         const $password = $('#password').find('input')
         const $confirmPassword = $('#confirmPassword').find('input')
-        const nickname = $nickname.val()
         const password = $password.val()
         const confirmPassword = $confirmPassword.val()
         const url = new URL(window.location.href);
         const code = url.searchParams.get('code');
-        const res = await fetchData('/auth/register/step', 'POST', { nickname, password, confirmPassword, code })
+        const res = await fetchData('/auth/reset/step', 'POST', { password, confirmPassword, code })
         if (res.code == 2) {
             Object.entries(res.messages).forEach(([key, value]) => { $('#' + key).find('a').text(value[0]) })
             $(this).find('.spinner').removeClass('is-show')

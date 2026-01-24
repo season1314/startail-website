@@ -3,24 +3,24 @@
     <div class="nav">
       <a class="title">STARTAII</a>
       <nav class="menu">
-        <a class="nav-item {{#if (eq active '/')}}active{{/if}}" href="/" id="home">Home</a>
+        <a class="nav-item {{#if (eq active '/')}}active{{/if}}" href="#" onclick="window.location.replace('/')" id="home">Home</a>
         {{#each menu}}
         {{#each this}}
-        <a class="nav-item  {{#if (eq ../../active @key)}}active{{/if}}" href="/category/{{@key}}">
+        <a class="nav-item  {{#if (eq ../../active @key)}}active{{/if}}" href="#" onclick="window.location.replace('{{buildHref @key 'auth' }}')">
           {{this}}
         </a>
         {{/each}}
         {{/each}}
         {{#if tag}}
-        <a class="nav-item {{#if (eq active 'tag')}}active{{/if}}" href="/">{{tag.name}}</a>
+        <a class="nav-item {{#if (eq active 'tag')}}active{{/if}}">{{tag.name}}</a>
         {{/if}}
       </nav>
     </div>
     <div class="element">
       {{#if search}}
-      <div class="input-group" style="width:338px">
-        <input type="text" class="input" placeholder="Keyword to search..." />
-        <button class="button">Search</button>
+      <div class="input-group" style="width:338px;margin-left:100px">
+        <input type="text" class="input" placeholder="Keyword to search..."  id="searchInput" value="{{keyword}}"/>
+        <button class="button" id="headerInput">Search</button>
       </div>
       {{/if}}
     </div>
@@ -30,7 +30,7 @@
   .element {
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 
   .input-group {

@@ -1,7 +1,7 @@
 <script src="/frontend/js/article.js"></script>
 <div class="list">
     <div id="article-list">
-        {{> frontend/article articleList=articleList}}
+        {{> frontend/miniArticle articleList=articleList}}
     </div>
     {{#if (isEmpty articleList)}}
     {{> frontend/empty title="Nothing here yet" des="Content will appear here once it becomes available."}}
@@ -43,6 +43,13 @@
         }
     });
 
+    //Handle filter
+    $(document).on('click', '.filter-nav-item', function () {
+        const category = $(this).data('category')
+        const url = '/favorite' + category ? `?category=${category}` : ""
+        window.location.replace(url)
+    })
+
 
     $.fn.isInViewport = function (offset) {
         offset = offset || 0;
@@ -56,8 +63,8 @@
 
     async function fetchList(category) {
         page = page + 1
-        const url = category ? `/category/${category}/list` : '/list'
-        const res = await fetchData(url, 'GET', { page }, false)
+        const url = "favorite/list"
+        const res = await fetchData(url, 'GET', { page, category }, false)
         return await res.text();
     }
 </script>

@@ -4,7 +4,8 @@
         {{> frontend/article articleList=articleList}}
     </div>
     {{#if (isEmpty articleList)}}
-    {{> frontend/empty title="Nothing here yet" des="Content will appear here once it becomes available."}}
+    {{> frontend/empty title="No results found" des="Try adjusting your search or filter to find what you're looking
+    for."}}
     {{/if}}
     {{#if (lengthHigh articleList 5)}}
     <div class="skeleton">
@@ -19,13 +20,15 @@
 </div>
 <script>
     let page = 1
-    const path = window.location.pathname;
-    const parts = path.split('/');
-    const category = parts[parts.length - 1];
+    const queryString = window.location.search;
+    const params = new URLSearchParams(queryString);
+    const keyword = params.get('keyword') || "";
+    const category = params.get('category') || "";
 
     window.addEventListener('beforeunload', function () {
         window.scrollTo(0, 0);
     });
+
 
     //Handle loadMore
     $(window).on('scroll', async function () {
@@ -56,14 +59,13 @@
 
     async function fetchList(category) {
         page = page + 1
-        const url = category ? `/category/${category}/list` : '/list'
-        const res = await fetchData(url, 'GET', { page }, false)
+        const res = await fetchData('/search/list', 'GET', { page, keyword, category }, false)
         return await res.text();
     }
 </script>
 <style>
     .list {
-        min-height: calc(100vh - 84px);
+        min-height: calc(100vh - 134px);
         width: 700px;
         background-color: rgba(255, 255, 255);
         border-radius: 2px;

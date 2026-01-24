@@ -12,14 +12,32 @@
 </head>
 
 <body class="loading">
-    {{> frontend/header menu=categories active=menuActivated tag=tag search=search}}
+    {{> frontend/header menu=categories active=menuActivated tag=tag search=search keyword=keyword}}
+    {{#if tag.name}}
+    {{#if (eq tag.name "Search")}}
+    <div class="subHeader">
+        <div class="subMenu">
+            <a class="a {{#if (eq subActivated 'tags')}}active{{/if}}" data-tag="tag" id="tag">Tags</a>
+            <a class="a {{#if (eq subActivated 'all')}}active{{/if}}" data-category="" id="all">All Categories</a>
+            {{#each categories}}
+            {{#each this}}
+            <a class="a small {{#if (eq ../../subActivated @key)}}active{{/if}}" data-category="{{@key}}">{{this}}</a>
+            {{/each}}
+            {{/each}}
+        </div>
+    </div>
+    {{/if}}
+    {{/if}}
     <div class="page">
         {{{body}}}
         {{#if sidebar}}
         <div class="sidebar">
-            <div class="container">
+            <div class="container" style=" {{#if (eq tag.name 'Search')}}top:125px{{/if}}">
                 {{#if sidebar.login}}
-                {{> frontend/login login=sidebar.login}}
+                {{> frontend/login user=user}}
+                {{/if}}
+                {{#if sidebar.filter}}
+                {{> frontend/filter menu=categories active=filterActivated}}
                 {{/if}}
             </div>
         </div>
@@ -27,6 +45,61 @@
     </div>
 </body>
 <style>
+    .subHeader {
+        width: 100%;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.95);
+        position: sticky;
+        top: 65px;
+        z-index: 999px;
+        display: flex;
+        border-bottom: 1px solid #e5e7eb;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .subHeader .subMenu {
+        width: 1000px;
+        display: flex;
+        gap: 1rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        margin-left: 1rem
+    }
+
+    .subHeader .subMenu .a {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        height: 22px;
+        cursor: pointer;
+        border-color: transparent;
+        transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+        color: var(--muted-foreground);
+    }
+
+    .subHeader .subMenu .a.small {
+        font-size: 0.675rem;
+    }
+
+    .subHeader .subMenu .a.active {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        font-weight: 500;
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+        cursor: default;
+        pointer-events: none;
+        transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+    }
+
+
+
+    .subHeader .subMenu .a:hover {
+        color: var(--primary);
+    }
+
     .page {
         display: flex;
         padding-top: 10px;
@@ -42,15 +115,63 @@
     }
 
     .sidebar .container {
-        position: fixed;
+        position: sticky;
         top: 75px;
         width: 300px;
+        right: 0
     }
 </style>
 <script>
+    //Handle browser operation keep login status
+    const navType = performance.getEntriesByType('navigation')[0]?.type;
+    const _user = {{{ tojson user }}}
+    if (navType == 'back_forward') {
+        let user = localStorage.getItem('user')
+        user = user ? JSON.parse(user) : null;
+        if (user && Object.keys(user).length !== 0) {
+            $('#login').css('display', 'none')
+            $('#user').css('display', 'flex')
+            $('#user').find('.email').text(user.email)
+            const avatar = user?.nickname?.charAt(0)?.toUpperCase() || ""
+            $('#user').find('.avatar').text(avatar)
+            $('#user').find('.nickname').text(user.nickname)
+        } else {
+            $('#login').css('display', 'block')
+            $('#user').css('display', 'none')
+        }
+    } else {
+        localStorage.setItem('user', JSON.stringify(_user))
+    }
+
+
+    //Solution of visual flicker
     window.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('loading');
     });
+
+    //Handle search
+    $(document).on('click', '#headerInput', function () {
+        const keyword = $('#searchInput').val()
+        const tag = $('#tag').hasClass('active')
+        if (tag) {
+            location.replace("/search/tag?keyword=" + encodeURIComponent(keyword))
+        } else {
+            const category = $('.a.small.active').first().data('category') || "";
+            location.replace("/search?keyword=" + encodeURIComponent(keyword) + "&category=" + encodeURIComponent(category))
+        }
+    })
+
+    //Handle switch sub search filter
+    $(document).on('click', '.a', function () {
+        const keyword = $('#searchInput').val()
+        const id = $(this).attr('id')
+        if (id == 'tag') {
+            location.replace("/search/tag?keyword=" + encodeURIComponent(keyword))
+        } else {
+            const category = $(this).data('category') || ""
+            location.replace("/search?keyword=" + encodeURIComponent(keyword) + "&category=" + encodeURIComponent(category));
+        }
+    })
 </script>
 
 </html>

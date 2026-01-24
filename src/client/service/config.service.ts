@@ -7,7 +7,7 @@ import { Articles } from '../../schema/articles.content.schema'
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 import { GetListDto } from '../../admin/admin_core.dto'
-import { response } from 'src/admin/admin_interface';
+import { response } from 'src/interface';
 import { MemoryStorageService } from '../../memory-storage.service'
 import { CommonMethods } from '../../common.method'
 

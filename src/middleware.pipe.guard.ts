@@ -8,20 +8,44 @@ import { resolve } from 'path';
 import rateLimit from 'express-rate-limit';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
+import cookie from 'cookie';
+import type { RequestWithToken } from './interface'
 
 
-/**
- * MiddleWare to admin login status
- */
+
+//MiddleWare: admin login status and user cookie token
 @Injectable()
 export class SessionValidationMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction): void {
+  use(req: RequestWithToken, res: Response, next: NextFunction): void {
+    if (
+      req.url.startsWith('/uploads') ||
+      req.url.startsWith('/backend') ||
+      req.url.startsWith('/frontend') ||
+      req.url.endsWith('.js') ||
+      req.url.endsWith('.css') ||
+      req.url.endsWith('.png') ||
+      req.url.endsWith('.jpg') ||
+      req.url.endsWith('.ico') ||
+      req.url.endsWith('.jpeg') ||
+      req.url.endsWith('.pdf') ||
+      req.url.endsWith('.json')
+    ) {
+      return next();
+    }
+
     if (req.url.startsWith('/admin') && req.url !== '/admin/login') {
       const contentType = req.method;
       if (!req.session || !req.session.user) {
         //GET re-renders else return Json 
         if (contentType == 'GET') return res.render('backend/login', { title: 'Login', messages: 'You must be logged in to access this resource.' });
         else throw new HttpException({ code: 3, messages: 'Unauthorized access. Please log in.' }, HttpStatus.UNAUTHORIZED)
+      }
+    } else {
+      const cookies = req.headers.cookie;
+      if (cookies) {
+        const parsedCookies = cookie.parse(cookies);
+        const token = parsedCookies['token'];
+        if (token) { req.token = token }
       }
     }
     next();
@@ -52,6 +76,21 @@ export class FormValidationPipe extends ValidationPipe {
 @Injectable()
 export class PermissionValidationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
+    if (
+      req.url.startsWith('/uploads') ||
+      req.url.startsWith('/backend') ||
+      req.url.startsWith('/frontend') ||
+      req.url.endsWith('.js') ||
+      req.url.endsWith('.css') ||
+      req.url.endsWith('.png') ||
+      req.url.endsWith('.jpg') ||
+      req.url.endsWith('.ico') ||
+      req.url.endsWith('.jpeg') ||
+      req.url.endsWith('.pdf') ||
+      req.url.endsWith('.json')
+    ) {
+      return next();
+    }
     if (req.url.startsWith('/admin') && req.url !== '/admin/login' && req.url !== '/admin/auth' && req.url !== '/admin/upload') {
       const permissions = req.session.user.permissions
       let url = req.url.split('?')[0]
@@ -87,6 +126,21 @@ export class RateLimitingMiddleware implements NestMiddleware {
     this.use = this.use.bind(this);
   }
   use(req: Request, res: Response, next: NextFunction): void {
+    if (
+      req.url.startsWith('/uploads') ||
+      req.url.startsWith('/backend') ||
+      req.url.startsWith('/frontend') ||
+      req.url.endsWith('.js') ||
+      req.url.endsWith('.css') ||
+      req.url.endsWith('.png') ||
+      req.url.endsWith('.jpg') ||
+      req.url.endsWith('.ico') ||
+      req.url.endsWith('.jpeg') ||
+      req.url.endsWith('.pdf') ||
+      req.url.endsWith('.json')
+    ) {
+      return next();
+    }
     this.limiter(req, res, next);
   }
 }
@@ -106,8 +160,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     ]);
 
     if (!requireAuth) {
-      return true; 
+      return true;
     }
     return super.canActivate(context);
   }
 }
+
+
+

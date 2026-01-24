@@ -53,7 +53,7 @@ export class CommonMethods {
      */
     static tagsFormatByLang(tags: Record<string, any> | null | undefined, lang: string, tagId: string) {
         if (!tags) return tags
-        return tags.map(tag => {
+        return tags.filter(Boolean).map(tag => {
             const id = tag._id?.toString();
             const langObj = Array.isArray(tag.lang) ? tag.lang.find(l => l.hasOwnProperty(lang)) : null;
             return {

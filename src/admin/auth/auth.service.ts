@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { response } from '../admin_interface'
+import type { response } from '../../interface'
 import { ValidateAdminDto, ResetPasswordDto } from '../admin/admin.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

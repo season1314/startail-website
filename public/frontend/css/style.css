@@ -8,6 +8,10 @@ div {
     box-sizing: border-box;
 }
 
+* {
+    user-select: none;
+}
+
 a {
     text-decoration: none;
 }
@@ -15,6 +19,11 @@ a {
 body {
     min-width: 1180px;
     background-color: #FAFAFA;
+}
+
+html {
+    /* scrollbar-gutter: stable; */
+    overflow-y: scroll;
 }
 
 body.loading {

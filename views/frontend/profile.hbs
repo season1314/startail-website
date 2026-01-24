@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="/frontend/css/form.css">
+<link rel="stylesheet" href="/frontend/css/profile.css">
+<div style="width:700px">
+    <div class="form user" id="profile-user" style="display:flex">
+        <div class="avatar" style="width:100px;height:100px;border-radius:10px;font-size:64px"
+            data-avatar="{{user.avatar}}" id="avatar">
+            {{avatar user.nickname}}
+        </div>
+        <div class="email" style="margin-top:10px">{{user.email}}</div>
+        <div style="width:100%;display:flex;justify-content: center;">
+            <div style="width:100px">
+                <div style="height:32px;line-height:32px;margin-top:6px;text-align:end;padding-right:12px">Nickname :
+                </div>
+                <a></a>
+            </div>
+            <div class="column" id="profile-nickname" style="width:320px">
+                <input type="text" placeholder="" value="{{user.nickname}}"></input>
+                <a></a>
+            </div>
+        </div>
+        <button class="dark" id="save" style="width:200px">
+            <span class="spinner"></span>
+            <a>Save</a>
+        </button>
+    </div>
+</div>
+<script>
+    //Handle update
+    $(document).on('click', '#save', async function () {
+        $(this).find('.spinner').addClass('is-show')
+        $(this).find('a').css('display', 'none')
+        $(this).prop('disabled', true)
+        $('#profile-user').find('.nickname').prop('disabled', true)
+        const $nickname = $('#profile-nickname').find('input')
+        const avatar = $('#avatar').data('avatar')
+        const res = await fetchData('/auth/profile', 'POST', { nickname: $nickname.val() })
+        if (res.code == 0) {
+            localStorage.setItem('user', JSON.stringify(res.data.user));
+            history.replaceState(null, '', '/');
+            location.reload();
+        } else if (res.code == 2) {
+            Object.entries(res.messages).forEach(([key, value]) => {
+                $(`#profile-${key}`).find('a').text(value[0])
+            })
+        } else{
+            window.location.href = `/error?messages=${res.messages}`
+        }
+        $(this).find('.spinner').removeClass('is-show')
+        $(this).find('a').css('display', 'block')
+        $(this).prop('disabled', false)
+        $('#profile-user').find('.nickname').prop('disabled', false)
+    })
+
+    //Clear error info
+    $('input').focus(function () {
+        const $small = $(this).next('a');
+        $small.text('');
+    });
+</script>
+<style>
+    .login {
+        display: none;
+    }
+</style>

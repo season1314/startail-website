@@ -13,7 +13,6 @@ async function fetchData(url, method = 'GET', params = {}, type = true) {
         };
 
         let fullUrl = url;
-        console.log(url)
 
         if (['GET', 'DELETE'].includes(options.method)) {
             const queryString = new URLSearchParams(params).toString();
@@ -23,10 +22,16 @@ async function fetchData(url, method = 'GET', params = {}, type = true) {
             else { options.body = JSON.stringify(params); options.headers = { 'Content-Type': 'application/json' } }
         }
         let result = await fetch(fullUrl, options);
+        const authHeader = result.headers.get('Authorization');
+        if (authHeader) {
+            const token = authHeader.replace(/^Bearer\s+/i, '');
+            document.cookie = `token=${token}; path=/; Secure; SameSite=Strict`;
+        }
+
         if (type) {
             result = await result.json();
         }
-        if (result.code == 3) { window.location.href = '/admin/login' }
+        if (result.code == 3) { window.location.href = `/error?messages=${result.messages}` }
         return result;
     } catch (err) {
         console.error('fetchData error:', err);

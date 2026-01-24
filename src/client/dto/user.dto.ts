@@ -31,9 +31,8 @@ export class userRegDto {
 }
 
 export class userResetPwd {
-    @IsEmail()
     @IsNotEmpty()
-    email: string;
+    code: string;
 
     @IsNotEmpty()
     @MinLength(6)
@@ -52,7 +51,15 @@ export class userLoginDto {
     email: string;
 
     @IsNotEmpty()
-    @MinLength(6)
-    @MaxLength(20)
     password: string
+}
+
+export class updateUserDto {
+    @IsNotEmpty()
+    @MinLength(4)
+    @MaxLength(20)
+    nickname: string;
+
+    @IsOptional()
+    avatar:string
 }
