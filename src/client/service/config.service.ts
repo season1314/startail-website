@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Tags } from '../../schema/articles.tags.schema'
 import { Config } from '../../schema/config.common.schema'
-import { Articles } from '../../schema/articles.content.schema'
 import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 import { GetListDto } from '../../admin/admin_core.dto'

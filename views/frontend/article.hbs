@@ -1,0 +1,333 @@
+<button class="back" id="back">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+    </svg>
+</button>
+<div class="list">
+    <div id="article-list">
+        <div class="article" id="{{article._id}}" style="border-bottom:none">
+            <h3 class="title">{{article.title}}</h3>
+            <div class="expend" style="display:block">
+                <img class="img" src="{{article.coverImg}}" />
+                <div class="content">
+                    {{article.des}}
+                </div>
+                {{#if article.files}}
+                <div class="files">
+                    {{#each article.files}}
+                    {{#if this.des}}
+                    {{#if this.path}}
+                    <div>
+                        <a class="label">{{this.des}} : </a>
+                        <a href={{this.path}} target="_blank" rel="noopener noreferrer" class="link">
+                            {{this.path}}
+                        </a>
+                    </div>
+                    {{/if}}
+                    {{/if}}
+                    {{/each}}
+                </div>
+                {{/if}}
+            </div>
+            <div class="tags">
+                {{#each article.tags}}
+                <a href="#" class="badge {{this.active}}"
+                    onclick="window.location.replace('/tags/{{this.id}}')">{{this.name}}</a>
+                {{/each}}
+            </div>
+            <div class="expend" style="display:block">
+                <div class="article-operations">
+                    <button class="operation favorite static {{#if favorite}}active disabled{{/if}}"
+                        data-id="{{this._id}}" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="operation-svg">
+                            <path fill-rule="evenodd"
+                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <a>favorite</a>
+                    </button>
+                    <button class="operation cmt static" data-id="{{this._id}}" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="operation-svg">
+                            <path fill-rule="evenodd"
+                                d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 0 1-.814 1.686.75.75 0 0 0 .44 1.223ZM8.25 10.875a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25ZM10.875 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875-1.125a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <a>comment ({{comment}})</a>
+                    </button>
+                    <button class="operation view static" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="operation-svg" style="padding-top:2px">
+                            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path fill-rule="evenodd"
+                                d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <a>view ({{article.view}})</a>
+                    </button>
+                </div>
+            </div>
+            <div class="create">
+                <a>Created By {{article.createdInfo.name}} {{article.createdAt}}</a>
+                <a></a>
+            </div>
+            <div class="expend" style="display:block">
+                {{#if user.sub}}
+                <div class="comment" style="display:flex;margin-top:24px">
+                    <div class="avatar" style="border-radius:5px;margin:0">{{avatar user.nickname}}</div>
+                    <div class="text">
+                        <textarea class="cmt-textarea" placeholder="Ask a question or share your thoughts"></textarea>
+                        <button class="cmt-button" disabled data-id="{{article._id}}">
+                            <span class="spinner" style="width:10px;height:10px"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                style="width:14px;height:14px">
+                                <path
+                                    d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                {{/if}}
+                <div class="commentList static">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="skeleton">
+        <div class="line short"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line short"></div>
+        <div class="line"></div>
+    </div>
+    <div style="margin-top:20px">
+        {{> frontend/footer}}
+    </div>
+</div>
+<button class="back top" id="top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd"
+            d="M11.47 2.47a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06l-6.22-6.22V21a.75.75 0 0 1-1.5 0V4.81l-6.22 6.22a.75.75 0 1 1-1.06-1.06l7.5-7.5Z"
+            clip-rule="evenodd" />
+    </svg>
+</button>
+</div>
+<script>
+    let page = 1
+    const articleId = "{{ article._id }}"
+    let comment = {{ comment }}
+
+    window.addEventListener('beforeunload', function () {
+        window.scrollTo(0, 0);
+    });
+
+    $(window).on('load', async function () {
+        var $lastSkeleton = $('.skeleton').last();
+        if (!$lastSkeleton.data('loading')) {
+            $lastSkeleton.data('loading', true);
+            const html = await fetchList(articleId)
+            if (!html) {
+                $('.skeleton').remove()
+            }
+            $('.commentList.static').append(html)
+            $lastSkeleton.data('loading', false)
+        }
+    })
+    //Handle scroll
+    let hasNotified = false;
+    $(window).on('scroll', async function () {
+        //loadMore
+        var $lastSkeleton = $('.skeleton').last();
+        if ($lastSkeleton.length && $lastSkeleton.isInViewport(50)) {
+            if (!$lastSkeleton.data('loading')) {
+                $lastSkeleton.data('loading', true);
+                const html = await fetchList(articleId)
+                if (!html) {
+                    $('.skeleton').remove()
+                }
+                $('.commentList.static').append(html)
+                $lastSkeleton.data('loading', false)
+            }
+        }
+
+        const scrollTop = $(this).scrollTop();
+        const windowHeight = $(this).height();
+        if (scrollTop > (windowHeight - 600) && !hasNotified) {
+            $('#top').css('opacity', 1)
+            hasNotified = true
+        }
+        if (scrollTop <= (windowHeight - 600) && hasNotified) {
+            $('#top').css('opacity', 0)
+            hasNotified = false
+        }
+
+
+        /** textarea controller
+        var $textarea = $('.cmt-textarea')
+        if ($textarea.isOutViewport(50) && !hasNotified) {
+            hasNotified = true;
+        }
+        if ($textarea.isInViewport(50) && hasNotified) {
+            hasNotified = false
+        }
+        **/
+    });
+
+    /**
+    $.fn.isOutViewport = function (offset) {
+        const elementTop = this.offset().top;
+        const windowScrollTop = $(window).scrollTop();
+        return elementTop + offset < windowScrollTop;
+    }
+    */
+
+    $.fn.isInViewport = function (offset) {
+        offset = offset || 0;
+        if (!this.length) return false;
+        var elementTop = this.offset().top;
+        var elementBottom = elementTop + this.outerHeight();
+        var viewportTop = $(window).scrollTop();
+        var viewportBottom = viewportTop + $(window).height();
+        return elementBottom > viewportTop + offset && elementTop < viewportBottom - offset;
+    };
+
+
+    async function fetchList(articleId) {
+        const res = await fetchData('/comment', 'GET', { page, id: articleId }, false)
+        page = page + 1
+        return await res.text();
+    }
+
+
+    //Handle comment textarea
+    $(document).on('focus', '.cmt-textarea', function () {
+        $(this).next('button').show()
+    })
+
+    $(document).on('blur', '.cmt-textarea', function () {
+        const val = $(this).val().trim()
+        if (!val) {
+            $(this).next('button').hide()
+        }
+    })
+
+    $(document).on('input', '.cmt-textarea', function () {
+        const val = $(this).val()
+        if (val.length > 0) {
+            $(this).next('button').prop('disabled', false);
+        } else {
+            $(this).next('button').prop('disabled', true);
+        }
+    })
+
+    //Handle delete
+    $(document).on('click', '.commentDelete', async function () {
+        const commentId = $(this).data('id')
+        const articleId = $(this).data('articleid')
+        const res = await fetchData('/article/comment', 'DELETE', { commentId })
+        if (res.code == 0) {
+            const $comment = $('#' + commentId)
+            if (res.data.type = "delete") {
+                comment = comment - 1
+                console.log(comment)
+                $('#' + articleId).find('.operation.cmt.static').find('a').text(`comment (${comment})`)
+                $comment.remove()
+            } else {
+                const $comment = $('#' + commentId)
+                $comment.find('.commentContent').text('This comment has been deleted.')
+                $(this).text('')
+            }
+        }
+    })
+
+    //Handle new commit
+    $(document).on('click', '.cmt-button', async function () {
+        const id = $(this).data('id')
+        $(this).attr('disabled', true)
+        $(this).find('svg').css('display', 'none')
+        $(this).find('span').css('display', 'block')
+        const $content = $('#' + id).find('.cmt-textarea')
+        $content.css('disabled', true)
+        const content = $content.val()
+        const res = await fetchData('/article/comment', 'POST', { articleId: id, content })
+        if (res.code == 0) {
+            const res = await fetchData('/comment', 'GET', { page: 1, id: id }, false)
+            const html = await res.text();
+            comment = comment + 1
+            $('#' + id).find('.operation.cmt.static').find('a').text(`comment (${comment})`)
+            $('#' + id).find('.commentList.static').empty().append(html)
+        }
+        $(this).hide()
+        $(this).attr('disabled', false)
+        $content.val('')
+        $content.css('disabled', false)
+        $(this).find('svg').css('display', 'block')
+        $(this).find('span').css('display', 'none')
+    })
+
+    //Handle back
+    $(document).on('click', '#back', function () {
+        window.history.back();
+    })
+
+    //Handle Top
+    $(document).on('click', "#top", function () {
+        $('html, body').animate({
+            scrollTop: 0
+        }, 300);
+    })
+
+
+</script>
+<style>
+    .list {
+        width: 700px;
+        background-color: rgba(255, 255, 255);
+        border-radius: 2px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        padding: 0 1.5rem;
+        min-height: calc(100vh - 20px);
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        background-color: #0f172a;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: 900;
+        margin-bottom: 10px;
+        line-height: 40px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .back {
+        height: 30px;
+        width: 30px;
+        margin: 0 20px;
+        position: sticky;
+        top: 14px;
+        color: #ffffff;
+        border-radius: 5px;
+        background-color: rgb(0, 0, 0);
+    }
+
+    .back svg {
+        height: 22px;
+        width: 22px;
+    }
+
+    .back.top {
+        top: calc(100vh - 50px);
+        margin-left: 20px;
+        margin-right: 300px;
+        opacity: 0;
+    }
+</style>

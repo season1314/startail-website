@@ -1,0 +1,29 @@
+{{#each articleList}}
+<div class="article" id="{{this._id}}" style="padding:24px 0">
+    <div class="mini-article">
+        <div class="mini-img" style="background-image: url('{{this.article.coverImg}}')"></div>
+        <div class="mini-content">
+            <h5 class="mini-title">{{this.article.title}}</h5>
+            <p class="mini-text comment">
+                {{this.article.des}}
+            </p>
+        </div>
+    </div>
+    <div class="expend" style="display:block">
+        <div class="commentList static" style="background-color:#e2e8f0;margin:10px 0;padding:5px 14px">
+            <div class="commentItem" style="margin:5px 0">
+                <div class="commentAvatar">{{avatar ../user.nickname}}</div>
+                <div class="commentContext">
+                    <div class="commentNickname comment">
+                        <a>{{../user.nickname}}</a>
+                        <a class="a">Posted on {{this.createdAt}}</a>
+                    </div>
+                    <span class="commentContent"
+                        style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;text-align: left">{{this.content}}</span>
+                </div>
+            </div>
+        </div>
+        <span class="mini-more" data-id="{{this.article._id}}">You have a total of {{this.commentCount}} comments</span>
+    </div>
+</div>
+{{/each}}

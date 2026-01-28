@@ -4,7 +4,8 @@ import { ConfigClientService } from '../service/config.service'
 import { TokenToUser } from '../../common.decorator'
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express'
-
+import type { Response } from 'express';
+import { CommentClientService } from '../service/article.comment.service'
 
 
 
@@ -13,6 +14,7 @@ export class HomeController {
     constructor(
         private readonly articlesClientService: ArticlesClientService,
         private readonly configClientService: ConfigClientService,
+        private readonly commentClientService: CommentClientService,
         private jwtService: JwtService
     ) {
 
@@ -79,7 +81,7 @@ export class HomeController {
     *
     * HTTP Method: GET
     * Request param:
-    * - category: category key
+    * - Category: category key
     * Request TokenToUser:
     * - User: user data via token
     * 
@@ -140,7 +142,7 @@ export class HomeController {
     *
     * HTTP Method: GET
     * Request param:
-    * - tagId: tag id
+    * - TagId: tag id
     * Request TokenToUser:
     * - User: user data via token
     * 
@@ -202,8 +204,8 @@ export class HomeController {
     * Request query:
     * - Page*: page number
     * - Entries*: limit number
-    * - keyword *: Keyword
-    * - category：Category key
+    * - Keyword *: Keyword
+    * - Category：Category key
     *
     * Description:
     * - Verify tag existed by tag id
@@ -238,8 +240,8 @@ export class HomeController {
     * Request query:
     * - Page*: page number
     * - Entries*: limit number
-    * - keyword *: Keyword
-    * - category：Category key
+    * - Keyword *: Keyword
+    * - Category：Category key
     *
     * Description:
     * - Verify tag existed by tag id
@@ -258,12 +260,18 @@ export class HomeController {
     }
 
     /**
-     * 
-     * @param keyword 
-     * @param page 
-     * @param user 
-     * @returns 
-     */
+    *
+    * Render search tags page
+    *
+    * HTTP Method: GET
+    * Request query:
+    * - Page*: page number
+    * - Keyword *: Keyword
+    *
+    * Description:
+    * - Get tag list by keyword in all lang
+    * - Render search page
+    */
     @Get('search/tag')
     @Render('frontend/search/tag')
     async searchTagsPage(@Query('keyword') keyword: string = "", @Query('page') page = 1, @TokenToUser() user: any) {
@@ -284,12 +292,18 @@ export class HomeController {
     }
 
     /**
-     * 
-     * @param keyword 
-     * @param page 
-     * @param user 
-     * @returns 
-     */
+   *
+   * Search tags page list
+   *
+   * HTTP Method: GET
+   * Request query:
+   * - Page*: page number
+   * - Keyword *: Keyword
+   *
+   * Description:
+   * - Get tag list by keyword in all lang
+   * - Return render list to tags partials html text 
+   */
     @Get('search/tag/list')
     @Render('partials/frontend/tags')
     async searchTagsPageList(@Query('keyword') keyword: string = "", @Query('page') page = 1, @TokenToUser() user: any) {
@@ -301,8 +315,18 @@ export class HomeController {
     }
 
     /**
-     * 
-     */
+    *
+    * Render error page tags page list
+    *
+    * HTTP Method: GET
+    * Request query:
+    * - Massages: error page content
+    * 
+    *
+    * Description:
+    * -Render error page
+    * 
+    */
     @Get('error')
     @Render('frontend/error')
     async errorPage(@Query('messages') messages: string = "An unknown error occurred. Please try again later.") {
@@ -314,32 +338,65 @@ export class HomeController {
 
 
 
-    @Get('favorite')
-    @Render('frontend/user/favorite')
-    async favoritePage(@Query('page') page = 1, @Query('category') category: string, @TokenToUser() user: any) {
-        const userId = user.sub
-        const articleList = await this.articlesClientService.favoriteArticleList({ page, entries: 20 }, 'en', category, userId)
-        const categories = await this.configClientService.getConfigCategory()
+
+    /**
+    *
+    * Render single article page
+    *
+    * HTTP Method: GET
+    * Request param:
+    * - id*: article id
+    * 
+    * Description:
+    * - get article details
+    * - get favorite status by userId
+    * - get comment count 
+    * - render page
+    */
+
+
+    @Get('article/page/:id')
+    @Render('frontend/article')
+    async articlePage(@Param('id') id: string, @TokenToUser() user: any) {
+        const userId = user.id || ""
+        const result = await this.articlesClientService.articlePage({ page: 1, entries: 10 }, id, userId, 'en')
         return {
-            articleList: articleList.data.list,
-            categories: categories.data,
-            layout: 'frontend/layouts/main',
-            menuActivated: 'tag',
-            tag: { name: "Favorite" },
-            sidebar: { login: false, filter: true },
             user: user,
-            filterActivated: category ? category : 'all'
-        };
+            article: result?.data?.article,
+            favorite: result?.data?.favorite,
+            comment: result?.data?.comment,
+            layout: 'frontend/layouts/main',
+        }
     }
 
-    @Get('favorite/list')
-    @Render('partials/frontend/miniArticle')
-    async favoritePageList(@Query('page') page, @Query('category') category: string, @TokenToUser() user: any) {
+
+    /**
+    *
+    * Get article comment
+    *
+    * HTTP Method: GET
+    * Request param:
+    * - Id*: articleId
+    * - Page*: page number 
+    * 
+    * Description:
+    * 
+    * - get comment list base article id, filter status (self or public ) by userId
+    * - sort by user created first than created time
+    * - count each comment replies
+    * - Return render list to comment partials html text 
+    */
+
+    @Get('comment')
+    @Render('partials/frontend/comment')
+    async commentList(@Query('id') id: string, @Query('page') page = 1, @TokenToUser() user: any) {
         const userId = user.sub
-        const res = await this.articlesClientService.favoriteArticleList({ page, entries: 20 }, 'en', category, userId)
+        const res = await this.commentClientService.commentList({ page, entries: 10 }, id, userId)
         return {
-            articleList: res.data.list,
+            commentList: res.data.commentList,
             layout: false,
+            articleId: id,
+            user: user
         }
     }
 }

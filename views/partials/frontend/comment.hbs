@@ -1,0 +1,18 @@
+{{~#each commentList~}}
+<div class="commentItem" id="{{_id}}">
+    <div class="commentAvatar">{{avatar userId.nickname}}</div>
+    <div class="commentContext">
+        <a class="commentNickname">{{userId.nickname}}</a>
+        <span class="commentContent">{{#if delete }}This comment has been deleted.{{else}}{{~this.content~}}{{/if}}</span>
+        <div class="commentCreatedAt">
+            <a>{{this.createdAt}}</a>
+            {{#if (eqNotType userId._id ../user.id)}}
+            {{#not delete}}
+            <a class="commentDelete" data-id='{{_id}}' data-articleId='{{articleId}}'>DELETE</a>
+            {{/not}}
+            {{/if}}
+        </div>
+        {{#if hasReplies}}<button class="commentReply"><span>View all {{replyCount}} replies</span></button>{{/if}}
+    </div>
+</div>
+{{~/each~}}

@@ -11,6 +11,7 @@ import { response } from 'src/interface';
 import { MemoryStorageService } from '../../memory-storage.service'
 import { CommonMethods } from '../../common.method'
 import { Favorite } from '@schema/user.favorite.schema';
+import { Comment } from '@schema/articles.comment.schema'
 
 
 @Injectable()
@@ -21,6 +22,7 @@ export class ArticlesClientService {
         @InjectModel(Config.name) private configModel: Model<Config>,
         @InjectModel(Articles.name) private contentModel: Model<Articles>,
         @InjectModel(Favorite.name) private favoriteModel: Model<Favorite>,
+        @InjectModel(Comment.name) private commentModel: Model<Comment>,
         private readonly configService: ConfigService,
         private readonly memoryStorageService: MemoryStorageService,
     ) { this.imgUrl = this.configService.get<string>('IMG_URL', ''); }
@@ -147,7 +149,7 @@ export class ArticlesClientService {
     }
 
     /**
-     * 
+     * Get articleDes in Waterfall Flow
      * @param articleId 
      * @param ip 
      * @returns 
@@ -162,16 +164,12 @@ export class ArticlesClientService {
                 accumulateView += 1;
                 this.memoryStorageService.set(`view:${articleId}:${ip}`, true, 60 * 60 * 24)
             }
-            //find favorite relation
-            let favorite = ""
-            if (userId) {
-                const doc = await this.favoriteModel.findOne({ userId, articleId }, { _id: 1 }).lean().exec();
-                favorite = doc?._id?.toString() || "";
-            }
+
             //reached accumulate limit update to db
             let view = 0
             const article = await this.contentModel.findOne({ _id: articleId })
             view = article ? article.view + accumulateView : view
+
             const count = 1
             if (accumulateView >= count) {
                 if (article) {
@@ -182,15 +180,28 @@ export class ArticlesClientService {
             }
             //update accumulate cache
             this.memoryStorageService.set(`viewCount:${articleId}`, accumulateView)
-            return { code: 0, messages: 'Success', data: { favorite, view } }
+
+            //get comment number
+            let comment = 0
+            const query = userId ? { commentId: articleId, $or: [{ status: 'public' }, { status: 'self', userId }] } : { commentId: articleId, status: 'public' }
+            comment = await this.commentModel.countDocuments(query).exec();
+
+            //find favorite relation
+            let favorite = ""
+            if (userId) {
+                const doc = await this.favoriteModel.findOne({ userId, articleId }, { _id: 1 }).lean().exec();
+                favorite = doc?._id?.toString() || "";
+            }
+
+            return { code: 0, messages: 'Success', data: { favorite, view, comment } }
         } catch (error) {
-            return { code: 0, messages: error.toString() }
+            return { code: 0, messages: error }
 
         }
     }
 
     /**
-     * 
+     * Get tag list
      * @param dto 
      * @param lang 
      * @param keyword 
@@ -228,7 +239,7 @@ export class ArticlesClientService {
      * @param articleId 
      * @returns 
      */
-    async favoriteArticle(userId: string, articleId: string) {
+    async favoriteArticle(userId: string, articleId: string): Promise<response> {
         try {
             if (!articleId) return { code: 3, messages: "The content has been updated. Please refresh and try again." }
             const isArticleExisted = await this.contentModel.findOne({ _id: articleId, status: 0 }).lean().exec()
@@ -255,24 +266,95 @@ export class ArticlesClientService {
      * @param category 
      * @param userId 
      */
-    async favoriteArticleList(dto: GetListDto, lang: string, category: string, userId: string) {
+    async favoriteArticleList(dto: GetListDto, lang: string, category: string | null, userId: string): Promise<response> {
         const skip = (dto.page - 1) * dto.entries;
-        const articleMatch: any = { status: 0 };
-        if (category && category !== '') {
-            articleMatch.categories = { $in: [category] };
-        }
-        const populateOptions: any = {
-            path: 'articleId',
-            select: '_id name introduction coverImg createdInfo createdAt categories',
-            match: articleMatch
-        };
-
-        const articleList = await this.favoriteModel.find({ userId }).sort({ createdAt: -1 }).skip(skip).limit(dto.entries)
-            .populate(populateOptions)
-            .lean().exec()
+        if (category === 'null' || category === 'undefined') { category = null }
+        const conditions: any[] = [
+            { $match: { userId: userId } },
+            { $addFields: { articleObjectId: { $toObjectId: '$articleId' } } },
+            { $lookup: { from: 'articles', localField: 'articleObjectId', foreignField: '_id', as: 'articleDetails' } },
+            { $unwind: '$articleDetails' },
+            { $match: { 'articleDetails.status': 0, ...(category ? { 'articleDetails.categories': category } : {}) } },
+            { $sort: { createdAt: -1 } }, { $skip: skip }, { $limit: dto.entries },
+            {
+                $project: {
+                    _id: 1, userId: 1, createdAt: 1,
+                    articleId: {
+                        _id: '$articleDetails._id', name: '$articleDetails.name', introduction: '$articleDetails.introduction',
+                        coverImg: '$articleDetails.coverImg', categories: '$articleDetails.categories', createdAt: '$articleDetails.createdAt'
+                    }
+                }
+            }];
+        const articleList = await this.favoriteModel.aggregate(conditions)
         const formatArticleList = articleList.filter(item => item.articleId).map((item) => {
             const { articleId, ...rest } = item
             return { ...rest, article: this.formatMinArticleData(item.articleId, lang) }
+        })
+        return { code: 0, data: { list: formatArticleList } }
+    }
+
+
+    /**
+     * Get articleDes in page
+     * @param dto 
+     * @param id 
+     * @param userId 
+     * @param lang 
+     * @returns 
+     */
+    async articlePage(dto: GetListDto, id: string, userId: string, lang: string = 'en'): Promise<response> {
+        const skip = (dto.page - 1) * dto.entries;
+        if (!id) return { code: 3, messages: 'The content has been updated. Please refresh and try again.' }
+        const article = await this.contentModel.findOne({ _id: id }).populate('tags').lean().exec()
+        if (!article) return { code: 3, messages: 'The content has been updated. Please refresh and try again.' }
+        const query = userId ? { commentId: id, $or: [{ status: 'public' }, { status: 'self', userId }] } : { commentId: id, status: 'public' }
+        const [favorite, comment] = await Promise.all([
+            this.favoriteModel.findOne({ articleId: id, userId: userId }, '_id').lean().exec(),
+            this.commentModel.countDocuments(query).exec()
+        ])
+        const formatArticle = this.formatArticleData(article, lang)
+        const view = this.memoryStorageService.get(`viewCount:${id}`) || 0
+        formatArticle.view = article.view + view
+        return { code: 0, data: { article: formatArticle, comment, favorite } }
+    }
+
+
+    /**
+     * Get Article list through comment relation
+     * @param dto 
+     * @param userId 
+     * @param lang 
+     * @returns 
+     */
+    async commentArticleList(dto: GetListDto, userId: string, lang: string = "en"): Promise<response> {
+        const skip = (dto.page - 1) * dto.entries;
+        const conditions: any[] = [
+            { $match: { userId: userId, delete: false } },
+            { $sort: { createdAt: -1 } },
+            { $group: { _id: '$articleId', latestComment: { $first: '$content' }, commentCount: { $sum: 1 }, lastCommentTime: { $first: '$createdAt' } } },
+            { $sort: { lastCommentTime: -1 } },
+            { $skip: skip },
+            { $limit: dto.entries },
+            { $addFields: { articleObjectId: { $toObjectId: '$_id' } } },
+            { $lookup: { from: 'articles', localField: 'articleObjectId', foreignField: '_id', as: 'articleDetails' } },
+            { $unwind: '$articleDetails' },
+            {
+                $project: {
+                    _id: 1, userId: 1, content: '$latestComment', commentCount: 1, createdAt: '$lastCommentTime',
+                    articleId: {
+                        _id: '$articleDetails._id', name: '$articleDetails.name', introduction: '$articleDetails.introduction',
+                        coverImg: '$articleDetails.coverImg', categories: '$articleDetails.categories', createdAt: '$articleDetails.createdAt'
+                    }
+                }
+            }]
+        const comment = await this.commentModel.aggregate(conditions)
+        const formatArticleList = comment.map((item) => {
+            const { articleId, ...rest } = item
+            return {
+                ...rest,
+                createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
+                article: this.formatMinArticleData(item.articleId, lang),
+            }
         })
         return { code: 0, data: { list: formatArticleList } }
     }
@@ -327,12 +409,12 @@ export class ArticlesClientService {
      * @param lang 
      */
     formatMinArticleData(item: any, lang: string) {
-        const newItem = {}
         item.des = item.introduction[lang] ? item.introduction[lang] : item.introduction['en']
         item.title = item.name[lang] ? item.name[lang] : item.name['en']
         item.createdAt = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
         item.coverImg = this.imgUrl + item.coverImg
+        delete item.name;
+        delete item.introduction;
         return item
     }
-
 }

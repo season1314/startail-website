@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,7 +11,9 @@
 </head>
 
 <body class="loading">
+    {{#if categories}}
     {{> frontend/header menu=categories active=menuActivated tag=tag search=search keyword=keyword}}
+    {{/if}}
     {{#if tag.name}}
     {{#if (eq tag.name "Search")}}
     <div class="subHeader">

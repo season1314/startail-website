@@ -16,7 +16,9 @@ import { JwtStrategy } from '../jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService as NextConfigService, ConfigModule as NextConfigModule } from '@nestjs/config';
 import { Favorite, FavoriteSchema } from '../schema/user.favorite.schema'
-import {ArticleController} from './controller/article.controller'
+import { Comment, CommentSchema } from '@schema/articles.comment.schema';
+import { ArticleController } from './controller/article.controller';
+import { CommentClientService } from './service/article.comment.service'
 
 @Module({
     imports: [
@@ -34,12 +36,13 @@ import {ArticleController} from './controller/article.controller'
         }),
         MongooseModule.forFeature([
             { name: User.name, schema: UserSchema },
-            { name: Favorite.name, schema: FavoriteSchema }
+            { name: Favorite.name, schema: FavoriteSchema },
+            { name: Comment.name, schema: CommentSchema }
 
         ]),
     ],
-    controllers: [HomeController, UserController,ArticleController],
-    providers: [ArticlesClientService, MemoryStorageService, ConfigClientService, EmailService, CryptoService, UserClientService, JwtStrategy],
+    controllers: [HomeController, UserController, ArticleController],
+    providers: [ArticlesClientService, MemoryStorageService, ConfigClientService, EmailService, CryptoService, UserClientService, JwtStrategy,CommentClientService],
     exports: [ArticlesClientService],
 })
 export class ClientCoreModule { }

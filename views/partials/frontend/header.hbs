@@ -3,10 +3,12 @@
     <div class="nav">
       <a class="title">STARTAII</a>
       <nav class="menu">
-        <a class="nav-item {{#if (eq active '/')}}active{{/if}}" href="#" onclick="window.location.replace('/')" id="home">Home</a>
+        <a class="nav-item {{#if (eq active '/')}}active{{/if}}" href="#" onclick="window.location.replace('/')"
+          id="home">Home</a>
         {{#each menu}}
         {{#each this}}
-        <a class="nav-item  {{#if (eq ../../active @key)}}active{{/if}}" href="#" onclick="window.location.replace('{{buildHref @key 'auth' }}')">
+        <a class="nav-item  {{#if (eq ../../active @key)}}active{{/if}}" href="#"
+          onclick="window.location.replace('{{buildHref @key 'auth' }}')">
           {{this}}
         </a>
         {{/each}}
@@ -19,7 +21,7 @@
     <div class="element">
       {{#if search}}
       <div class="input-group" style="width:338px;margin-left:100px">
-        <input type="text" class="input" placeholder="Keyword to search..."  id="searchInput" value="{{keyword}}"/>
+        <input type="text" class="input" placeholder="Keyword to search..." id="searchInput" value="{{keyword}}" />
         <button class="button" id="headerInput">Search</button>
       </div>
       {{/if}}

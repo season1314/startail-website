@@ -17,6 +17,11 @@ export function configureHbs(viewsDir: string) {
     return a === b;
   });
 
+  
+  hbs.registerHelper('eqNotType', (a: any, b: any) => {
+    return a == b;
+  });
+
 
   hbs.registerHelper('neq', (a: any, b: any) => {
     return a !== b;

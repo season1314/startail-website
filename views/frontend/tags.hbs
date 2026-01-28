@@ -27,6 +27,20 @@
         window.scrollTo(0, 0);
     });
 
+    
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            $('#article-list').find('.non-expend').css('display', 'flex').end()
+                .find('.expend').css('display', 'none').end()
+            $('#article-list').find('.svg').eq(0).css('display', 'block');
+             $('#article-list').find('.svg').eq(1).css('display', 'none');
+             $('#article-list').find('.commentList').empty().css('display', 'none')
+            const $operation =  $('#article-list').find('.article-operations .operation')
+            $operation.eq(1).removeClass('active')
+            $('#article-list').find('.comment').css('display', 'none')
+        }
+    });
+
 
     //Handle loadMore
     $(window).on('scroll', async function () {
