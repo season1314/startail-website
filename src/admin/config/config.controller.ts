@@ -11,7 +11,7 @@ import session from 'express-session';
 
 @Controller()
 export class ConfigController {
-    constructor(private readonly ConfigService: ConfigService) { }
+    constructor(private readonly configService: ConfigService) { }
 
 
     /**
@@ -46,7 +46,7 @@ export class ConfigController {
 
     @Get('permissions/list')
     async list(@Query() dto: GetListDto) {
-        return this.ConfigService.getPermissions(dto);
+        return this.configService.getPermissions(dto);
     }
 
 
@@ -71,7 +71,7 @@ export class ConfigController {
     @Post('permissions')
     async create(@Body() dto: CreatePermissionDto, @Session() session: Record<string, any>) {
         const createBy = session.user.username
-        return await this.ConfigService.createPermission(dto, createBy)
+        return await this.configService.createPermission(dto, createBy)
     }
 
 
@@ -102,7 +102,7 @@ export class ConfigController {
             const exception = formValidationPipe['exceptionFactory'](validationErrors);
             throw exception
         }
-        return await this.ConfigService.editPermission(dto)
+        return await this.configService.editPermission(dto)
     }
 
     /**
@@ -120,7 +120,7 @@ export class ConfigController {
     @Delete('permissions')
     async delete(@Query() body: any) {
         if (!body.id) { return { code: 1, messages: 'System error: Id is missing' } }
-        return await this.ConfigService.deletePermission(body.id)
+        return await this.configService.deletePermission(body.id)
     }
 
 
@@ -158,7 +158,7 @@ export class ConfigController {
     @Get('config')
     async getConfig(@Query() body: any) {
         if (!body.key) { return { code: 1, messages: 'System error: key is missing' } }
-        return await this.ConfigService.getConfig(body.key)
+        return await this.configService.getConfig(body.key)
     }
 
     /**
@@ -179,7 +179,7 @@ export class ConfigController {
     async saveConfig(@Body() dto: any, @Session() session: Record<string, any>) {
         if (!dto.key) { return { code: 1, messages: 'System error: key is missing' } }
         if (!dto.name) { return { code: 1, messages: 'System error: name is missing' } }
-        return await this.ConfigService.SaveConfig(dto, session.user.id)
+        return await this.configService.SaveConfig(dto, session.user.id)
     }
 
         /**

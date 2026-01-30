@@ -1,0 +1,249 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+</head>
+
+<body>
+    {{> backend/infobar}}
+    {{> backend/confirm}}
+    {{> backend/loading}}
+    {{> backend/comment}}
+
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+
+
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div style="width:100%">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Comment List <a id="title-des"></a></strong>
+                            </div>
+                            <div class="card-body" style="padding-top:10px">
+                                <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
+                                    <table id="bootstrap-data-table" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Content</th>
+                                                <th>CreateBy</th>
+                                                <th>Reply</th>
+                                                <th>Status</th>
+                                                <th>CreatedTime</th>
+                                                <th>Opt</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="/backend/js/bootstrap-table.js"></script>
+
+    <!--Local Stuff-->
+    <script type="text/javascript">
+        let _data;
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('Id');
+        if (id) {
+            $('#title-des').text(`( ParentId : ${id} )`)
+        } else {
+            $('#title-des').text('')
+        }
+
+        $(document).ready(function () {
+            //Init table by bootstrap-table.js
+            const columns = [
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<div style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;max-width: 200px">${row.content}</div>`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<div>${row.userId.email}</div>`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return row.commentCount !== 0 ? `<a style="cursor:pointer" href="/admin/comment?Id=${row._id}">${row.commentCount}</a>` : `<span>${row.commentCount}</span>`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<span>${row.status} ${row.delete?'*':''}</span>`;
+                    }
+
+                },
+                { data: "createdAt" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const itemStr = JSON.stringify(row).replace(/"/g, '&quot;');
+                        if (row.articleId == row.commentId) {
+                            return `<button class="btn btn-sm btn-info btn-add" data-item="${itemStr}">Reply</button>
+                            <button class="btn btn-sm btn-primary btn-edit" data-item="${itemStr}">Edit</button>
+                            <button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Delete</button>`
+                        }
+                        return `<button class="btn btn-sm btn-primary btn-edit" data-item="${itemStr}">Edit</button>
+                        <button class="btn btn-sm btn-danger btn-delete" data-item="${row._id}">Delete</button>`
+                    }
+                }
+            ];
+            const table = initDataTable('#bootstrap-data-table', `/admin/comment/list/${id}`, columns);
+
+            //Create
+            $('#bootstrap-data-table').on('click', '.btn-add', function (event) {
+                event.preventDefault();
+                $('#subpage-title').text('Reply comment');
+                const item = JSON.parse($(this).attr('data-item'));
+                $('#create-content').text(item.content)
+                $('#create-reply').data('commentId', item._id)
+                $('#subpage-create').show();
+                $('#subpage-edit').hide();
+                $('#subpage').show();
+            })
+
+            $('#subpage-create-submit').on('click', async function (event) {
+                event.preventDefault();
+                const content = $('#create-reply').val()
+                const commentId = $('#create-reply').data('commentId')
+                const result = await fetchData('/admin/comment ', 'POST', {
+                    commentId,
+                    content
+                });
+                if (result.code == 2) {
+                    subpageError(result.messages, 'create')
+                } else if (result.code == 1) {
+                    showInfo('danger', result.messages)
+                } else {
+                    showInfo('success', result.messages)
+                    table.setKeyword('');
+                    table.ajax.reload()
+                    $('#subpage').find('input').val('').end().find('small').text('').end().hide();
+                }
+            })
+
+            //Edit
+            $('#bootstrap-data-table').on('click', '.btn-edit', function () {
+                const item = JSON.parse($(this).attr('data-item'));
+                _data = item
+                $('#edit-content').val(item.content)
+                $('#edit-content').data('id', item._id)
+                $('#edit-public').prop('checked', item.status == 'public' ? true : false);
+                $('#subpage-title').text('Edit comment');
+                $('#subpage-create').hide();
+                $('#subpage-edit').show();
+                $('#subpage').show();
+            });
+
+
+            $('#subpage-edit-submit').on('click', async function (event) {
+                event.preventDefault();
+                const content = $('#edit-content').val();
+                const id = $('#edit-content').data('id')
+                const public = $('#edit-public').prop('checked')
+                const status = public ? 'public' : "self"
+                const result = await fetchData('/admin/comment', 'PUT', {
+                    id,
+                    content,
+                    status,
+                })
+                if (result.code == 1) {
+                    showInfo('danger', result.messages)
+                } else if (result.code == 2) {
+                    subpageError(result.messages, 'edit')
+                } else {
+                    showInfo('success', result.messages)
+                    table.ajax.reload(null, false)
+                    $('#subpage').find('input').val('').end().find('small').text('').end().hide();
+                }
+            })
+
+            $('#subpage-edit-submit').next('button').on('click', async function (event) {
+                event.preventDefault();
+                $('#edit-content').val(_data.content)
+                $('#edit-public').prop('checked', _data.status == 'public' ? true : false);
+            });
+
+
+            //Handle delete
+            $('#bootstrap-data-table').on('click', '.btn-delete', async function () {
+                const id = $(this).attr('data-item')
+                if (!id) {
+                    showInfo('danger', 'System error: id is null')
+                    return
+                }
+                openConfirm({
+                    title: 'Confirm Delete',
+                    context: 'Once the comment is deleted,it cannot be undone. Are you sure you?',
+                    onConfirm: async () => {
+                        loading().show()
+                        const result = await fetchData('/admin/comment', 'DELETE', { commentId: id })
+                        if (result.code !== 0) {
+                            showInfo('danger', result.messages)
+                        } else {
+                            showInfo('success', result.messages)
+                            table.ajax.reload()
+                        }
+                        loading().hide()
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+<style>
+</style>
+
+</html>

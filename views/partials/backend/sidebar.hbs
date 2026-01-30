@@ -9,7 +9,8 @@
                 <li class="{{#if (containsAny title 'Administrator')}}active{{/if}}">
                     <a href="/admin/admin"> <i class="menu-icon fa fa-users"></i> Administrator </a>
                 </li>
-                <li class="menu-item-has-children {{#if (containsAny title 'Permissions' 'Categories' 'Languages')}}active{{/if}} dropdown">
+                <li
+                    class="menu-item-has-children {{#if (containsAny title 'Permissions' 'Categories' 'Languages')}}active{{/if}} dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Configuration</a>
                     <ul class="sub-menu children dropdown-menu">
@@ -28,8 +29,12 @@
                 <li class="{{#if (containsAny title 'Tags')}}active{{/if}}">
                     <a href="/admin/articles/tags"><i class="menu-icon fa fa-tags"></i>Tags</a>
                 </li>
-                 <li class="{{#if (containsAny title 'Articles')}}active{{/if}}">
+                <li class="{{#if (containsAny title 'Articles' 'Comments')}}active{{/if}}">
                     <a href="/admin/articles/content"><i class="menu-icon fa fa-file"></i>Articles</a>
+                </li>
+                <li class="menu-title">User</li><!-- /.menu-title -->
+                <li class="{{#if (containsAny title 'User')}}active{{/if}}">
+                    <a href="/admin/user"><i class="menu-icon fa fa-user"></i>User</a>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->

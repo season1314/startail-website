@@ -6,10 +6,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Articles, ArticlesSchema } from '../../schema/articles.content.schema';
 import { MemoryStorageService } from '../../memory-storage.service'
 import { ConfigModule } from '../../admin/config/config.module'
+import { CommentModule } from '../comment/comment.module'
 
 @Module({
   imports: [
     ConfigModule,
+    CommentModule,
     MongooseModule.forFeature([
       { name: Tags.name, schema: TagsSchema },
       { name: Articles.name, schema: ArticlesSchema },

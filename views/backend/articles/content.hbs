@@ -61,7 +61,8 @@
                                             <tr>
                                                 <th>Article Name</th>
                                                 <th>Cover Image</th>
-                                                <th>status</th>
+                                                <th>Status</th>
+                                                <th>Comment</th>
                                                 <th>CreateBy</th>
                                                 <th>CreateAt</th>
                                                 <th>Opt</th>
@@ -74,8 +75,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->
@@ -130,6 +129,12 @@
                         const btnText = isOnline ? 'Online' : 'Offline';
                         const content = `<button class="btn btn-sm ${btnClass} btn-status" data-item="${row._id}">${btnText}</button>`;
                         return content
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `<a style="cursor:pointer" href="/admin/comment?Id=${row._id}">${row.commentCount}</a>`;
                     }
                 },
                 { data: "createdBy" },

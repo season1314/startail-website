@@ -5,11 +5,13 @@ import { DashboardModule } from './dashboard/dashboard.module'
 import { RouterModule } from '@nestjs/core';
 import { ConfigModule } from './config/config.module'
 import { FilesController } from '../update.controller';
-import {ArticlesModule} from './articles/articles.module'
+import { ArticlesModule } from './articles/articles.module'
+import { UserModule } from './user/user.module'
+import { CommentModule } from './comment/comment.module';
 
 @Global()
 @Module({
-  controllers:[FilesController]
+  controllers: [FilesController]
 })
 export class AdminCoreModule {
   static forRoot(): DynamicModule {
@@ -21,6 +23,8 @@ export class AdminCoreModule {
         DashboardModule,
         ConfigModule,
         ArticlesModule,
+        UserModule,
+        CommentModule,
         RouterModule.register([
           {
             path: 'admin',
@@ -40,7 +44,15 @@ export class AdminCoreModule {
           },
           {
             path: 'admin/articles',
-            module:ArticlesModule
+            module: ArticlesModule
+          },
+          {
+            path: 'admin/user',
+            module: UserModule
+          },
+          {
+            path: 'admin/comment',
+            module:CommentModule
           }
         ])
       ],

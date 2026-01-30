@@ -1,0 +1,160 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang=""> <!--<![endif]-->
+
+<head>
+    {{> backend/head title=title}}
+</head>
+
+<body>
+    {{> backend/infobar}}
+    {{> backend/confirm}}
+    {{> backend/loading}}
+
+    <!-- Left Panel -->
+    {{> backend/sidebar title=title}}
+    <!-- /#left-panel -->
+
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        {{> backend/header}}
+        <!-- /#header -->
+
+        <!-- Breadcrumbs -->
+        {{> backend/breadcrumbs bc=bc}}
+        <!-- /#Breadcrumbs -->
+
+
+        <!-- Content -->
+        <div class="content" style="min-height:calc(100vh - 240px)">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div style="width:100%">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">User List</strong>
+                            </div>
+                            <div class="table-actions mb-3 d-flex align-items-center justify-content-between"
+                                style="padding: 0 35px;height:80px">
+
+                                <div class="d-flex align-items-center">
+                                    <input type="text" id="search-input" class="form-control form-control-sm me-2"
+                                        placeholder="Nickname /Email" style="width:180px">
+                                    <button id="btn-search" class="btn btn-primary btn-sm"
+                                        style="margin-left:10px;">Search</button>
+                                    <button id="btn-reset" class="btn btn-secondary btn-sm"
+                                        style="margin-left:10px;">Reset</button>
+                                </div>
+                            </div>
+
+                            <div class="card-body" style="padding-top:0">
+                                <div class="table-responsive" style="max-width: 100%; overflow-x: auto;">
+                                    <table id="bootstrap-data-table" class="table table-striped" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>NickName</th>
+                                                <th>Email</th>
+                                                <th>Status</th>
+                                                <th>CreatedTime</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <!-- /.content -->
+        <div class="clearfix"></div>
+        <!-- /.site-footer -->
+    </div>
+    <!-- /#right-panel -->
+
+
+    <!-- Scripts -->
+    {{> backend/script }}
+
+
+    <script src="/backend/js/lib/data-table/datatables.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="/backend/js/lib/data-table/jszip.min.js"></script>
+    <script src="/backend/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="/backend/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="/backend/js/bootstrap-table.js"></script>
+
+    <!--Local Stuff-->
+    <script type="text/javascript">
+        let _date;
+        $(document).ready(function () {
+            //Init table by bootstrap-table.js
+            const columns = [
+                { data: 'nickname' },
+                { data: 'email' },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const isOnline = row.status === 0;
+                        const btnClass = isOnline ? 'success' : 'secondary';
+                        const btnText = isOnline ? 'On' : 'Off';
+                        return `<button class="btn btn-${btnClass} btn-sm btn-status" data-item="${row._id}">${btnText}</button>`;
+                    }
+                },
+                { data: "createdAt" }
+            ];
+            const table = initDataTable('#bootstrap-data-table', '/admin/user/list', columns);
+
+            //Switch
+            $('#bootstrap-data-table').on('click', '.btn-status', async function () {
+                const id = $(this).attr('data-item');
+                console.log(id)
+                loading().show()
+                const result = await fetchData('/admin/user', 'PUT', {
+                    userId:id
+                })
+                if (result.code !== 0) {
+                    showInfo('danger', result.messages)
+                } else {
+                    showInfo('success', result.messages)
+                    table.ajax.reload()
+                }
+                loading().hide()
+            })
+
+            //Handle search
+            $('#btn-search').on('click', async function () {
+                event.preventDefault();
+                const kw = $('#search-input').val()
+                table.setKeyword(kw);
+                table.ajax.reload();
+            })
+
+
+            //Clear search
+            $('#btn-reset').on('click', async function () {
+                event.preventDefault();
+                $('#search-input').val('')
+                table.setKeyword('');
+                table.ajax.reload();
+            })
+
+        })
+    </script>
+</body>
+<style>
+</style>
+
+</html>

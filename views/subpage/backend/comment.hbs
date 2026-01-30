@@ -1,0 +1,107 @@
+<div id='subpage' class="subpage">
+    <div class="page-view">
+        <div class='card'>
+            <div class='card-header d-flex justify-content-between align-items-center'>
+                <div class='header-left'>
+                    <strong id="subpage-title"></strong>
+                </div>
+                <div class='header-right'>
+                    <button type='button' class='btn btn-danger btn-sm' id='subpage-closeBtn'>&times;</button>
+                </div>
+            </div>
+            <!-- create -->
+            <div id="subpage-create">
+                <div class='card-body card-block'
+                    style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+                    <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+                        <div class="row form-group">
+                            <div class="col col-md-3"><label class=" form-control-label">content</label></div>
+                            <div class="col-12 col-md-9">
+                                <p class="form-control-static" id="create-content"></p>
+                            </div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>Reply<span
+                                        style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'>
+                                <textarea placeholder="Enter data" class="form-control"
+                                    style="width:100%; height:150px;" id='create-reply'></textarea>
+                                <small class="help-block form-text color-red" style="height:12px"></small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class='card-footer' id='subpage-create'>
+                    <button type='submit' class='btn btn-primary btn-sm' id='subpage-create-submit'>
+                        <i class='fa fa-dot-circle-o'></i>
+                        Submit
+                    </button>
+                    <button type='reset' class='btn btn-danger btn-sm'>
+                        <i class='fa fa-ban'></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <!-- create end -->
+
+            <!-- edit -->
+            <div id="subpage-edit">
+                <div class='card-body card-block'
+                    style='width:50vw;max-height:80vh;padding-left:50px;padding-right:50px;'>
+                    <form action='#' method='post' enctype='multipart/form-data' class='form-horizontal'>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>content<span
+                                        style="color:red">*</span></label>
+                            </div>
+                            <div class='col-12 col-md-9'>
+                                <textarea placeholder="Enter data" class="form-control"
+                                    style="width:100%; height:150px;" id='edit-content'></textarea>
+                                <small class="help-block form-text color-red" style="height:12px"></small>
+                            </div>
+                        </div>
+                        <div class='row form-group'>
+                            <div class='col col-md-3'><label for='text-input' class='form-control-label'>status<span
+                                        style="color:red"></span></label>
+                            </div>
+                            <div class='col-12 col-md-9'>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="edit-public" />
+                                    <label class="form-check-label">Public</label>
+                                </div>
+                                <small class="help-block form-text color-red" style="height:12px"></small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class='card-footer' id='subpage-create'>
+                    <button type='submit' class='btn btn-primary btn-sm' id='subpage-edit-submit'>
+                        <i class='fa fa-dot-circle-o'></i>
+                        Submit
+                    </button>
+                    <button type='reset' class='btn btn-danger btn-sm'>
+                        <i class='fa fa-ban'></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <!-- edit end -->
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    $(document).on('focus', 'input', function () {
+        const $small = $(this).next('small');
+        $small.text('');
+
+    })
+
+    const subpageError = (messages, type) => {
+        Object.entries(messages).forEach(([key, value]) => {
+            const dom = $('#' + type + '-' + key)
+            if (dom) dom.next('small').text(value[0])
+        });
+    }
+</script>

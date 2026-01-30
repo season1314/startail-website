@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -128,6 +129,7 @@
     const _user = {{{ tojson user }}}
     if (navType == 'back_forward') {
         let user = localStorage.getItem('user')
+        user = "undefined" | "null" ? user : null
         user = user ? JSON.parse(user) : null;
         if (user && Object.keys(user).length !== 0) {
             $('#login').css('display', 'none')

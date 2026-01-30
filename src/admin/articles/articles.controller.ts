@@ -74,7 +74,7 @@ export class ArticlesController {
  * Update tag
  *
  * HTTP Method:Put
- * Request query:
+ * Request body:
  * - id:*(string):tag Id
  * - name:  * (string): tag name
  * - lang: *  (object): tag lang {"en":"********","cn":"***********"}

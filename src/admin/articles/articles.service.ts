@@ -11,6 +11,7 @@ import { TagsDto } from '../articles/articles.dto'
 import { MemoryStorageService } from '../../memory-storage.service';
 import { CommonMethods } from '../../common.method'
 import { ConfigService } from '@nestjs/config';
+import { Comment } from '../../schema/articles.comment.schema'
 
 
 
@@ -20,6 +21,7 @@ export class ArticlesService {
         @InjectModel(Tags.name) private tagsModel: Model<Tags>,
         @InjectModel(Config.name) private configModel: Model<Config>,
         @InjectModel(Articles.name) private contentModel: Model<Articles>,
+        @InjectModel(Comment.name) private commentModel: Model<Comment>,
         private readonly memoryStorageService: MemoryStorageService,
         private readonly configService: ConfigService
 
@@ -351,11 +353,21 @@ export class ArticlesService {
             this.contentModel.find(query).countDocuments(),
         ])
         const imgUrl = this.configService.get<string>('IMG_URL')
-        const formatList = list.map(item => ({
-            ...item,
-            coverImg: this.configService.get<string>('IMG_URL') + item.coverImg,
-            createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
-        }));
+
+        const formatList = await Promise.all(
+            list.map(async item => {
+                const count = await this.commentModel.countDocuments({
+                    commentId: item._id,
+                });
+                return {
+                    ...item,
+                    coverImg: this.configService.get<string>('IMG_URL') + item.coverImg,
+                    createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm'),
+                    commentCount: count,
+                };
+            }),
+        );
+
         return {
             code: 0,
             data: {

@@ -11,7 +11,7 @@ import { EmailService } from './mail.service'
     ClientCoreModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      envFilePath: `.env.${process.env.NODE_ENV || 'development' || 'production'}`,
     }),
 
     MongooseModule.forRootAsync({

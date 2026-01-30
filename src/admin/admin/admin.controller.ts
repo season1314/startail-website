@@ -25,7 +25,7 @@ import { AdminModule } from './admin.module';
 
 @Controller()
 export class AdminController {
-  constructor(private readonly AdminService: AdminService) { }
+  constructor(private readonly adminService: AdminService) { }
 
   /**
    *  Render administrator page
@@ -59,7 +59,7 @@ export class AdminController {
 
   @Get('list')
   async list(@Query() dto: GetListDto) {
-    return this.AdminService.getAdmins(dto);
+    return this.adminService.getAdmins(dto);
   }
 
   /**
@@ -86,7 +86,7 @@ export class AdminController {
   @Post()
   async create(@Body() dto: CreateAdminDto, @Session() session: Record<string, any>) {
     const createBy = session.user.username
-    return this.AdminService.createAdmin(dto, createBy)
+    return this.adminService.createAdmin(dto, createBy)
   }
 
   /**
@@ -125,11 +125,11 @@ export class AdminController {
         const exception = formValidationPipe['exceptionFactory'](validationErrors);
         throw exception
       }
-      return this.AdminService.editAdminInfo(dto)
+      return this.adminService.editAdminInfo(dto)
     }
 
     if (body.type == "switchStatus") {
-      return this.AdminService.switchAdminStatus(body.id,req.sessionStore)
+      return this.adminService.switchAdminStatus(body.id,req.sessionStore)
     }
 
     if (body.type == "resetPass") {
@@ -143,7 +143,7 @@ export class AdminController {
         const exception = formValidationPipe['exceptionFactory'](validationErrors);
         throw exception
       }
-      return this.AdminService.updateAdminPass(dto)
+      return this.adminService.updateAdminPass(dto)
     }
     return { code: 1, messages: 'System error: Edit options are missing' }
   }
@@ -164,7 +164,7 @@ export class AdminController {
   @Delete()
   async delete(@Query() body: any) {
     if (!body.id) { return { code: 1, messages: 'System error: Id is missing' } }
-    return this.AdminService.deleteAdmin(body.id)
+    return this.adminService.deleteAdmin(body.id)
   }
 
   /**
@@ -204,7 +204,7 @@ export class AdminController {
   @Get('permissions/list')
   async permissionsList(@Query() body: any) {
     if (!body.id) { return { code: 1, messages: 'System error: Id is missing' } }
-    return this.AdminService.permissionList(body.id, body.keyword)
+    return this.adminService.permissionList(body.id, body.keyword)
   }
 
    /**
@@ -226,6 +226,6 @@ export class AdminController {
   async updateAdminPermission(@Body() body: any,@Req() req:Request) {
     if (!body.id) return { code: 1, messages: 'System error: Id is missing' }
     if (!Array.isArray(body.permissions) || !body.permissions.every(item => typeof item === 'string')) return { code: 1, messages: 'System error: Permissions is valid' }
-    return this.AdminService.updateAdminPermissions(body.id,body.permissions,req.sessionStore)
+    return this.adminService.updateAdminPermissions(body.id,body.permissions,req.sessionStore)
   }
 }
