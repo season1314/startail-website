@@ -12,7 +12,7 @@
             {{/not}}
             {{/if}}
         </div>
-        {{#if hasReplies}}<button class="commentReply"><span>View all {{replyCount}} replies</span></button>{{/if}}
+        {{#if hasReplies}}<button class="commentReply"><span class="reply" data-id="{{_id}}">View all {{replyCount}} replies</span></button>{{/if}}
     </div>
 </div>
 {{~/each~}}

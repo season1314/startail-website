@@ -1,3 +1,4 @@
+<script src="/frontend/js/loadBar.js"></script>
 <button class="back" id="back">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
         class="size-6">
@@ -277,6 +278,24 @@
         $('html, body').animate({
             scrollTop: 0
         }, 300);
+    })
+
+    $(document).on('click', '.reply', async function () {
+        const id = $(this).data('id')
+        const $comment = $('#' + id)
+        const res = await fetchData('/article/comment/children', 'Get', { commentId: id })
+        if (res.code == 0) {
+            res.data.commentList.map((item) => {
+                const html = `<div class="commentItem"><div class="commentAvatar" style="font-size:12px">${item?.userId?.nickname?.charAt(0)?.toUpperCase()}</div>
+                                <div class="commentContext">
+                                    <a class="commentNickname">${item?.userId?.nickname}</a>
+                                    <span class="commentContent">${item?.content}</span>
+                                    <div class="commentCreatedAt"><a>${item?.createdAt}</a></div>
+                                 </div></div>`
+                $comment.find('.commentContext').append(html)
+            })
+        }
+        $comment.find('.commentReply').remove()
     })
 
 

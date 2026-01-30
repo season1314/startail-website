@@ -1,3 +1,4 @@
+<script src="/frontend/js/loadBar.js"></script>
 <div class="list">
     <div id="article-list">
         {{> frontend/miniComment articleList=articleList user=user}}
@@ -51,7 +52,7 @@
 
 
     //Handle mini-more
-    $(document).on('click','.mini-more',function(){
+    $(document).on('click', '.mini-more', function () {
         const id = $(this).data('id')
         window.location.href = '/article/page/' + id
     })

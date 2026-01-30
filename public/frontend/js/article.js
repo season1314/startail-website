@@ -168,7 +168,7 @@ async function getCommentList(_this, id, $article) {
         let commentList = ""
         if (res.data.commentList.length > 0) {
             res.data.commentList.forEach((item, index) => {
-                commentList = commentList + `<div class="commentItem">
+                commentList = commentList + `<div class="commentItem" id="comment-${item._id}">
                             <div class="commentAvatar">${item?.userId?.nickname?.charAt(0)?.toUpperCase()}</div>
                             <div class="commentContext">
                                <a class="commentNickname">${item.userId.nickname}</a>
@@ -177,7 +177,7 @@ async function getCommentList(_this, id, $article) {
                                  <a>${item.createdAt}</a>
                                  ${item.userId._id == res.data.userId && !item.delete ? '<a class="commentDelete" data-id=' + item._id + ' data-articleId=' + id + '>DELETE</a>' : '<a></a>'}
                                </div >
-                ${item.hasReplies ? '<button class="commentReply"><span>View all ' + item.replyCount + ' replies</span></button>' : ''}
+                ${item.hasReplies ? `<button class="commentReply"><span class="reply" data-id="${item._id}">View all ` + item.replyCount + ' replies</span></button>' : ''}
                             </div >
                         </div > `
             })
@@ -199,6 +199,26 @@ async function getCommentList(_this, id, $article) {
 $(document).on('click', '.moreComment', function () {
     const articleId = $(this).data('id')
     window.location.href = `/article/page/${articleId}`
+})
+
+//Handle reply more
+$(document).on('click', '.reply', async function () {
+    const id = $(this).data('id')
+    const $comment = $('#comment-' + id)
+    console.log($comment)
+    const res = await fetchData('/article/comment/children', 'Get', { commentId: id })
+    if (res.code == 0) {
+        res.data.commentList.map((item) => {
+            const html = `<div class="commentItem"><div class="commentAvatar" style="font-size:12px">${item?.userId?.nickname?.charAt(0)?.toUpperCase()}</div>
+                            <div class="commentContext">
+                                <a class="commentNickname">${item?.userId?.nickname}</a>
+                                <span class="commentContent">${item?.content}</span>
+                                <div class="commentCreatedAt"><a>${item?.createdAt}</a></div>
+                             </div></div>`
+            $comment.find('.commentContext').append(html)
+        })
+    }
+    $comment.find('.commentReply').remove()
 })
 
 

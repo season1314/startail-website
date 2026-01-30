@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="/frontend/css/form.css">
 <link rel="stylesheet" href="/frontend/css/profile.css">
+<script src="/frontend/js/loadBar.js"></script>
 <div style="width:700px">
     <div class="form user" id="profile-user" style="display:flex">
         <div class="avatar" style="width:100px;height:100px;border-radius:10px;font-size:64px"
@@ -42,7 +43,7 @@
             Object.entries(res.messages).forEach(([key, value]) => {
                 $(`#profile-${key}`).find('a').text(value[0])
             })
-        } else{
+        } else {
             window.location.href = `/error?messages=${res.messages}`
         }
         $(this).find('.spinner').removeClass('is-show')

@@ -12,6 +12,7 @@ import { MemoryStorageService } from '../../memory-storage.service'
 import { CommonMethods } from '../../common.method'
 import { Comment } from '../../schema/articles.comment.schema'
 import { addAbortListener } from 'events';
+import { format } from 'path';
 
 
 
@@ -178,5 +179,23 @@ export class CommentClientService {
             })
         )
         return { code: 0, data: { commentList: listWithReplyInfo } }
+    }
+
+
+    /**
+     * Get comment children list
+     * @param id 
+     * @param userId 
+     * @returns 
+     */
+    async commentChildrenList(id: string): Promise<response> {
+        const commentList = await this.commentModel.find({ commentId: id }).sort({ status: -1, createdAt: -1 }).populate('userId', '_id nickname avatar').lean().exec()
+        const formatCommentList = commentList.map((item) => {
+            return {
+                ...item,
+                createdAt: dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
+            };
+        })
+        return { code: 0, data: { commentList: formatCommentList } }
     }
 }

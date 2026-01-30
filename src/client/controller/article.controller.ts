@@ -122,6 +122,12 @@ export class ArticleController {
     }
 
 
+    @Get('comment/children')
+    async getCommentChildren(@Query('commentId') commentId: string = "", @Query('page') page = 1) {
+        return await this.commentClientService.commentChildrenList(commentId)
+    }
+
+
     /** 
     * Delete comment
     *
