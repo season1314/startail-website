@@ -21,6 +21,7 @@ $(document).on('click', '.svg.des', async function () {
             const $operation = $article.find('.article-operations .operation')
             $operation.eq(2).find('a').text('view (' + res.data.view + ')');
             $operation.eq(1).find('a').text('comment (' + res.data.comment + ')');
+            $article.find('#contentImg').attr('src',res.data.contentImg)
             if (res.data.favorite) {
                 const $fav = $operation.eq(0)
                 $fav.addClass('active');
@@ -219,6 +220,12 @@ $(document).on('click', '.reply', async function () {
         })
     }
     $comment.find('.commentReply').remove()
+})
+
+//Handle img
+$(document).on('click','.expend .img',function(){
+    const src = $(this).attr('src');
+    if (src) { window.open(src, '_blank')}
 })
 
 

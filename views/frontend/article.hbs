@@ -10,7 +10,7 @@
         <div class="article" id="{{article._id}}" style="border-bottom:none">
             <h3 class="title">{{article.title}}</h3>
             <div class="expend" style="display:block">
-                <img class="img" src="{{article.coverImg}}" />
+                <img class="img" src="{{article.contentImg}}" />
                 <div class="content">
                     {{article.des}}
                 </div>
@@ -297,6 +297,11 @@
         }
         $comment.find('.commentReply').remove()
     })
+
+    $(document).on('click','.expend .img',function(){
+    const src = $(this).attr('src');
+    if (src) { window.open(src, '_blank')}
+})
 
 
 </script>

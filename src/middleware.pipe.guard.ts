@@ -116,11 +116,14 @@ export class RateLimitingMiddleware implements NestMiddleware {
   private limiter: any;
   constructor() {
     this.limiter = rateLimit({
-      windowMs: 15 * 60 * 1000,
+      windowMs: 15 * 60 * 1000, 
       max: 2000,
       message: 'Too many requests from this IP, please try again later.',
       standardHeaders: true,
       legacyHeaders: false,
+      keyGenerator: (req: Request) => {
+        return req.session?.id ?? req.ip;
+      },
     });
 
     this.use = this.use.bind(this);

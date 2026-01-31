@@ -99,14 +99,43 @@
                                                 {{#if coverImg}}
                                                 <div style="display:flex;width:100%">
                                                     <div class="coverImgDiv" id="cover-image-en"
-                                                        style="background-image:url({{url}})" data-path="{{coverImg}}">
+                                                        style="background-image:url({{coverUrl}})"
+                                                        data-path="{{coverImg}}">
                                                     </div>
-                                                    <div class="coverImgOpt" id="delete-img">
+                                                    <div class="coverImgOpt" id="cover-image-delete">
                                                         <i class="menu-icon fa fa-trash-o"></i>
                                                     </div>
                                                 </div>
                                                 {{else}}
                                                 <div id="cover-image-add">
+                                                    <i class="fa fa-plus-square"></i>
+                                                </div>
+                                                {{/if}}
+                                            </div>
+                                            <small class="help-block form-text color-red"
+                                                style="height:12px;margin-left:15px"></small>
+                                        </div>
+                                    </div>
+
+                                    <div class='row form-group'>
+                                        <div class='col col-md-3'><label for='text-input'
+                                                class='form-control-label'>content image<span
+                                                    style="color:red">*</span></label>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class='col-12 col-md-9' style="max-width:none" id="content-image">
+                                                {{#if contentImg}}
+                                                <div style="display:flex;width:100%">
+                                                    <div class="coverImgDiv" id="content-image-en"
+                                                        style="background-image:url({{contentUrl}})"
+                                                        data-path="{{contentImg}}">
+                                                    </div>
+                                                    <div class="coverImgOpt" id="content-image-delete">
+                                                        <i class="menu-icon fa fa-trash-o"></i>
+                                                    </div>
+                                                </div>
+                                                {{else}}
+                                                <div id="content-image-add">
                                                     <i class="fa fa-plus-square"></i>
                                                 </div>
                                                 {{/if}}
@@ -194,7 +223,10 @@
                                         </div>
                                     </div>
                                 </form>
-                                <input type="file" id="images-file" style="display:none" accept="image/*" />
+                                <input type="file" id="cover-images-file" style="display:none" accept="image/*"
+                                    data-item="cover-image" />
+                                <input type="file" id="content-images-file" style="display:none" accept="image/*"
+                                    data-item="content-image" />
                             </div>
                         </div>
                     </div>
@@ -336,17 +368,40 @@
             $('#cover-image').on('click', '#cover-image-add', function (event) {
                 event.preventDefault();
                 $('#cover-image').next('small').text('')
-                $('#images-file').click();
+                $('#cover-images-file').click();
             })
 
-            $('#cover-image').on('click', '#delete-img', function (event) {
+            $('#cover-image').on('click', '#cover-image-delete', function (event) {
                 event.preventDefault();
                 const content = `<div id="cover-image-add"><i class="fa fa-plus-square"></i></div>`
-                $('#images-file').val('');
+                $('#cover-images-file').val('');
                 $('#cover-image').find('div').remove().end().prepend(content).end();
             });
 
             $('#cover-image').on('click', '.coverImgDiv', function (event) {
+                event.preventDefault();
+                let backgroundImageUrl = $(this).css('background-image');
+                backgroundImageUrl = backgroundImageUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                window.open(backgroundImageUrl, '_blank');
+            })
+
+
+            //content-image
+            $('#content-image').on('click', '#content-image-add', function (event) {
+                event.preventDefault();
+                $('#content-image').next('small').text('')
+                $('#content-images-file').click();
+            })
+
+
+            $('#content-image').on('click', '#content-image-delete', function (event) {
+                event.preventDefault();
+                const content = `<div id="content-image-add"><i class="fa fa-plus-square"></i></div>`
+                $('#content-images-file').val('');
+                $('#content-image').find('div').remove().end().prepend(content).end();
+            });
+
+            $('#content-image').on('click', '.coverImgDiv', function (event) {
                 event.preventDefault();
                 let backgroundImageUrl = $(this).css('background-image');
                 backgroundImageUrl = backgroundImageUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
@@ -521,25 +576,9 @@
         })
 
         //images file
-        $('#images-file').on('change', async function () {
-            const fileInput = this;
-            if (fileInput.files && fileInput.files[0]) {
-                const formData = new FormData();
-                formData.append('file', fileInput.files[0]);
-                const result = await fetchData('/admin/upload', 'POST', formData);
-                if (result.code == 0) {
-                    showInfo('success', result.messages)
-                    const content = `<div style="display:flex;width:100%">
-                                         <div class="coverImgDiv" id="cover-image-en" style="background-image:url(${result.data.url})" data-path="${result.data.path}"/>
-                                         <div class="coverImgOpt" id="delete-img"><i class="menu-icon fa fa-trash-o"></i></div>
-                                       </div>`
-                    $('#cover-image').find('#cover-image-add').remove().end().prepend(content).end()
-                } else {
-                    showInfo('danger', result.messages)
-                }
-            }
+        $('#cover-images-file, #content-images-file').on('change', async function () {
+            uploadImage(this);
         })
-
 
         //FetchTags
         async function fetchTags(params) {
@@ -572,6 +611,33 @@
             }
         }
 
+        //Update images
+        async function uploadImage(fileInput) {
+            if (!fileInput.files || !fileInput.files[0]) return;
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            const result = await fetchData('/admin/upload', 'POST', formData);
+            if (result.code === 0) {
+                showInfo('success', result.messages);
+                const target = $(fileInput).data('item');
+                const content = `
+            <div style="display:flex;width:100%">
+                <div class="coverImgDiv"
+                     style="background-image:url(${result.data.url})"
+                     data-path="${result.data.path}" id="${target}-en">
+                </div>
+                <div class="coverImgOpt" id="${target}-delete">
+                    <i class="menu-icon fa fa-trash-o"></i>
+                </div>
+            </div>`;
+                $('#' + target).find(`#${target}-add`).remove().end().prepend(content);
+            } else {
+                showInfo('danger', result.messages);
+            }
+
+        }
+
+
         //disposal data
         async function disposalData() {
             let data = {
@@ -584,13 +650,15 @@
                 data.introduction[item] = $('#introduction-' + item).val()
                 if (item == 'en') {
                     data.categories = ($('#categories-' + item)).find('input[type="checkbox"]:checked').map(function () { return this.value; }).get()
-                    data.coverImg = $('#cover-image-' + item).attr('data-path')
+                    data.coverImg = $(`#cover-image-` + item).attr('data-path')
+                    data.contentImg = $('#content-image-' + item).attr('data-path')
                     data.tags = Tags
                     data.os = ($('#os-' + item)).find('input[type="checkbox"]:checked').map(function () { return this.value; }).get()
                 }
             })
             data.guides = Guides
             data.downloads = Downloads
+            console.log(data.coverImg)
             if (!data.name.en) {
                 $('#name-en').next('small').text('name is required')
                 return false
@@ -632,6 +700,7 @@
 
     .downloads-add,
     #tags-add,
+    #content-image-add,
     .guides-add,
     #cover-image-add {
         cursor: pointer;

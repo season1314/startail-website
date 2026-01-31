@@ -14,17 +14,13 @@ const session = require('express-session');
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-
+  app.set('trust proxy', 1);
   const viewsDir = join(__dirname, '..', 'views');
-
   app.setBaseViewsDir(viewsDir);
   app.setViewEngine('hbs');
   configureHbs(viewsDir);
   app.useStaticAssets(join(__dirname, '..', 'public'));
-
   app.use(new RateLimitingMiddleware().use)
-
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
@@ -57,7 +53,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new FormValidationPipe())
 
-  
+
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
