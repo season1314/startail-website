@@ -211,7 +211,9 @@ export class ArticlesService {
                 guides: data.guides,
                 downloads: data.downloads,
                 coverImg: data.coverImg,
-                url: this.configService.get<string>('IMG_URL') + data.coverImg,
+                contentImg:data.contentImg,
+                coverUrl: this.configService.get<string>('IMG_URL') + data.coverImg,
+                contentUrl:this.configService.get<string>('IMG_URL') + data.contentImg,
                 bc: [
                     { url: '/admin', name: 'Dashboard' },
                     { url: '/admin/articles/content', name: 'Articles' },
@@ -245,6 +247,7 @@ export class ArticlesService {
                 downloads: dto.downloads,
                 coverImg: dto.coverImg,
                 guides: dto.guides,
+                contentImg:dto.contentImg,
                 os: dto.os,
                 status: 1,
                 createdInfo: { name: 'StarTail', email: 'haoqingshuang@gmail.com' },
@@ -273,6 +276,7 @@ export class ArticlesService {
             article.introduction = dto.introduction
             article.categories = dto.categories
             article.coverImg = dto.coverImg
+            article.contentImg = dto.contentImg
             article.tags = dto.tags
             article.os = dto.os
             article.guides = dto.guides

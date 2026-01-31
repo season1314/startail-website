@@ -192,8 +192,8 @@ export class ArticlesClientService {
                 const doc = await this.favoriteModel.findOne({ userId, articleId }, { _id: 1 }).lean().exec();
                 favorite = doc?._id?.toString() || "";
             }
-
-            return { code: 0, messages: 'Success', data: { favorite, view, comment } }
+            const contentImg = this.imgUrl + article?.contentImg
+            return { code: 0, messages: 'Success', data: { favorite, view, comment, contentImg } }
         } catch (error) {
             return { code: 0, messages: error }
 
@@ -398,6 +398,7 @@ export class ArticlesClientService {
         item.createdAt = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
         item.files = _guides.concat(_downloads)
         item.coverImg = this.imgUrl + item.coverImg
+        item.contentImg = this.imgUrl + item.contentImg
         const keys = ['name', 'introduction', 'guides', 'downloads']
         keys.forEach(key => delete item[key]);
         return item

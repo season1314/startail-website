@@ -22,6 +22,9 @@ export class Articles extends Document {
     @Prop()
     coverImg: string
 
+    @Prop()
+    contentImg:string
+
     @Prop({ type: Object, default: {} })
     createdInfo: Record<string, any>
 
