@@ -3,7 +3,11 @@
 /node_modules
 /build
 
+<<<<<<< Updated upstream
 /public/uploads/*
+=======
+/public/uploads/
+>>>>>>> Stashed changes
 
 # Logs
 logs
